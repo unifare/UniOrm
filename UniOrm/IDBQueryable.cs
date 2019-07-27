@@ -1,0 +1,6 @@
+﻿namespace UniOrm
+{
+    interface IDBQueryable
+    {
+    }
+}

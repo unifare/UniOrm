@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UniOrm.Common\UniOrm.Common.csproj" />
+    <ProjectReference Include="..\UniOrm.Model\UniOrm.Model.csproj" />
+    <ProjectReference Include="..\UniOrm\UniOrm.csproj" />
+  </ItemGroup>
+
+</Project>

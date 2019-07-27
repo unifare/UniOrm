@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
+    <PackageReference Include="Autofac.Configuration" Version="4.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="Fasterflect.Netstandard" Version="1.0.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UniOrm.CodeService\UniOrm.Model.DataService.csproj" />
+    <ProjectReference Include="..\UniOrm.Common\UniOrm.Common.csproj" />
+    <ProjectReference Include="..\UniOrm.Core\UniOrm.Core.csproj" />
+    <ProjectReference Include="..\UniOrm.DataMigrationiHistrory\UniOrm.DataMigrationiHistrory.csproj" />
+    <ProjectReference Include="..\UniOrm.FlunentMigrator\UniOrm.FlunentMigrator.csproj" />
+    <ProjectReference Include="..\UniOrm.Model\UniOrm.Model.csproj" />
+    <ProjectReference Include="..\UniOrm\UniOrm.csproj" />
+  </ItemGroup>
+
+</Project>
