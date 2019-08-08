@@ -12,11 +12,10 @@ using Microsoft.Extensions.Caching.Memory;
 using UniOrm.Core;
 using UniOrm;
 using UniOrm.Common;
-using UniOrm.Loggers;
-using UniOrm.Unver;
+using UniOrm.Loggers; 
 using UniOrm.DataMigrationiHistrory;
 
-namespace UniOrm.StartUp
+namespace UniOrm.Application
 {
     public static class AConStateStartUp
     {

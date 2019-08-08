@@ -8,7 +8,7 @@ using UniOrm.Common;
 using UniOrm.Loggers;
 using UniOrm.Model;
 
-namespace UniOrm.Unver
+namespace UniOrm.Core
 {
     public class RuntimeModel : IDisposable
     {
@@ -24,8 +24,8 @@ namespace UniOrm.Unver
         {
             if (DBground == null)
             {
-                var adp = dbFactory.GetPropertyValue("Orms")
-                    .GetIndexer(ormname);
+                var adp = dbFactory.GetIndexer(ormname);
+                  //  .GetIndexer(ormname);
 
                 if (!string.IsNullOrEmpty(connectionstring))
                 {

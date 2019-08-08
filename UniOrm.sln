@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.FlunentMigrator", "U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.Model", "UniOrm.Model\UniOrm.Model.csproj", "{893D1AE4-A01A-4687-B0BE-3BB14EFC06F5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.StartUp", "UniOrm.StartUp\UniOrm.StartUp.csproj", "{E615AB8B-5927-4873-9B6A-589204C56BC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.Application", "UniOrm.StartUp\UniOrm.Application.csproj", "{E615AB8B-5927-4873-9B6A-589204C56BC5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.Web", "UniOrm.Web\UniOrm.Web.csproj", "{D6225DFA-3418-41D7-A71F-013567820731}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.Startup.Web", "UniOrm.Web\UniOrm.Startup.Web.csproj", "{D6225DFA-3418-41D7-A71F-013567820731}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWeb", "TestWeb\TestWeb.csproj", "{73DA088F-36B4-49C4-B48D-761C8C8D995F}"
 EndProject
@@ -25,11 +25,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastratrue", "Infrastrat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{A4762EE5-1C32-40C6-943B-3E3236616663}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Model", "Web.Model\Web.Model.csproj", "{07011BD6-3670-46AE-B810-4F394691EA86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Model", "Web.Model\Web.Model.csproj", "{07011BD6-3670-46AE-B810-4F394691EA86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniOrm.Model.DataService", "UniOrm.CodeService\UniOrm.Model.DataService.csproj", "{F16977C8-58C8-45B0-9C7B-DCD02D51230B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.Model.DataService", "UniOrm.CodeService\UniOrm.Model.DataService.csproj", "{F16977C8-58C8-45B0-9C7B-DCD02D51230B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMigrationiHistrory", "DataMigrationiHistrory\DataMigrationiHistrory.csproj", "{43FED6A4-5053-4481-B4F2-01CE7EEA23FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataMigrationiHistrory", "DataMigrationiHistrory\DataMigrationiHistrory.csproj", "{43FED6A4-5053-4481-B4F2-01CE7EEA23FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Common", "Plugins\Plugin.Common\Plugin.Common.csproj", "{22330993-268D-4DEE-B5C5-63C54734CD54}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetTest", "Plugins\UserPlguin\NetTest\NetTest.csproj", "{19AEB857-A47D-4D83-9A74-427CC8D69696}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicPlugin", "Plugins\BasicPlugin\BasicPlugin.csproj", "{0906D1B0-AC54-4E60-8B98-FAD72D174284}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +93,18 @@ Global
 		{43FED6A4-5053-4481-B4F2-01CE7EEA23FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43FED6A4-5053-4481-B4F2-01CE7EEA23FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43FED6A4-5053-4481-B4F2-01CE7EEA23FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22330993-268D-4DEE-B5C5-63C54734CD54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22330993-268D-4DEE-B5C5-63C54734CD54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22330993-268D-4DEE-B5C5-63C54734CD54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22330993-268D-4DEE-B5C5-63C54734CD54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19AEB857-A47D-4D83-9A74-427CC8D69696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19AEB857-A47D-4D83-9A74-427CC8D69696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19AEB857-A47D-4D83-9A74-427CC8D69696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19AEB857-A47D-4D83-9A74-427CC8D69696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0906D1B0-AC54-4E60-8B98-FAD72D174284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0906D1B0-AC54-4E60-8B98-FAD72D174284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0906D1B0-AC54-4E60-8B98-FAD72D174284}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0906D1B0-AC54-4E60-8B98-FAD72D174284}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +121,9 @@ Global
 		{07011BD6-3670-46AE-B810-4F394691EA86} = {A4762EE5-1C32-40C6-943B-3E3236616663}
 		{F16977C8-58C8-45B0-9C7B-DCD02D51230B} = {E97299E1-08AD-4DFE-8557-CAEE16A04004}
 		{43FED6A4-5053-4481-B4F2-01CE7EEA23FB} = {A4762EE5-1C32-40C6-943B-3E3236616663}
+		{22330993-268D-4DEE-B5C5-63C54734CD54} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
+		{19AEB857-A47D-4D83-9A74-427CC8D69696} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
+		{0906D1B0-AC54-4E60-8B98-FAD72D174284} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9498881A-9669-45A9-A3D3-8912DDB2872D}

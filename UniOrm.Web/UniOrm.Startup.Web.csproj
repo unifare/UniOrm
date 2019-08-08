@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UniOrm.StartUp\UniOrm.StartUp.csproj" />
+    <ProjectReference Include="..\UniOrm.StartUp\UniOrm.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

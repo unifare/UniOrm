@@ -4,17 +4,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UniOrm.StartUp;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using UniOrm.Common;
 using Newtonsoft.Json.Serialization;
 using UniOrm;
+using UniOrm.Application;
 
-namespace AConState.Web
+namespace UniOrm.Startup.Web
 {
     public static class AppStartSetup
     {
@@ -33,8 +31,9 @@ namespace AConState.Web
             services.AddMvc().AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); });
             services.AddMvc(o =>
             {
-                //o.Filters.Add<GlobalActionFilter>();
+               o.Filters.Add<GlobalActionFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             var we = services.InitAutofac(null);
             InitDbMigrate();
             return we;
@@ -73,7 +72,13 @@ namespace AConState.Web
                 RequestPath = ""
             });
             app.UseCookiePolicy();
-
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                  name: "areas",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+            });
             app.UseMvc(routes =>
             {
 

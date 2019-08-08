@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using UniOrm.Common;
 using UniOrm.Model.DataService;
 
-namespace UniOrm.StartUp
+namespace UniOrm.Application
 {
     public class AutofacModule : Autofac.Module
     {

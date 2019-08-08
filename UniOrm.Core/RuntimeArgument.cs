@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UniOrm.Model;
 
-namespace UniOrm.Unver
+namespace UniOrm.Core
 {
     public class RuntimeArgument
     {

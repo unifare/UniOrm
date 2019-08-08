@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace UniOrm.Unver
+namespace UniOrm.Core
 {
     public class RuntimeCode
     {
