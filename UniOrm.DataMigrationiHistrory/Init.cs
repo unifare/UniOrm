@@ -1,5 +1,7 @@
 ﻿using FluentMigrator;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace UniOrm.DataMigrationiHistrory
 {
@@ -414,7 +416,51 @@ namespace UniOrm.DataMigrationiHistrory
             //    //StoreValueType = typeof(ComposeEntity).FullName
             //};
             //Insert.IntoTable("AConGetWay").Row(aGateWay);
+            Create.Table("AdminUser")
+               .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("Guid").AsString(50).Nullable()
+                 .WithColumn("UserName").AsString(100).Nullable()
+                .WithColumn("Password").AsString(100).Nullable()
+                .WithColumn("IsDisable").AsBoolean().NotNullable()  
+               .WithColumn("AddTime").AsDateTime().Nullable();
+            ;
+            var password =  "admin";
+            using (var md5 = MD5.Create())
+            {
+                var result = md5.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var strResult = BitConverter.ToString(result);
+                password = strResult.Replace("-", "");
 
+            }
+            var addAdminUser = new
+            {
+                Guid = "BBF6B4BC-AECA-4699-831D-4A6E8BB6CS51",
+                AddTime = DateTime.Now,
+                UserName = "admin",
+                Password = password,
+                IsDisable = false, 
+            };
+            Insert.IntoTable("AdminUser").Row(addAdminUser);
+
+            
+            Create.Table("SystemDictionary")
+               .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("KeyName").AsString(450).Nullable()
+                 .WithColumn("Value").AsString(900 ).Nullable()
+                .WithColumn("SystemDictionarytype").AsInt16( ) 
+                .WithColumn("IsSystem").AsBoolean().NotNullable()
+               .WithColumn("AddTime").AsDateTime().Nullable();
+            ;
+
+            var SystemDictionary1 = new
+            {
+                KeyName = "security",
+                Value = "security",
+                IsSystem = true,
+                SystemDictionarytype = 0,
+                AddTime = DateTime.Now,
+            };
+            Insert.IntoTable("SystemDictionary").Row(SystemDictionary1);
         }
 
         public override void Down()
@@ -436,6 +482,7 @@ namespace UniOrm.DataMigrationiHistrory
             Delete.Table("TrigerRuleInfo");
             Delete.Table("ComposeEntity");
             Delete.Table("SystemRegistionInfo");
+            Delete.Table("AdminUser");
         }
     }
 }

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using System.Linq;
-using UniOrm.ReflectionMagic;  
+using System.Linq; 
 using System.Linq.Expressions;
 
 namespace UniOrm.Adaption

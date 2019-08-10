@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Text;
-using UniOrm.ReflectionMagic;
+using System.Text; 
 namespace UniOrm.Common
 {
     public class MagicExtension

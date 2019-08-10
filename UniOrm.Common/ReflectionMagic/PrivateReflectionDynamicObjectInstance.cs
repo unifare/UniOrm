@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace UniOrm.ReflectionMagic
+namespace UniOrm
 {
     public class PrivateReflectionDynamicObjectInstance : PrivateReflectionDynamicObjectBase
     {

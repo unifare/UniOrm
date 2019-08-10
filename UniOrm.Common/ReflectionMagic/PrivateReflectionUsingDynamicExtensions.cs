@@ -1,7 +1,7 @@
 using System;
-using System.Reflection;
+using System.Reflection; 
 
-namespace UniOrm.ReflectionMagic
+namespace UniOrm
 {
     public static class PrivateReflectionUsingDynamicExtensions
     {

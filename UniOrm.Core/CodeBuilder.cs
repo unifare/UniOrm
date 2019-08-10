@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection; 
 using System.Linq;
 using Fasterflect;
+using UniOrm;
 
 namespace UniOrm.Core
 {
@@ -94,9 +95,9 @@ namespace UniOrm.Core
     {
         public static Type GetTypeFromCache(string TypeName)
         {
-            if(Manager.Types.ContainsKey(  TypeName))
+            if(SuperManager.Types.ContainsKey(  TypeName))
             {
-              return  Manager.Types[TypeName];
+              return  SuperManager.Types[TypeName];
             }
             return null;
         }

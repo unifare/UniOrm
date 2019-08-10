@@ -5,7 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 
-namespace UniOrm.ReflectionMagic
+namespace UniOrm
 {
     public abstract class PrivateReflectionDynamicObjectBase : DynamicObject
     {

@@ -47,6 +47,7 @@
       {
         "Dll": "UniOrm.Model.dll",
         "TypeNames": [
+          "UniOrm.Model.AdminUser",
           "UniOrm.Model.AConFlowStep",
           "UniOrm.Model.ComposeTemplate",
           "UniOrm.Model.AConStateModule",
@@ -66,7 +67,16 @@
         ]
       }
 
+    ],
+    "SystemDictionaries": [
+      {
+        "KeyName": "AreaName",
+        "Value": "sd23nj",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      }
     ]
+
   }
 
 }

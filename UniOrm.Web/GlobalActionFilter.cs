@@ -7,8 +7,8 @@ namespace UniOrm.Startup.Web
 {
     public class GlobalActionFilter : IAsyncActionFilter
     {
-        IGodMaker TypeMaker;
-        public GlobalActionFilter(IGodMaker typeMaker)
+        IGodWorker TypeMaker;
+        public GlobalActionFilter(IGodWorker typeMaker)
         {
             TypeMaker = typeMaker;
         }
@@ -27,7 +27,7 @@ namespace UniOrm.Startup.Web
         {
             var repath = context.HttpContext.Request.Path.Value.ToLower();
 
-            if (repath.StartsWith("/api/fact") || reg.IsMatch(repath))
+            if (repath.StartsWith("/sdfsdf/") || repath.StartsWith("/api/fact") || reg.IsMatch(repath))
             {
                 await next();
 

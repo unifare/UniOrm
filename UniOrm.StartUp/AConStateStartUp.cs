@@ -94,14 +94,14 @@ namespace UniOrm.Application
             {
                 return autofacServiceProvider;
             }
-            var builder = Manager.Builder;
+            var builder = SuperManager.Builder;
 
             builder.RegisterModule(new AutofacModule());
             if (modules != null)
             {
                 foreach (var m in modules)
                 {
-                    Manager.Builder.RegisterModule(m);
+                    SuperManager.Builder.RegisterModule(m);
                 }
             }
             builder.RegisterInstance<IDbFactory>(new DbFactory());
@@ -109,7 +109,7 @@ namespace UniOrm.Application
 
             var container = builder.Build();
             var memoryCache = container.Resolve<IMemoryCache>();
-            Manager.RuntimeCache = new RuntimeCache(memoryCache);
+            SuperManager.RuntimeCache = new RuntimeCache(memoryCache);
             var currentAssembly = typeof(PatePocoOrmAdaptor).GetTypeInfo().Assembly;
             var basedir = AppDomain.CurrentDomain.BaseDirectory;
             //foreach (var ea in Directory.GetFiles(  basedir).Where(p=>p.EndsWith(".dll")))
@@ -136,7 +136,7 @@ namespace UniOrm.Application
             var systemResover = new AutofacResover() { Container = container };
             builder.RegisterInstance<IResover>(systemResover);
 
-            Manager.Container = systemResover;
+            SuperManager.Container = systemResover;
             return autofacServiceProvider;
         }
 

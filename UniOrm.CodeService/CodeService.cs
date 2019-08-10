@@ -71,7 +71,23 @@ namespace UniOrm.Model.DataService
             }
         }
 
-
+        public AdminUser GetAdminUser(string username,string password)
+        {
+            OpenSession(); 
+            var typeds = Db.QueryList<AdminUser>(p => p.UserName == username && p.Password == password);
+            if (typeds.Count() == 0)
+            {
+                throw new Exception("AdminUser   name " + username + " is not found ");
+            }
+            else if (typeds.Count() > 1)
+            {
+                throw new Exception("AdminUser   name " + username + " is shown more than twice. ");
+            }
+            else
+            {
+                return typeds.ToList()[0];
+            }
+        }
 
         public List<AConFlowStep> GetAConStateSteps(string stepflowid)
         {

@@ -28,10 +28,8 @@
 
 
   <ItemGroup>
-    <Folder Include="Areas\sdfsdf\Controllers\" />
-    <Folder Include="Areas\sdfsdf\Data\" />
-    <Folder Include="Areas\sdfsdf\Models\" />
-    <Folder Include="Areas\sdfsdf\Views\" />
+    <Folder Include="Areas\sd23nj\Data\" />
+    <Folder Include="Areas\sd23nj\Models\" />
     <Folder Include="Views\Shared\part\" />
   </ItemGroup>
 

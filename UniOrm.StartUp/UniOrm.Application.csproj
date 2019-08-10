@@ -15,7 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\UniOrm.CodeService\UniOrm.Model.DataService.csproj" />
     <ProjectReference Include="..\UniOrm.Common\UniOrm.Common.csproj" />
-    <ProjectReference Include="..\UniOrm.Core\UniOrm.Core.csproj" />
     <ProjectReference Include="..\UniOrm.DataMigrationiHistrory\UniOrm.DataMigrationiHistrory.csproj" />
     <ProjectReference Include="..\UniOrm.FlunentMigrator\UniOrm.FlunentMigrator.csproj" />
     <ProjectReference Include="..\UniOrm.Model\UniOrm.Model.csproj" />

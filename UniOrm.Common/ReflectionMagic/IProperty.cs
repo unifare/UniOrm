@@ -1,6 +1,6 @@
 using System;
 
-namespace UniOrm.ReflectionMagic
+namespace UniOrm
 {
     /// <summary>
     /// Defines an mechanism to access members (e.g. fields or properties) of objects in a consistent way.

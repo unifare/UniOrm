@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace UniOrm.ReflectionMagic
+namespace UniOrm 
 {
     /// <summary>
     /// Provides a mechanism to access fields through the <see cref="IProperty"/> abstraction.

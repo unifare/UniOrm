@@ -19,5 +19,7 @@ namespace UniOrm.Model.DataService
         IEnumerable<T> GetSimpleCodeLinq<T>(Expression<Func<T, bool>> predicate) where T : class, new();
    
         int UpdateSimpleCode (object obj);
+
+        AdminUser GetAdminUser(string username, string password);
     }
 }

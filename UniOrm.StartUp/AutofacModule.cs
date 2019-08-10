@@ -26,6 +26,7 @@ namespace UniOrm.Application
             var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
             jsonConfig.Source = File.ReadAllText(pa);
             builder.RegisterInstance<IConfig>(jsonConfig);
+            
             //builder.RegisterAssemblyTypes(domainAssembly).AsClosedTypesOf(typeof(IEventHandler<>)); 
             //builder.RegisterAssemblyTypes(domainAssembly).AsImplementedInterfaces();
             builder.RegisterAssemblyTypes(ICodeServiceAssembly).AsImplementedInterfaces();

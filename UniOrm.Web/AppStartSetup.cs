@@ -11,6 +11,8 @@ using UniOrm.Common;
 using Newtonsoft.Json.Serialization;
 using UniOrm;
 using UniOrm.Application;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace UniOrm.Startup.Web
 {
@@ -27,7 +29,38 @@ namespace UniOrm.Startup.Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            //注册Swagger生成器，定义一个和多个Swagger 文档
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "yilezhu's API",
+                    Description = "A simple example ASP.NET Core Web API",
+                    Contact = new Contact
+                    {
+                        Name = "Oliver Wa",
+                        Email = string.Empty,
+                        Url = "http://www.66wave.com/"
+                    },
+                    License = new License
+                    {
+                        Name = "许可证名字",
+                        Url = "http://www.66wave.com/"
+                    }
+                });
+            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+               .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>
+               {
+                   o.LoginPath = new PathString("/Account/Login");
+                   o.AccessDeniedPath = new PathString("/Error/Forbidden");
+               })
+                   .AddCookie(CustomerAuthorizeAttribute.CustomerAuthenticationScheme, option =>
+                   {
+                       option.LoginPath = new PathString("/sdfsdf/Admin/Signin");
+                       option.AccessDeniedPath = new PathString("/Error/Forbidden");
+                   });
             services.AddMvc().AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); });
             services.AddMvc(o =>
             {
@@ -44,9 +77,7 @@ namespace UniOrm.Startup.Web
             AConStateStartUp.EnsureDaContext();
         }
         public static void ConfigureSite(this IApplicationBuilder app, IHostingEnvironment env)
-        {
-
-
+        {  
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -56,7 +87,7 @@ namespace UniOrm.Startup.Web
                 app.UseExceptionHandler("/Home/Error");
             }
             var webroot = Path.Combine(Directory.GetCurrentDirectory(), "webroot");
-            if( !Directory.Exists( webroot))
+            if (!Directory.Exists(webroot))
             {
                 Directory.CreateDirectory(webroot);
             }
@@ -72,16 +103,16 @@ namespace UniOrm.Startup.Web
                 RequestPath = ""
             });
             app.UseCookiePolicy();
-            app.UseMvc(routes =>
+            //启用中间件服务生成Swagger作为JSON终结点
+            app.UseSwagger();
+            //启用中间件服务对swagger-ui，指定Swagger JSON终结点
+            app.UseSwaggerUI(c =>
             {
-                routes.MapRoute(
-                  name: "areas",
-                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
             app.UseMvc(routes =>
             {
-
+                routes.MapRoute("areaRoute", "{area:exists}/{controller}/{action=Index}/{id?}");
                 routes.MapRoute(
                    "factory", "/fact/{action}", new { controller = "Fact", action = "Index" });
 
