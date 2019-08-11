@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Linq; 
+using System.Linq;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using UniOrm.Common;
 using UniOrm;
 using UniOrm.Model;
+using UniOrm.Loggers;
+
 namespace UniOrm.Model.DataService
 {
     public class CodeService : ICodeService
     {
-        // public string ormname = "PatePoco";
+        public const string LoggerName = "CodeService";
         IDbFactory dbFactory;
         IDataGrounder Db;
         IConfig Config;
@@ -71,24 +73,44 @@ namespace UniOrm.Model.DataService
             }
         }
 
-        public AdminUser GetAdminUser(string username,string password)
+        public AdminUser GetAdminUser(string username, string password)
         {
-            OpenSession(); 
+            OpenSession();
             var typeds = Db.QueryList<AdminUser>(p => p.UserName == username && p.Password == password);
             if (typeds.Count() == 0)
             {
-                throw new Exception("AdminUser   name " + username + " is not found ");
+                Logger.LogError(LoggerName,"AdminUser   name " + username + " is not found " , new Exception("AdminUser   name " + username + " is shown more than twice. "));
+                return null;
             }
             else if (typeds.Count() > 1)
             {
-                throw new Exception("AdminUser   name " + username + " is shown more than twice. ");
+                Logger.LogError(LoggerName, "AdminUser   name " + username + " is shown more than twice. ", new Exception("AdminUser   name " + username + " is shown more than twice. "));
+                return null;
             }
             else
             {
                 return typeds.ToList()[0];
             }
         }
-
+        public DefaultUser GetDefaultUser(string username, string password)
+        {
+            OpenSession();
+            var typeds = Db.QueryList<DefaultUser>(p => p.UserName == username && p.Password == password);
+            if (typeds.Count() == 0)
+            {
+                Logger.LogError(LoggerName, "DefaultUser   name " + username + " is not found ", new Exception("DefaultUser   name " + username + " is shown more than twice. "));
+                return null;
+            }
+            else if (typeds.Count() > 1)
+            {
+                Logger.LogError(LoggerName, "DefaultUser   name " + username + " is shown more than twice. ", new Exception("DefaultUser   name " + username + " is shown more than twice. "));
+                return null; 
+            }
+            else
+            {
+                return typeds.ToList()[0];
+            }
+        }
         public List<AConFlowStep> GetAConStateSteps(string stepflowid)
         {
             OpenSession();

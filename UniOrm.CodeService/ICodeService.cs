@@ -21,5 +21,7 @@ namespace UniOrm.Model.DataService
         int UpdateSimpleCode (object obj);
 
         AdminUser GetAdminUser(string username, string password);
+
+        DefaultUser GetDefaultUser(string username, string password);
     }
 }

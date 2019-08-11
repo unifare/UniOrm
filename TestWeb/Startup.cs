@@ -29,7 +29,7 @@ namespace TestWeb
         {
            
             var serv = services.ConfigureServices();
-            AConStateStartUp.EnsureDaContext(typeof(DataMigrationiHistrory.Init).Assembly);
+            ApplicationStartUp.EnsureDaContext(typeof(DataMigrationiHistrory.Init).Assembly);
             return serv;
         }
 

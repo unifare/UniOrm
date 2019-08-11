@@ -442,7 +442,33 @@ namespace UniOrm.DataMigrationiHistrory
             };
             Insert.IntoTable("AdminUser").Row(addAdminUser);
 
-            
+
+            Create.Table("DefaultUser")
+             .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+              .WithColumn("Guid").AsString(50).Nullable()
+               .WithColumn("UserName").AsString(100).Nullable()
+              .WithColumn("Password").AsString(100).Nullable()
+              .WithColumn("IsDisable").AsBoolean().NotNullable()
+             .WithColumn("AddTime").AsDateTime().Nullable();
+            ;
+            var defaultUserpassword = "123";
+            using (var md5 = MD5.Create())
+            {
+                var result = md5.ComputeHash(Encoding.UTF8.GetBytes(defaultUserpassword));
+                var strResult = BitConverter.ToString(result);
+                defaultUserpassword = strResult.Replace("-", "");
+
+            }
+            var addDefaultUser = new
+            {
+                Guid = "BBF6B4BC-AECA-4699-831D-4A6E8BB6CS51",
+                AddTime = DateTime.Now,
+                UserName = "user",
+                Password = defaultUserpassword,
+                IsDisable = false,
+            };
+            Insert.IntoTable("DefaultUser").Row(addDefaultUser);
+
             Create.Table("SystemDictionary")
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("KeyName").AsString(450).Nullable()

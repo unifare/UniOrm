@@ -4,26 +4,31 @@ using Autofac.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using FlunentMigratorFactory; 
+using FlunentMigratorFactory;
 using System.IO;
-using System.Reflection; 
-using UniOrm.Adaption;  
-using Microsoft.Extensions.Caching.Memory; 
+using System.Reflection;
+using UniOrm.Adaption;
+using Microsoft.Extensions.Caching.Memory;
 using UniOrm.Core;
 using UniOrm;
 using UniOrm.Common;
-using UniOrm.Loggers; 
+using UniOrm.Loggers;
 using UniOrm.DataMigrationiHistrory;
 
 namespace UniOrm.Application
 {
-    public static class AConStateStartUp
+    public static class ApplicationStartUp
     {
         private static IServiceProvider autofacServiceProvider;
 
 
         static bool s_isInit = false;
         private static readonly string loggerName = "AConStateStartUp";
+
+        static ApplicationStartUp()
+        {
+
+        }
 
         //internal static string sysconstring = "Data Source = ./config/aconstate.db";
         //internal static string codeormtype = "sqlsugar";
@@ -38,7 +43,7 @@ namespace UniOrm.Application
         }
         public static AppConfig AppConfig { get; set; }
         public static DcConnectionConfig SystemConConfig { get; set; }
-        public static void EnsureDaContext( )
+        public static void EnsureDaContext()
         {
             var dbtype = (DBType)SystemConConfig.DBType;
             if (dbtype != DBType.InMemory)
@@ -94,6 +99,7 @@ namespace UniOrm.Application
             {
                 return autofacServiceProvider;
             }
+            services.AddAutofac();
             var builder = SuperManager.Builder;
 
             builder.RegisterModule(new AutofacModule());
@@ -105,9 +111,15 @@ namespace UniOrm.Application
                 }
             }
             builder.RegisterInstance<IDbFactory>(new DbFactory());
+
             builder.Populate(services);
 
             var container = builder.Build();
+
+            ///////////using /////////////////////
+       
+            IConfig config = container.Resolve<IConfig>();
+            AppConfig = config.GetValue<AppConfig>("App");
             var memoryCache = container.Resolve<IMemoryCache>();
             SuperManager.RuntimeCache = new RuntimeCache(memoryCache);
             var currentAssembly = typeof(PatePocoOrmAdaptor).GetTypeInfo().Assembly;
@@ -121,8 +133,7 @@ namespace UniOrm.Application
 
             var ormfactory = container.Resolve<IDbFactory>();
 
-            IConfig config = container.Resolve<IConfig>();
-            AppConfig = config.GetValue<AppConfig>("App");
+
             SystemConConfig = AppConfig.UsingDBConfig;//.Connectionstrings.FirstOrDefault(p => p.Name == "sys_default");
 
             var listtypedModels = ReadTypeFromConfig(AppConfig.EFRegestedModels);
@@ -131,7 +142,7 @@ namespace UniOrm.Application
                 orm.RegistedModelTypes.AddTypes(listtypedModels);
                 orm.ConnectionConfig = SystemConConfig;
                 ormfactory.AddOrm(orm);
-            } 
+            }
             autofacServiceProvider = container.Resolve<IServiceProvider>();
             var systemResover = new AutofacResover() { Container = container };
             builder.RegisterInstance<IResover>(systemResover);

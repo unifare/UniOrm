@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UniOrm.Model;
 
-namespace UniOrm.Core
+namespace UniOrm 
 {
     public class AppConfig
     {

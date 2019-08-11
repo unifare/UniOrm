@@ -47,6 +47,7 @@
       {
         "Dll": "UniOrm.Model.dll",
         "TypeNames": [
+          "UniOrm.Model.DefaultUser",
           "UniOrm.Model.AdminUser",
           "UniOrm.Model.AConFlowStep",
           "UniOrm.Model.ComposeTemplate",
@@ -71,6 +72,30 @@
     "SystemDictionaries": [
       {
         "KeyName": "AreaName",
+        "Value": "sd23nj",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "JWT.Issuer",
+        "Value": "UniOauthDistribution",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "JWT.Audience",
+        "Value": "UniOauthDistributionClient",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "JWT.IssuerSigningKey",
+        "Value": "UniOauthDistributionClientSDFSJDHFJSHDFSUIDFOIJSODHFUISHODFH",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "backend.foldername",
         "Value": "sd23nj",
         "IsSystem": true,
         "SystemDictionarytype": 0

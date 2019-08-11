@@ -36,6 +36,19 @@ namespace UniOrm
         public SuperManager()
         {
         }
+
+        public static DefaultUser LoginDefaultUser(string username, string password)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var result = md5.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var strResult = BitConverter.ToString(result);
+                password = strResult.Replace("-", "");
+
+            }
+            return Container.Resolve<ICodeService>().GetDefaultUser(username, password);
+        }
+
         public static AdminUser LoginAdmin(string username, string password)
         {
             using (var md5 = MD5.Create())
@@ -49,7 +62,7 @@ namespace UniOrm
         }
         public static string GetDicstring(string key)
         {
-            var item = AConStateStartUp.AppConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
+            var item = ApplicationStartUp.AppConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
             if (item != null)
             {
                 return item.Value;

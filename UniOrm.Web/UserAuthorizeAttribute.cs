@@ -5,10 +5,10 @@ using System.Text;
 
 namespace UniOrm.Startup.Web
 {
-    public class AdminAuthorizeAttribute : AuthorizeAttribute
+    public class UserAuthorizeAttribute : AuthorizeAttribute
     {
-        public const string CustomerAuthenticationScheme = "CustomerAuthenticationScheme";
-        public AdminAuthorizeAttribute()
+        public const string CustomerAuthenticationScheme = "UserAuthorizeAttribute";
+        public UserAuthorizeAttribute()
         {
             this.AuthenticationSchemes = CustomerAuthenticationScheme;
         }

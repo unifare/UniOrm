@@ -22,6 +22,8 @@ namespace UniOrm.Application
             var ExAssembly = Assembly.GetExecutingAssembly();
             //var reportingAssembly = typeof(GetAppAdminModel).GetTypeInfo().Assembly;
             builder.RegisterAssemblyTypes(CommonAssembly).AsImplementedInterfaces();
+
+            //register configer
             JsonConfig jsonConfig = new JsonConfig();
             var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
             jsonConfig.Source = File.ReadAllText(pa);

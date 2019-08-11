@@ -1,64 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestWeb.Models;
 using UniOrm;
-using UniOrm.Application;
 using UniOrm.Startup.Web;
 using Web.Model;
 
 namespace TestWeb.Controllers
 {
-    [Area("sd23nj")]
-    [AdminAuthorize]
-    public class AdminController : Controller
+    [UserAuthorize]
+    public class AccountController : Controller
     {
         IDbFactory dbFactory;
-        public AdminController(IDbFactory _dbFactory)
+        public AccountController(IDbFactory _dbFactory)
         {
             dbFactory = _dbFactory;
         }
 
         public IActionResult Index()
         {
+            var ss = dbFactory.EFCore<pigcms_adma>().CreateDefaultInstance();
+
+            var qlist = ss.From<pigcms_adma>();
+            var allist = qlist.ToList<pigcms_adma>();
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
             return View();
         }
 
 
-        public IActionResult urlmng()
-        {
-            return View();
+        public async Task<RedirectResult> SignOut( )
+        { 
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Redirect( "~/");
         }
 
         [AllowAnonymous]
-        public IActionResult Signin()
+        [HttpGet]
+        public IActionResult Login()
         {
             return View();
-        }
-
-        [HttpGet]
-        [HttpPost]
-        public async Task<RedirectResult> SignOut()
-        {
-            await HttpContext.SignOutAsync(AdminAuthorizeAttribute.CustomerAuthenticationScheme); 
-            return Redirect("~/");
         }
 
         [AllowAnonymous]
         [HttpPost]
         public async Task<object> Login(string userName, string password)
         {
-            var user = SuperManager.LoginAdmin(userName, password);
+            var user = SuperManager.LoginDefaultUser(userName, password);
             // var user = _userService.Login(userName, password);
             if (user != null)
             {
-                var authenticationType = AdminAuthorizeAttribute.CustomerAuthenticationScheme;
+                //var authenticationType = AdminAuthorizeAttribute.CustomerAuthenticationScheme;
+                //var identity = new ClaimsIdentity(authenticationType);
+                //var claims = new Claim[]
+                //   {
+                //           new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                //           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                //   };
+                //identity.AddClaims(claims);
+                //await HttpContext.SignInAsync(authenticationType, new ClaimsPrincipal(identity));
+                //return new { isok = true, msg = "" };
+
+                var authenticationType = UserAuthorizeAttribute.CustomerAuthenticationScheme;
                 var identity = new ClaimsIdentity(authenticationType);
                 identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
                 await HttpContext.SignInAsync(authenticationType, new ClaimsPrincipal(identity));
@@ -69,7 +83,6 @@ namespace TestWeb.Controllers
 
         }
 
-        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

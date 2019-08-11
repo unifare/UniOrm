@@ -16,7 +16,7 @@ using UniOrm.Startup.Web;
 namespace AConStateFactory.Controllers
 {
     [Area("sd23nj")]
-    [Authorize]
+    [AdminAuthorize]
     [Route("api/[controller]/[Action]")]
     [ApiController]
     public class FactController : ControllerBase
