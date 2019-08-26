@@ -11,6 +11,7 @@ namespace UniOrm.Startup.Web
         public UserAuthorizeAttribute()
         {
             this.AuthenticationSchemes = CustomerAuthenticationScheme;
+           
         }
     }
 }

@@ -25,18 +25,18 @@ namespace UniOrm.Startup.Web
 
         private async Task ExcuteFilter(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var repath = context.HttpContext.Request.Path.Value.ToLower();
+            //var repath = context.HttpContext.Request.Path.Value.ToLower();
 
-            if (repath.StartsWith("/sdfsdf/") || repath.StartsWith("/api/fact") || reg.IsMatch(repath))
-            {
+            //if (repath.StartsWith("/sdfsdf/") || repath.StartsWith("/api/fact") || reg.IsMatch(repath))
+            //{
                 await next();
 
-            }
-            else
-            {
-                TypeMaker.Run(context);
-                await next();
-            }
+            //}
+            //else
+            //{
+            //    TypeMaker.Run(context);
+            //    await next();
+            //}
             //var resp = context.HttpContext.Response;
             //resp.ContentType = "text/html";
 

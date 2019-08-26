@@ -509,6 +509,7 @@ namespace UniOrm.DataMigrationiHistrory
             Delete.Table("ComposeEntity");
             Delete.Table("SystemRegistionInfo");
             Delete.Table("AdminUser");
+            Delete.Table("DefaultUser");
         }
     }
 }

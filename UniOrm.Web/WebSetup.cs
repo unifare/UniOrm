@@ -66,48 +66,83 @@ namespace UniOrm.Startup.Web
             var config = tempcontainer.Resolve<IConfig>();
             var appConfig = config.GetValue<AppConfig>("App");
             var signingkey = GetDicstring(appConfig, "JWT.IssuerSigningKey");
-            var backendfoldername = GetDicstring(appConfig, "backend.foldername"); 
-            services.AddAuthentication(options =>
+            var backendfoldername = GetDicstring(appConfig, "backend.foldername");
+            var identityserver4url = GetDicstring(appConfig, "Identityserver4.url");
+            var Identityserver4ApiResouceKey = GetDicstring(appConfig, "Identityserver4.ApiResouceKey");
+
+            services.AddMvcCore().AddAuthorization().AddJsonFormatters();
+
+            //services.AddAuthentication("Bearer")
+            //    .AddJwtBearer("Bearer", options =>
+            //    {
+            //        options.Authority = identityserver4url; // IdentityServer的地址
+            //        options.RequireHttpsMetadata = false; // 不需要Https
+
+            //        options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应
+            //                                                         // 多长时间来验证以下 Token
+            //        options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
+            //        // 我们要求 Token 需要有超时时间这个参数
+            //        options.TokenValidationParameters.RequireExpirationTime = true;
+
+            //    });
+
+            services.AddAuthentication(
+                options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            } )
-               .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>
-               {
-                   o.LoginPath = new PathString("/Account/Login");
-                   o.AccessDeniedPath = new PathString("/Error/Forbidden");
-               })
-               .AddCookie(UserAuthorizeAttribute.CustomerAuthenticationScheme, option =>
-               {
-                   option.LoginPath = new PathString("/Account/Login");
-                   option.AccessDeniedPath = new PathString("/Error/Forbidden");
-               })
-                   .AddCookie(AdminAuthorizeAttribute.CustomerAuthenticationScheme, option =>
-                   {
-                       option.LoginPath = new PathString("/" + backendfoldername + "/Admin/Signin");
-                       option.AccessDeniedPath = new PathString("/Error/Forbidden");
-                   })
-                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-            (jwtBearerOptions) =>
-            {
-                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+            }
+            )   .AddCookie(AdminAuthorizeAttribute.CustomerAuthenticationScheme, option =>
+                    {
+                        option.LoginPath = new PathString("/" + backendfoldername + "/Admin/Signin");
+                        option.AccessDeniedPath = new PathString("/Error/Forbidden");
+                    })
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
-                    ValidateIssuer = true,
-                    ValidIssuer = GetDicstring(appConfig,"JWT.Issuer"),
-                    ValidateAudience = true,
-                    ValidAudience = GetDicstring(appConfig,"JWT.Audience"),
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5)
-                };
-            });
-            services.AddMvc().AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); });
+                    options.Authority = identityserver4url; // IdentityServer的地址
+                    options.RequireHttpsMetadata = false; // 不需要Https 
+                    options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应
+
+                    options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
+                    // 我们要求 Token 需要有超时时间这个参数
+                    options.TokenValidationParameters.RequireExpirationTime = true;
+                    //options.TokenValidationParameters = new TokenValidationParameters
+                    //{
+                    //    ValidateIssuerSigningKey = true,
+                    //    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
+                    //    ValidateIssuer = true,
+                    //    ValidIssuer = GetDicstring(appConfig, "JWT.Issuer"),
+                    //    ValidateAudience = true,
+                    //    ValidAudience = GetDicstring(appConfig, "JWT.Audience"),
+                    //    ValidateLifetime = true,
+                    //    ClockSkew = TimeSpan.FromMinutes(5)
+                    //};
+                })
+            //.AddOpenIdConnect("oidc", options =>
+            //{
+            //    options.SignInScheme = "Cookies";
+            //    options.ClientSecret = "744726ef-2f8f-ca39-ef42-e92a976ed4e0";
+            //    options.Authority = "http://localhost:6000";
+            //    options.RequireHttpsMetadata = false;
+            //    options.GetClaimsFromUserInfoEndpoint = true;
+            //    options.ResponseType = "id_token token";
+            //    options.ClientId = "mvc";
+            //    options.SaveTokens = true;
+            //    options.Scope.Add("api1");
+            //    options.Scope.Add("openid");
+            //    options.Scope.Add("profile");
+            //    options.Scope.Add(StandardScopes.OfflineAccess);
+            //})  
+            ;
+
+
             services.AddMvc(o =>
             {
                 o.Filters.Add<GlobalActionFilter>();
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            })
+                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var we = services.InitAutofac(null);
             InitDbMigrate();
@@ -190,8 +225,8 @@ namespace UniOrm.Startup.Web
                 routes.MapRoute(
                    name: "default",
                    template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute(
-                   "all", @"{**path}", new { controller = "Home", action = "Index" });
+                //routes.MapRoute(
+                //   "all", @"{**path}", new { controller = "Home", action = "Index" });
 
             });
 

@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewData["Title"] = "Test";
+}
+
+<h1>Test</h1>
+<input  type="button"  onclick="test()" />
+
+@section Scripts{
+    <script>
+        function test() {
+             //localStorage.setItem("accessToken", jsonResult.accessToken);
+             //           localStorage.setItem("refreshToken", jsonResult.refreshToken);
+            var accessToken =   localStorage.getItem("accessToken");
+         
+            $.ajax({
+                type: "get",
+                url: "http://localhost:6001/api/values",
+                dataType: "json",
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", "Bearer "+accessToken);
+                },
+         
+                xhrFields: {
+                    withCredentials: true
+                },
+                async: true,
+                success: function (jsonResult) {
+
+                    if (jsonResult.accessToken !=""  ) {
+                        localStorage.setItem("accessToken", jsonResult.accessToken);
+                        localStorage.setItem("refreshToken", jsonResult.refreshToken);
+                         
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        }
+    </script>
+}
