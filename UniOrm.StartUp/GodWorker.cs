@@ -59,32 +59,32 @@ namespace UniOrm.Application
 
             if (appConfig == null)
             {
-                appConfig = new AppConfig()
-                {
-                    AppType = "aspnetcore",
-                    Connectionstrings = new List<DcConnectionConfig>()
-                    {
-                        new DcConnectionConfig ()
-                        {
-                            OrmName="PatePoco",
-                            Name="sys_default" ,
-                            Connectionstring = "Data Source = ./config/aconstate.db"
-                        }, new DcConnectionConfig ()
-                        {
-                            OrmName="InMemory",
-                            Name="InMemory_default" ,
-                            Connectionstring = "AconState"
-                        }
-                        , new DcConnectionConfig ()
-                        {
-                            OrmName="EFCore",
-                            Name="EFCore_default" ,
-                            Connectionstring = "Data Source = ./config/aconstate.db"
-                        }
-                    },
-                    //OrmTypes = new List<string> { "PatePoco" },
-                    TrigerType = "urlreg"
-                };
+                //appConfig = SuperManager.Container.Resolve
+                //{
+                //    AppType = "aspnetcore",
+                //    Connectionstrings = new List<DcConnectionConfig>()
+                //    {
+                //        new DcConnectionConfig ()
+                //        {
+                //            OrmName="PatePoco",
+                //            Name="sys_default" ,
+                //            Connectionstring = "Data Source = ./config/aconstate.db"
+                //        }, new DcConnectionConfig ()
+                //        {
+                //            OrmName="InMemory",
+                //            Name="InMemory_default" ,
+                //            Connectionstring = "AconState"
+                //        }
+                //        , new DcConnectionConfig ()
+                //        {
+                //            OrmName="EFCore",
+                //            Name="EFCore_default" ,
+                //            Connectionstring = "Data Source = ./config/aconstate.db"
+                //        }
+                //    },
+                //    OrmTypes = new List<string> { "PatePoco" },
+                //    TrigerType = "urlreg"
+                //};
 
             }
             if (appConfig.AppType == "aspnetcore")

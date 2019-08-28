@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UniNote.Models;
 using UniOrm;
 using UniOrm.Startup.Web;
 using UniNote.Web.Model;
+using UniNote.WebApi;
 
 namespace UniNote.Controllers
 {
@@ -39,7 +39,7 @@ namespace UniNote.Controllers
 
         public async Task<RedirectResult> SignOut( )
         { 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(UserAuthorizeAttribute.CustomerAuthenticationScheme);
             return Redirect( "~/");
         }
 

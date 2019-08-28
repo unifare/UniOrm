@@ -37,9 +37,9 @@ namespace MvcClient
                 .AddOpenIdConnect("oidc", options =>
                 {
                     options.SignInScheme = "Cookies";
-                    options.ClientSecret = "744726ef-2f8f-ca39-ef42-e92a976ed4e0";
+                    options.ClientSecret = "uninoteapisdkfsldfsdfber232g4gnip";
 
-                    options.Authority = "http://localhost:6000";
+                    options.Authority = "http://oauth.66wave.com";
                     options.RequireHttpsMetadata = false;
                     options.GetClaimsFromUserInfoEndpoint = true;
 
@@ -47,7 +47,7 @@ namespace MvcClient
                     options.ClientId = "mvc";
 
                     options.SaveTokens = true;
-                    options.Scope.Add("api1");
+                    //options.Scope.Add("api1");
                     options.Scope.Add("UniNote_WebApi"); 
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");

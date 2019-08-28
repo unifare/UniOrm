@@ -37,11 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicPlugin", "Plugins\Basi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UniNote", "UniNote", "{FF84958C-C438-4EF7-B6E4-911E7B7875C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniNote.DBMigration", "DevSites\UniNote\UniNote.DBMigration\UniNote.DBMigration.csproj", "{69E48D39-9520-466A-B214-8AE1DDFC20CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniNote.DBMigration", "DevSites\UniNote\UniNote.DBMigration\UniNote.DBMigration.csproj", "{69E48D39-9520-466A-B214-8AE1DDFC20CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWeb", "TestWeb\TestWeb.csproj", "{DC76BD37-769C-446B-8668-293A5469030D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniNote.Web.Model", "DevSites\UniNote\UniNote.Web.Model\UniNote.Web.Model.csproj", "{580D3213-9502-48E1-8F05-D6E4E6E99FA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniNote.Web.Model", "DevSites\UniNote\UniNote.Web.Model\UniNote.Web.Model.csproj", "{580D3213-9502-48E1-8F05-D6E4E6E99FA9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniNote.WebApi", "DevSites\UniNote\Webapi\UniNote.WebApi.csproj", "{B5C91040-A91D-4CCB-8BC7-5223D72F7CE0}"
 EndProject

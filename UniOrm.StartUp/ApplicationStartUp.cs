@@ -93,7 +93,7 @@ namespace UniOrm.Application
                 MigratorFactory.CreateServices(fuType, SystemConConfig.Connectionstring, MigrationOperation.MigrateUp, 0, assemblies);
             }
         }
-        public static IServiceProvider InitAutofac(this IServiceCollection services, List<Autofac.Module> modules)
+        public static IServiceProvider InitAutofac(this IServiceCollection services, IEnumerable<Assembly> modulesAssembly)
         {
             if (s_isInit)
             {
@@ -103,13 +103,16 @@ namespace UniOrm.Application
             var builder = SuperManager.Builder;
 
             builder.RegisterModule(new AutofacModule());
-            if (modules != null)
+            if (modulesAssembly != null)
             {
-                foreach (var m in modules)
+
+                foreach (var m in modulesAssembly)
                 {
-                    SuperManager.Builder.RegisterModule(m);
+                    SuperManager.Builder.RegisterAssemblyModules(m);
                 }
             }
+
+
             builder.RegisterInstance<IDbFactory>(new DbFactory());
 
             builder.Populate(services);
@@ -117,7 +120,7 @@ namespace UniOrm.Application
             var container = builder.Build();
 
             ///////////using /////////////////////
-       
+
             IConfig config = container.Resolve<IConfig>();
             AppConfig = config.GetValue<AppConfig>("App");
             var memoryCache = container.Resolve<IMemoryCache>();

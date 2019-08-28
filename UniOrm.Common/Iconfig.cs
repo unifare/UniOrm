@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UniOrm.Common
+namespace UniOrm 
 {
     public interface IConfig
     {

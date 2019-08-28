@@ -1,6 +1,6 @@
 using System;
 
-namespace UniNote.Models
+namespace UniNote.WebApi
 {
     public class ErrorViewModel
     {

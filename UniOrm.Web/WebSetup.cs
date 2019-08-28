@@ -18,12 +18,15 @@ using Microsoft.IdentityModel.Tokens;
 using UniOrm.Core;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using static IdentityModel.OidcConstants;
+using UniOrm.Loggers;
 
 namespace UniOrm.Startup.Web
 {
     public static class WebSetup
     {
-
+        private static AppConfig appConfig = null;
+        private const string LoggerName = "WebSetup";
         // This method gets called by the runtime. Use this method to add services to the container.
         public static IServiceProvider ConfigureServices(this IServiceCollection services)
         {
@@ -41,110 +44,176 @@ namespace UniOrm.Startup.Web
                     options.CheckConsentNeeded = context => true;
                     options.MinimumSameSitePolicy = SameSiteMode.None;
                 });
-            //注册Swagger生成器，定义一个和多个Swagger 文档
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "yilezhu's API",
-                    Description = "A simple example ASP.NET Core Web API",
-                    Contact = new Contact
-                    {
-                        Name = "Oliver Wa",
-                        Email = string.Empty,
-                        Url = "http://www.66wave.com/"
-                    },
-                    License = new License
-                    {
-                        Name = "许可证名字",
-                        Url = "http://www.66wave.com/"
-                    }
-                });
-            });
+
+
             // 配置授权
             var config = tempcontainer.Resolve<IConfig>();
-            var appConfig = config.GetValue<AppConfig>("App");
+            appConfig = config.GetValue<AppConfig>("App");
             var signingkey = GetDicstring(appConfig, "JWT.IssuerSigningKey");
             var backendfoldername = GetDicstring(appConfig, "backend.foldername");
             var identityserver4url = GetDicstring(appConfig, "Identityserver4.url");
             var Identityserver4ApiResouceKey = GetDicstring(appConfig, "Identityserver4.ApiResouceKey");
+            var OauthClientConfig = GetDicstring(appConfig, "OauthClientConfig");
+            var OauthClientConfig_scopes = GetDicstring(appConfig, "OauthClientConfig_scopes");
+            var IsUsingIdentityserverClient = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserverClient"));
+            var IsUsingIdentityserver4 = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserver4"));
+            var isAllowCros = Convert.ToBoolean(GetDicstring(appConfig, "isAllowCros"));
+            var AllowCrosUrl = GetDicstring(appConfig, "AllowCrosUrl");
+            var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
+            //services.AddMvcCore().AddAuthorization().AddJsonFormatters(); 
 
-            services.AddMvcCore().AddAuthorization().AddJsonFormatters();
+            if (isEnableSwagger)
+            {
+                services.AddSwaggerGen(c =>
+                        {
+                            c.SwaggerDoc("v1", new Info
+                            {
+                                Version = "v1",
+                                Title = "yilezhu's API",
+                                Description = "A simple example ASP.NET Core Web API",
+                                Contact = new Contact
+                                {
+                                    Name = "Oliver Wa",
+                                    Email = string.Empty,
+                                    Url = "http://www.66wave.com/"
+                                },
+                                License = new License
+                                {
+                                    Name = "许可证名字",
+                                    Url = "http://www.66wave.com/"
+                                }
+                            });
+                        });
+            }
+            //注册Swagger生成器，定义一个和多个Swagger 文档
 
-            //services.AddAuthentication("Bearer")
-            //    .AddJwtBearer("Bearer", options =>
-            //    {
-            //        options.Authority = identityserver4url; // IdentityServer的地址
-            //        options.RequireHttpsMetadata = false; // 不需要Https
-
-            //        options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应
-            //                                                         // 多长时间来验证以下 Token
-            //        options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
-            //        // 我们要求 Token 需要有超时时间这个参数
-            //        options.TokenValidationParameters.RequireExpirationTime = true;
-
-            //    });
 
             services.AddAuthentication(
                 options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }
-            )   .AddCookie(AdminAuthorizeAttribute.CustomerAuthenticationScheme, option =>
-                    {
-                        option.LoginPath = new PathString("/" + backendfoldername + "/Admin/Signin");
-                        option.AccessDeniedPath = new PathString("/Error/Forbidden");
-                    })
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                if (IsUsingIdentityserverClient == false || IsUsingIdentityserver4 == false)
                 {
-                    options.Authority = identityserver4url; // IdentityServer的地址
-                    options.RequireHttpsMetadata = false; // 不需要Https 
-                    options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应
-
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+            }
+            ).AddCookie(UserAuthorizeAttribute.CustomerAuthenticationScheme, option =>
+            {
+                option.LoginPath = new PathString("/account/login");
+                option.AccessDeniedPath = new PathString("/Error/Forbidden");
+            })
+            .AddCookie(AdminAuthorizeAttribute.CustomerAuthenticationScheme, option =>
+                 {
+                     option.LoginPath = new PathString("/" + backendfoldername + "/Admin/Signin");
+                     option.AccessDeniedPath = new PathString("/Error/Forbidden");
+                 })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    if (IsUsingIdentityserver4)
+                    {
+                        options.Authority = identityserver4url; // IdentityServer的地址
+                        options.RequireHttpsMetadata = false; // 不需要Https 
+                        options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应 
+                    }
+                    else
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
+                            ValidateIssuer = true,
+                            ValidIssuer = GetDicstring(appConfig, "JWT.Issuer"),
+                            ValidateAudience = true,
+                            ValidAudience = GetDicstring(appConfig, "JWT.Audience"),
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.FromMinutes(5)
+                        };
+                    }
                     options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
                     // 我们要求 Token 需要有超时时间这个参数
                     options.TokenValidationParameters.RequireExpirationTime = true;
-                    //options.TokenValidationParameters = new TokenValidationParameters
-                    //{
-                    //    ValidateIssuerSigningKey = true,
-                    //    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
-                    //    ValidateIssuer = true,
-                    //    ValidIssuer = GetDicstring(appConfig, "JWT.Issuer"),
-                    //    ValidateAudience = true,
-                    //    ValidAudience = GetDicstring(appConfig, "JWT.Audience"),
-                    //    ValidateLifetime = true,
-                    //    ClockSkew = TimeSpan.FromMinutes(5)
                     //};
-                })
-            //.AddOpenIdConnect("oidc", options =>
-            //{
-            //    options.SignInScheme = "Cookies";
-            //    options.ClientSecret = "744726ef-2f8f-ca39-ef42-e92a976ed4e0";
-            //    options.Authority = "http://localhost:6000";
-            //    options.RequireHttpsMetadata = false;
-            //    options.GetClaimsFromUserInfoEndpoint = true;
-            //    options.ResponseType = "id_token token";
-            //    options.ClientId = "mvc";
-            //    options.SaveTokens = true;
-            //    options.Scope.Add("api1");
-            //    options.Scope.Add("openid");
-            //    options.Scope.Add("profile");
-            //    options.Scope.Add(StandardScopes.OfflineAccess);
-            //})  
-            ;
+                });
+            if (IsUsingIdentityserverClient)
+            {
+                services.AddAuthentication(options =>
+                 {
+                     // 使用cookie来本地登录用户（通过DefaultScheme = "Cookies"）
+                     options.DefaultScheme = "Cookies";
+                     // 设置 DefaultChallengeScheme = "oidc" 时，表示我们使用 OIDC 协议
+                     options.DefaultChallengeScheme = "oidc";
+                 })
+                    // 我们使用添加可处理cookie的处理程序
+                    .AddCookie("Cookies")
+                    // 配置执行OpenID Connect协议的处理程序
 
+                    .AddOpenIdConnect("oidc", options =>
+                    {
+                        // 
+                        options.SignInScheme = "Cookies";
+                        // 表明我们信任IdentityServer客户端
+                        options.Authority = identityserver4url;
+                        // 表示我们不需要 Https
+                        options.RequireHttpsMetadata = false;
+                        // 用于在cookie中保留来自IdentityServer的 token，因为以后可能会用
+                        options.SaveTokens = true;
+                        try
+                        {
+                            var allouthconfig = OauthClientConfig.Split(',');
+                            appConfig.ResultDictionary.Add("idsr4_ClientId", allouthconfig[0]);
+                            options.ClientId = allouthconfig[0]; // "mvc_client";
+                            options.ClientSecret = allouthconfig[1];
+                            appConfig.ResultDictionary.Add("idsr4_ClientSecret", allouthconfig[1]);
+                            options.ResponseType = allouthconfig[2];  // Authorization Code
+                            appConfig.ResultDictionary.Add("idsr4_ResponseType", allouthconfig[2]);
+                        }
+                        catch (Exception exp)
+                        {
+                            Logger.LogError(LoggerName, "exp: " + exp.Message + ",------------->" + LoggerHelper.GetExceptionString(exp));
+                        }
+                        options.Scope.Clear();
+                        var allscopes = OauthClientConfig_scopes.Split(',');
+                        foreach (var ss in allscopes)
+                        {
+                            options.Scope.Add(ss);
+                        }
 
+                    })
+                 ;
+
+            }
+            if (isAllowCros)
+            {
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("allow_all", bb =>
+                    {
+
+                        if (AllowCrosUrl == "*")
+                        {
+                            bb = bb.AllowAnyOrigin();
+                        }
+                        else
+                        {
+                            var allusrs = AllowCrosUrl.Split(',');
+                            bb = bb.WithOrigins(allusrs);
+                        }
+
+                        bb.AllowAnyMethod()
+                         .AllowAnyHeader()
+                         .AllowCredentials();//指定处理cookie
+                    });
+                });
+            }
             services.AddMvc(o =>
             {
                 o.Filters.Add<GlobalActionFilter>();
             })
+
                 .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            var we = services.InitAutofac(null);
+            var asses = AppDomain.CurrentDomain.GetAssemblies();
+            var we = services.InitAutofac(asses);
             InitDbMigrate();
             return we;
         }
@@ -188,14 +257,17 @@ namespace UniOrm.Startup.Web
                 RequestPath = ""
             });
             app.UseCookiePolicy();
-            //启用中间件服务生成Swagger作为JSON终结点
-            app.UseSwagger();
-            //启用中间件服务对swagger-ui，指定Swagger JSON终结点
-            app.UseSwaggerUI(c =>
+            var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
+            if (isEnableSwagger)
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
-
+                //启用中间件服务生成Swagger作为JSON终结点
+                app.UseSwagger();
+                //启用中间件服务对swagger-ui，指定Swagger JSON终结点
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
+            }
             app.UseAuthentication();//配置授权
                                     //处理异常
             app.UseStatusCodePages(new StatusCodePagesOptions()
@@ -216,6 +288,11 @@ namespace UniOrm.Startup.Web
                     return System.Threading.Tasks.Task.Delay(0);
                 }
             });
+            var isAllowCros = Convert.ToBoolean(GetDicstring(appConfig, "isAllowCros"));
+            if (isAllowCros)
+            {
+                app.UseCors("allow_all");
+            }
             app.UseMvc(routes =>
             {
                 routes.MapRoute("areaRoute", "{area:exists}/{controller}/{action=Index}/{id?}");

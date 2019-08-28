@@ -101,6 +101,21 @@
         "IsSystem": true,
         "SystemDictionarytype": 0
       },
+
+      {
+        "KeyName": "IsUsingIdentityserver4",
+        "Value": "true",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "IsUsingIdentityserverClient",
+        "Value": "true",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
       {
         "KeyName": "Identityserver4.ApiResouceKey",
         "Value": "UniNote_WebApi",
@@ -110,9 +125,37 @@
       },
       {
         "KeyName": "Identityserver4.url",
-        "Value": "http://localhost:6000",
+        "Value": "http://oauth.66wave.com",
         "IsSystem": true,
         "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "OauthClientConfig",
+        "Value": "mvc_client,uninoteapisdkfsldfsdfber232g4gnip,id_token code",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+
+      {
+        "KeyName": "OauthClientConfig_scopes",
+        "Value": "UniNote_WebApi,openid,profile,offline_access",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "isAllowCros",
+        "Value": "true",
+        "IsSystem": true
+      },
+      {
+        "KeyName": "isEnableSwagger",
+        "Value": "true",
+        "IsSystem": true
+      },
+      {
+        "KeyName": "AllowCrosUrl",
+        "Value": "*",
+        "IsSystem": true
       }
     ]
 
