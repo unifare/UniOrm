@@ -32,9 +32,18 @@ namespace UniNote.WebClient.Controllers
         {
             return View();
         }
+
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public object test(string test)
+        {
+            return new { ok = test } ;
         }
         public IActionResult UserWelcome()
         {

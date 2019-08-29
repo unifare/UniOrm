@@ -103,7 +103,7 @@ namespace UniOrm.Startup.Web
                     }
                 }
                 )
-                    .AddCookie(UserAuthorizeAttribute.CustomerAuthenticationScheme, option =>
+                 .AddCookie(UserAuthorizeAttribute.CustomerAuthenticationScheme, option =>
                 {
                     option.LoginPath = new PathString("/account/login");
                     option.AccessDeniedPath = new PathString("/Error/Forbidden");
@@ -142,16 +142,17 @@ namespace UniOrm.Startup.Web
                         //};
                     });
             }
-            if (IsUsingIdentityserver4)
+            if (IsUsingIdentityserver4 && !IsUsingLocalIndentity)
             {
-                services.AddAuthentication("Bearer")
+                services.AddMvcCore().AddAuthorization().AddJsonFormatters();
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                    {
                        options.Authority = identityserver4url; // IdentityServer的地址
                        options.RequireHttpsMetadata = false; // 不需要Https 
                        options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应 
-
-
+                       options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
+                       options.TokenValidationParameters.RequireExpirationTime = true;
                    });
 
             }
@@ -226,9 +227,8 @@ namespace UniOrm.Startup.Web
             {
                 o.Filters.Add<GlobalActionFilter>();
             })
-
-                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
+           .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var asses = AppDomain.CurrentDomain.GetAssemblies();
             var we = services.InitAutofac(asses);
             SuperManager.Container.Resolve<IConfig>().GetValue<AppConfig>().ResultDictionary = appConfig.ResultDictionary;
@@ -289,24 +289,24 @@ namespace UniOrm.Startup.Web
             }
             app.UseAuthentication();//配置授权
                                     //处理异常
-            app.UseStatusCodePages(new StatusCodePagesOptions()
-            {
-                HandleAsync = (context) =>
-                {
-                    if (context.HttpContext.Response.StatusCode == 401)
-                    {
-                        using (System.IO.StreamWriter sw = new System.IO.StreamWriter(context.HttpContext.Response.Body))
-                        {
-                            sw.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new
-                            {
-                                status = 401,
-                                message = "access denied!",
-                            }));
-                        }
-                    }
-                    return System.Threading.Tasks.Task.Delay(0);
-                }
-            });
+            //app.UseStatusCodePages(new StatusCodePagesOptions()
+            //{
+            //    //HandleAsync = (context) =>
+            //    //{
+            //    //    //if (context.HttpContext.Response.StatusCode == 401)
+            //    //    //{
+            //    //    //    using (System.IO.StreamWriter sw = new System.IO.StreamWriter(context.HttpContext.Response.Body))
+            //    //    //    {
+            //    //    //        sw.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new
+            //    //    //        {
+            //    //    //            status = 401,
+            //    //    //            message = "access denied!",
+            //    //    //        }));
+            //    //    //    }
+            //    //    //}
+            //    //    //return System.Threading.Tasks.Task.Delay(0);
+            //    //}
+            //});
             var isAllowCros = Convert.ToBoolean(GetDicstring(appConfig, "isAllowCros"));
             if (isAllowCros)
             {

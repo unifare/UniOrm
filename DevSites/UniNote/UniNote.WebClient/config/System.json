@@ -103,14 +103,14 @@
       },
       {
         "KeyName": "IsUsingLocalIndentity",
-        "Value": "false",
+        "Value": "true",
         "IsSystem": true,
         "SystemDictionarytype": 0
 
       },
       {
         "KeyName": "IsUsingIdentityserver4",
-        "Value": "false",
+        "Value": "true",
         "IsSystem": true,
         "SystemDictionarytype": 0
 
@@ -124,7 +124,7 @@
       },
       {
         "KeyName": "Identityserver4.ApiResouceKey",
-        "Value": "UniNote_WebApi",
+        "Value": "UniNote_localApi",
         "IsSystem": true,
         "SystemDictionarytype": 0
 

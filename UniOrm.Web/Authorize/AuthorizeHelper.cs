@@ -48,7 +48,7 @@ namespace UniOrm.Startup.Web.Authorize
                         { Address = clientmodel.IdentityUrl, Policy = { RequireHttps = false } } );
            //Token作废
             //var oldaccesstoken= wait client.RevokeTokenAsync(new TokenRevocationRequest() { Token = "" });
-            if (refreshToken != null)
+            if (refreshToken != null&& refreshToken.Length>20)
             {
                 var RequesttokenResponse = await client.RequestRefreshTokenAsync(new RefreshTokenRequest()
                 {
@@ -125,6 +125,8 @@ namespace UniOrm.Startup.Web.Authorize
             var identityserver4url = AppConfig.GetDicstring("Identityserver4.url");
             var ClientId = AppConfig.GetDicstring("idsr4_ClientId");
             var ClientSecret = AppConfig.GetDicstring("idsr4_ClientSecret");
+           await  httpContext.SignOutAsync();
+            await httpContext.SignOutAsync("oidc");
             var client = new HttpClient();
 
             JwtSecurityToken jwt = new JwtSecurityToken(token);

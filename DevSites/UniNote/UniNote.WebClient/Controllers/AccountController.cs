@@ -12,7 +12,7 @@ using UniOrm;
 
 namespace UniNote.WebClient.Controllers
 { 
-    
+    [Authorize]
     public class AccountController : Controller
     {
         //IDbFactory dbFactory;
@@ -21,13 +21,18 @@ namespace UniNote.WebClient.Controllers
             //dbFactory = _dbFactory;
         }
 
+        [AllowAnonymous]
         public async Task<RedirectResult> SignOut()
         {
             await HttpContext.SignOutAsync( );
             await HttpContext.SignOutAsync("oidc");
             return Redirect("~/");
         }
-    
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
