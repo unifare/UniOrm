@@ -53,7 +53,9 @@ namespace UniOrm.Startup.Web
             var backendfoldername = GetDicstring(appConfig, "backend.foldername");
             var identityserver4url = GetDicstring(appConfig, "Identityserver4.url");
             var Identityserver4ApiResouceKey = GetDicstring(appConfig, "Identityserver4.ApiResouceKey");
-            var OauthClientConfig = GetDicstring(appConfig, "OauthClientConfig");
+            var idsr4_ClientId = GetDicstring(appConfig, "idsr4_ClientId");
+            var idsr4_ClientSecret = GetDicstring(appConfig, "idsr4_ClientSecret");
+            var idsr4_ReponseType = GetDicstring(appConfig, "idsr4_ReponseType");
             var OauthClientConfig_scopes = GetDicstring(appConfig, "OauthClientConfig_scopes");
             var IsUsingIdentityserverClient = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserverClient"));
             var IsUsingIdentityserver4 = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserver4"));
@@ -61,9 +63,12 @@ namespace UniOrm.Startup.Web
             var AllowCrosUrl = GetDicstring(appConfig, "AllowCrosUrl");
             var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
             //services.AddMvcCore().AddAuthorization().AddJsonFormatters(); 
+            var IsUsingLocalIndentity = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingLocalIndentity"));
+            // var IsUsingDB = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingDB"));
 
             if (isEnableSwagger)
             {
+                //注册Swagger生成器，定义一个和多个Swagger 文档
                 services.AddSwaggerGen(c =>
                         {
                             c.SwaggerDoc("v1", new Info
@@ -85,55 +90,71 @@ namespace UniOrm.Startup.Web
                             });
                         });
             }
-            //注册Swagger生成器，定义一个和多个Swagger 文档
 
-
-            services.AddAuthentication(
-                options =>
-            {
-                if (IsUsingIdentityserverClient == false || IsUsingIdentityserver4 == false)
+            if (IsUsingLocalIndentity)
+            { 
+                services.AddAuthentication(
+                    options =>
                 {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    if (IsUsingIdentityserverClient == false || IsUsingIdentityserver4 == false)
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    }
                 }
-            }
-            ).AddCookie(UserAuthorizeAttribute.CustomerAuthenticationScheme, option =>
-            {
-                option.LoginPath = new PathString("/account/login");
-                option.AccessDeniedPath = new PathString("/Error/Forbidden");
-            })
-            .AddCookie(AdminAuthorizeAttribute.CustomerAuthenticationScheme, option =>
-                 {
-                     option.LoginPath = new PathString("/" + backendfoldername + "/Admin/Signin");
-                     option.AccessDeniedPath = new PathString("/Error/Forbidden");
-                 })
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                )
+                    .AddCookie(UserAuthorizeAttribute.CustomerAuthenticationScheme, option =>
                 {
-                    if (IsUsingIdentityserver4)
+                    option.LoginPath = new PathString("/account/login");
+                    option.AccessDeniedPath = new PathString("/Error/Forbidden");
+                })
+                .AddCookie(AdminAuthorizeAttribute.CustomerAuthenticationScheme, option =>
+                     {
+                         option.LoginPath = new PathString("/" + backendfoldername + "/Admin/Signin");
+                         option.AccessDeniedPath = new PathString("/Error/Forbidden");
+                     })
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                     {
-                        options.Authority = identityserver4url; // IdentityServer的地址
-                        options.RequireHttpsMetadata = false; // 不需要Https 
-                        options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应 
-                    }
-                    else
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
+                        if (IsUsingIdentityserver4)
                         {
-                            ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
-                            ValidateIssuer = true,
-                            ValidIssuer = GetDicstring(appConfig, "JWT.Issuer"),
-                            ValidateAudience = true,
-                            ValidAudience = GetDicstring(appConfig, "JWT.Audience"),
-                            ValidateLifetime = true,
-                            ClockSkew = TimeSpan.FromMinutes(5)
-                        };
-                    }
-                    options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
-                    // 我们要求 Token 需要有超时时间这个参数
-                    options.TokenValidationParameters.RequireExpirationTime = true;
-                    //};
-                });
+                            //options.JwtValidationClockSkew = TimeSpan.FromSeconds(0);
+                            options.Authority = identityserver4url; // IdentityServer的地址
+                            options.RequireHttpsMetadata = false; // 不需要Https 
+                            options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应 
+                        }
+                        else
+                        {
+                            options.TokenValidationParameters = new TokenValidationParameters
+                            {
+                                ValidateIssuerSigningKey = true,
+                                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
+                                ValidateIssuer = true,
+                                ValidIssuer = GetDicstring(appConfig, "JWT.Issuer"),
+                                ValidateAudience = true,
+                                ValidAudience = GetDicstring(appConfig, "JWT.Audience"),
+                                ValidateLifetime = true,
+                                ClockSkew = TimeSpan.FromMinutes(5)
+                            };
+                        }
+                        options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
+                        // 我们要求 Token 需要有超时时间这个参数
+                        options.TokenValidationParameters.RequireExpirationTime = true;
+                        //};
+                    });
+            }
+            if (IsUsingIdentityserver4)
+            {
+                services.AddAuthentication("Bearer")
+                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                   {
+                       options.Authority = identityserver4url; // IdentityServer的地址
+                       options.RequireHttpsMetadata = false; // 不需要Https 
+                       options.Audience = Identityserver4ApiResouceKey; // 和资源名称相对应 
+
+
+                   });
+
+            }
             if (IsUsingIdentityserverClient)
             {
                 services.AddAuthentication(options =>
@@ -159,13 +180,9 @@ namespace UniOrm.Startup.Web
                         options.SaveTokens = true;
                         try
                         {
-                            var allouthconfig = OauthClientConfig.Split(',');
-                            appConfig.ResultDictionary.Add("idsr4_ClientId", allouthconfig[0]);
-                            options.ClientId = allouthconfig[0]; // "mvc_client";
-                            options.ClientSecret = allouthconfig[1];
-                            appConfig.ResultDictionary.Add("idsr4_ClientSecret", allouthconfig[1]);
-                            options.ResponseType = allouthconfig[2];  // Authorization Code
-                            appConfig.ResultDictionary.Add("idsr4_ResponseType", allouthconfig[2]);
+                            options.ClientId = idsr4_ClientId; // "mvc_client";
+                            options.ClientSecret = idsr4_ClientSecret;
+                            options.ResponseType = idsr4_ReponseType;   
                         }
                         catch (Exception exp)
                         {
@@ -214,7 +231,9 @@ namespace UniOrm.Startup.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var asses = AppDomain.CurrentDomain.GetAssemblies();
             var we = services.InitAutofac(asses);
+            SuperManager.Container.Resolve<IConfig>().GetValue<AppConfig>().ResultDictionary = appConfig.ResultDictionary;
             InitDbMigrate();
+             
             return we;
         }
         public static string GetDicstring(AppConfig appConfig, string key)

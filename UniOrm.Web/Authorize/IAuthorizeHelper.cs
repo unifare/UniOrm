@@ -14,7 +14,7 @@ namespace UniOrm.Startup.Web.Authorize
 
         Task<TokenResponse> LoginToIds4Async(OauthClientModel clientmodel, string refreshToken = null);
 
-        Task Logout(HttpContext context);
+        Task<Response> Logout(string token);
 
 
     }

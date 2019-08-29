@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniNote.Web.Model;
@@ -11,32 +12,23 @@ using UniOrm;
 
 namespace UniNote.WebClient.Controllers
 { 
- 
-    public class HomeController : Controller
+    
+    public class AccountController : Controller
     {
         //IDbFactory dbFactory;
-        public HomeController( )
+        public AccountController( )
         {
             //dbFactory = _dbFactory;
         }
-      
-        public IActionResult Index()
-        {
-            //var ss = dbFactory.EFCore<pigcms_adma>().CreateDefaultInstance();
 
-            //var qlist = ss.From<pigcms_adma>();
-            //var allist = qlist.ToList<pigcms_adma>();
-           return View(); 
-        }
-        public IActionResult odic_login()
+        public async Task<RedirectResult> SignOut()
         {
-            return View();
+            await HttpContext.SignOutAsync( );
+            await HttpContext.SignOutAsync("oidc");
+            return Redirect("~/");
         }
+    
         public IActionResult Privacy()
-        {
-            return View();
-        }
-        public IActionResult UserWelcome()
         {
             return View();
         }

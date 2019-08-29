@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<button id="login"  onclick="login()" >Login</button>
+<button id="api"  onclick="api()" >Call API</button>
+<button id="logout"  onclick="logout()" >Logout</button>
+
+<pre id="results"></pre>
+
+@section Scripts{
+    <script src="~/js/oidc-client.js"></script>
+    <script src="~/js/app.js"></script>
+    <script>
+        function login() {
+            mgr.signinRedirect();
+        }
+    </script>
+}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,8 +26,8 @@ namespace UniOrm.Startup.Web.Authorize
         public async Task<TokenResponse> LoginToIds4Async(string usename, string password, string refreshToken=null)
         {
             var identityserver4url = AppConfig.GetDicstring("Identityserver4.url");
-            var ClientId = AppConfig.ResultDictionary["idsr4_ClientId"].ToString();
-            var ClientSecret = AppConfig.ResultDictionary["idsr4_ClientSecret"].ToString();
+            var ClientId = AppConfig.GetDicstring("idsr4_ClientId") ;
+            var ClientSecret = AppConfig.GetDicstring("idsr4_ClientSecret");
             var clientmodel = new OauthClientModel()
             {
                 IdentityUrl = identityserver4url,
@@ -43,8 +44,10 @@ namespace UniOrm.Startup.Web.Authorize
         public async Task<TokenResponse> LoginToIds4Async(OauthClientModel clientmodel,  string refreshToken = null)
         {
             var client = new HttpClient();
-            var disco = await client.GetDiscoveryDocumentAsync(clientmodel.IdentityUrl);
-
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
+                        { Address = clientmodel.IdentityUrl, Policy = { RequireHttps = false } } );
+           //Token作废
+            //var oldaccesstoken= wait client.RevokeTokenAsync(new TokenRevocationRequest() { Token = "" });
             if (refreshToken != null)
             {
                 var RequesttokenResponse = await client.RequestRefreshTokenAsync(new RefreshTokenRequest()
@@ -116,9 +119,38 @@ namespace UniOrm.Startup.Web.Authorize
 
         }
 
-        public async Task Logout(HttpContext context)
+  
+        public async Task<Response> Logout(string token)
         {
-            await context.SignOutAsync();
+            var identityserver4url = AppConfig.GetDicstring("Identityserver4.url");
+            var ClientId = AppConfig.GetDicstring("idsr4_ClientId");
+            var ClientSecret = AppConfig.GetDicstring("idsr4_ClientSecret");
+            var client = new HttpClient();
+
+            JwtSecurityToken jwt = new JwtSecurityToken(token);
+             
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
+            { Address = identityserver4url, Policy = { RequireHttps = false } });
+
+
+
+            var response = await client.IntrospectTokenAsync(new TokenIntrospectionRequest
+            {
+                Address = "http://oauth.66wave.com/connect/introspect",
+                ClientId = ClientId,
+                ClientSecret = ClientSecret,
+
+                Token = token
+            });
+            //client.vil
+            var RequesttokenResponse = await client.RevokeTokenAsync(new  TokenRevocationRequest()
+            {
+                Address = disco.RevocationEndpoint,
+                ClientId = ClientId,
+                ClientSecret = ClientSecret,
+                Token = token
+            });
+            return RequesttokenResponse;
         }
 
 
