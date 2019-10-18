@@ -2,11 +2,107 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Http;
-
+using SqlSugar;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using UniOrm.Model;
+
 namespace UniOrm
 {
+    public class DB
+    {
+
+        public static SqlSugarClient Inst
+        {
+            get
+            {
+                var configapp = APP.AppConfig.UsingDBConfig;
+                var config = new ConnectionConfig()
+                {
+                    ConnectionString = APP.AppConfig.UsingDBConfig.Connectionstring,
+
+                    IsAutoCloseConnection = true,
+                    ConfigureExternalServices = new ConfigureExternalServices()
+                    {
+                        EntityService = (property, column) =>
+                        {
+
+                            var attributes = property.GetCustomAttributes(true);//get all attributes     
+                            if (attributes.Any(it => it is KeyAttribute))//根据自定义属性    
+                            {
+                                column.IsPrimarykey = true;
+                            }
+                        },
+                        EntityNameService = (type, entity) =>
+                        {
+                            var attributes = type.GetCustomAttributes(true);
+                            if (attributes.Any(it => it is TableAttribute))
+                            {
+                                entity.DbTableName = (attributes.First(it => it is TableAttribute) as TableAttribute).Name;
+                            }
+                            else
+                            {
+                                entity.DbTableName = APP.AppConfig.UsingDBConfig.DefaultDbPrefixName + entity.DbTableName;
+                            }
+
+                        }
+                    }
+                };
+
+                switch (configapp.DBType)
+                {
+                    case 1:
+                        config.DbType = DbType.SqlServer;
+                        break;
+                    case 0:
+                        config.DbType = DbType.Sqlite;
+                        break;
+                    case 2:
+                        config.DbType = DbType.MySql;
+                        break;
+                    case 3:
+                        config.DbType = DbType.PostgreSQL;
+                        break;
+                }
+
+
+                return new SqlSugarClient(config);
+            }
+        }
+
+        public static SqlSugarClient New(string connectionstring, int dbtype)
+        {
+
+            var config = new ConnectionConfig()
+            {
+                ConnectionString = connectionstring,
+                //DbType= DbType.
+            };
+
+            switch (dbtype)
+            {
+                case 1:
+                    config.DbType = DbType.SqlServer;
+                    break;
+                case 0:
+                    config.DbType = DbType.Sqlite;
+                    break;
+                case 2:
+                    config.DbType = DbType.MySql;
+                    break;
+                case 3:
+                    config.DbType = DbType.PostgreSQL;
+                    break;
+            }
+
+            return new SqlSugarClient(config);
+
+        }
+    }
+
     public class RazorTool
     {
         public HttpContext HttpContext { get; set; }
@@ -16,10 +112,18 @@ namespace UniOrm
             HttpContext = factory.HttpContext;
         }
 
-        public dynamic GetData(string sql, object[] args)
+        public AConFlowStep Step { get; set; }
+
+
+        public List<dynamic> GetData(string sql, object args)
         {
-            return APP.GetData(sql, args);
+            return DB.Inst.Ado.SqlQuery<dynamic>(sql, args);
         }
+
+        //public dynamic GetData(string sql, object[] args)
+        //{
+        //    var aConFlowSteps = DB.Inst.Queryable<AConFlowStep>().ToList();
+        //}
 
         public string Session(string key)
         {
@@ -31,7 +135,7 @@ namespace UniOrm
             HttpContext.Session.SetString(key, value);
         }
 
-       
+
 
 
         public string UrlQuery(string key)

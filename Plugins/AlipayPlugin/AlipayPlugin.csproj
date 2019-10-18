@@ -7,11 +7,17 @@
 
   <ItemGroup>
     <None Remove="AlipayPlugin.json" />
+    <None Remove="AlipayPlugin.mig" />
     <None Remove="tmpl\alipaysetting.html" />
     <None Remove="wwwroot\ali.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="AlipayPlugin.mig">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="AlipayPlugin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -23,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\UniOrm.DataMigrationiHistrory\UniOrm.DataMigrationiHistrory.csproj" />
     <ProjectReference Include="..\..\UniOrm.StartUp\UniOrm.Application.csproj" />
   </ItemGroup>
 

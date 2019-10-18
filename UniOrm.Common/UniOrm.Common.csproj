@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="sqlSugarCore" Version="5.0.0.10" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +21,10 @@
 
   <ItemGroup>
     <Folder Include="Security\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UniOrm.FlunentMigrator\UniOrm.FlunentMigrator.csproj" />
   </ItemGroup>
 
 </Project>

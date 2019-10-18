@@ -36,6 +36,14 @@ namespace AlipayPlugin
             ModuleName = "AlipayPlugin";
         }
 
+        public override void EnsureDaContext()
+        {
+            UniOrm.Common. DbMigrationHelper.EnsureDaContext(
+                APP.AppConfig.UsingDBConfig.Connectionstring,
+                (int)APP.AppConfig.UsingDBConfig.DBType, 
+                typeof(AlipayModule).Assembly);
+        }
+
         public override bool Init()
         {
             base.Init();

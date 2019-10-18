@@ -23,6 +23,7 @@ namespace UniOrm.Application.ModuleStander
             Configuration = configuration;
         }
 
+        public abstract void EnsureDaContext(); 
 
         public abstract string DllPath { get; set; }
         public string ModuleName { get; set; }

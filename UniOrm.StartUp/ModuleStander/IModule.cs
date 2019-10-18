@@ -16,7 +16,7 @@ namespace UniOrm.Application
         string ModuleName { get; set; }
         bool Init();
         AppConfig ModuleAppConfig { get; set; }
-
+        void EnsureDaContext();
         List<Type> ModelType();
         void Startup(IConfiguration configuration);
 

@@ -299,7 +299,7 @@ namespace UniOrm.Startup.Web
                 InitDbMigrate();
             }
 
-
+            APP.InitDbMigrate();
             APP.ConfigureSiteAllModulesServices(services);
             APP.ApplicationServices = services.BuildServiceProvider();
             APP.SetServiceProvider();

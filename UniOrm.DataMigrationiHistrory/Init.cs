@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UniOrm.Common;
+
 namespace UniOrm.DataMigrationiHistrory
 {
     [Migration(1)]
@@ -539,8 +541,7 @@ Subject = ""APP支付测试"",
                 ExcuteType = 0,
                 GetValueProposal = 4,
                 IsUsingParentConnstring = true,
-                ProxyCode = @"new {Name=""ttttttttttttttttttt <span style =\""color:red\"" >tttttt</span>tttt""
-            }",
+                ProxyCode = @"new {Name=""ttttttttttttttttttt <span style =\""color:red\"" >tttttt</span>tttt""}",
                 AComposityId = s_razor.Guid,
                 Description = "ste_razor1",
                 StepOrder = 0,
@@ -559,16 +560,13 @@ Subject = ""APP支付测试"",
                 ExcuteType = 0,
                 GetValueProposal = 4,
                 IsUsingParentConnstring = true,
-                ProxyCode = @"@using UniOrm
-@{
-  DisableEncoding = true;
-   var tool =new RazorTool();
-tool.Session(""key"",""sdfsdfd"");
+                ProxyCode = @"@{ 
+Page.Session(""key"",""sdfsdfd"");
             }
-Hello, @Model.Name .Welcome to RazorLight repository
+Hello, @Model.Item.Name .Welcome to RazorLight repository
 
 <br/>
-@tool.Session(""key"")",
+@Page.Session(""key"")",
                 AComposityId = s_razor.Guid,
                 Description = "ste_razor2",
                 StepOrder = 1,

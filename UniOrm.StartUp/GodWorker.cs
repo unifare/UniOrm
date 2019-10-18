@@ -31,7 +31,7 @@ namespace UniOrm.Application
 
     public class GodWorker : IGodWorker
     {
-   
+
         public string WorkerName { get; set; }
         readonly static object lockobj = new object();
         static string logName = "AConState.Application.GodMaker";
@@ -107,10 +107,10 @@ namespace UniOrm.Application
                     HashCode = cons.GetHash()
                 };
                 RuntimeModel.StaticResouceInfos["__actioncontext"] = parameters[0];
-                RuntimeModel.StaticResouceInfos["__httpcontext"] = parameters[0].GetProp("HttpContext") ;
+                RuntimeModel.StaticResouceInfos["__httpcontext"] = parameters[0].GetProp("HttpContext");
 
                 RuntimeModel.StaticResouceInfos["__config"] = appConfig;
-              
+
                 if (!string.IsNullOrEmpty(cons.Templateid))
                 {
                     newrunmodel.ComposeTemplate = FindComposeTemplet(cons.Templateid);
@@ -241,7 +241,7 @@ namespace UniOrm.Application
                                         case FlowStepType.GetData:
                                             {
                                                 var ormname = config.GetValue<string>("App", "UsingDBConfig", "OrmName");
-                                                DynaObject = HandleGetData(newrunmodel, dbFactory, ormname, s );
+                                                DynaObject = HandleGetData(newrunmodel, dbFactory, ormname, s);
                                             }
                                             break;
                                         case FlowStepType.CallMethod:
@@ -302,68 +302,84 @@ namespace UniOrm.Application
                                                 }
                                                 else
                                                 {
-                                                    var isok=  engine.Options.Namespaces.Add("UniOrm");
-                                                    isok = engine.Options.Namespaces.Add("UniOrm.Application");
-                                                    isok = engine.Options.Namespaces.Add("UniOrm.Common");
-                                                    isok = engine.Options.Namespaces.Add("UniOrm.Model");
-                                                    isok = engine.Options.Namespaces.Add("UniOrm.Startup.Web");
+                                                    var stringbuilder = new StringBuilder();
+                                                    stringbuilder.Append(@"@using UniOrm 
+@using UniOrm.Application
+@using UniOrm.Common
+@using UniOrm.Model
+@using UniOrm.Startup.Web 
+@using System
+@using System.Web
+@using System.IO
+@using System.Text
+@using System.Text.Encodings
+@using System.Text.RegularExpressions
+@using System.Collections.Generic
+@using System.Diagnostics
+@using System.Linq
+@using System.Security.Claims
+@using System.Threading
+@using System.Threading.Tasks
+@using System.Reflection
+@using System.Dynamic 
+@using System.Diagnostics 
+@using System.Linq.Expressions
+@using System.Xml
+@using System.Xml.Linq
+@using System.Configuration 
+@using System.Data
+@using System.Data.SqlClient
+@using System.Data.Common
+@using System.Data.OleDb
+@using System.Globalization
+@using System.Net
+@using System.Net.Http
+@using System.Net.Http.Headers
+@using System.Net.Mail
+@using System.Net.Security
+@using System.Net.Sockets
+@using System.Net.WebSockets
+@using System.Drawing
+@using System.Drawing.Printing
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@using System.Numerics 
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.AspNetCore.Mvc");
 
-                                                    isok = engine.Options.Namespaces.Add("System");
-                                                    isok = engine.Options.Namespaces.Add("System.Web");
-                                                    isok = engine.Options.Namespaces.Add("System.IO");
-                                                    isok = engine.Options.Namespaces.Add("System.Text");
-                                                    isok = engine.Options.Namespaces.Add("System.Text.Encodings");
-                                                    isok = engine.Options.Namespaces.Add("System.Text.RegularExpressions");
-                                                    isok = engine.Options.Namespaces.Add("System.Collections.Generic");
-                                                    isok = engine.Options.Namespaces.Add("System.Diagnostics");
-                                                    isok = engine.Options.Namespaces.Add("System.Linq");
-                                                    isok = engine.Options.Namespaces.Add("System.Security.Claims");
-                                                    isok = engine.Options.Namespaces.Add("System.Threading");
-                                                    isok = engine.Options.Namespaces.Add("System.Threading.Tasks");
-                                                    isok = engine.Options.Namespaces.Add("System.Reflection");
-                                                    isok = engine.Options.Namespaces.Add("System.Dynamic"); 
-                                                    isok = engine.Options.Namespaces.Add("System.Diagnostics");
-                                                    isok = engine.Options.Namespaces.Add("System.Web.Mvc.ViewPage");
-                                                    isok = engine.Options.Namespaces.Add("System.Linq.Expressions");
-                                                    isok = engine.Options.Namespaces.Add("System.Xml");
-                                                    isok = engine.Options.Namespaces.Add("System.Xml.Linq");
-                                                    isok = engine.Options.Namespaces.Add("System.Configuration");
 
-                                                    isok = engine.Options.Namespaces.Add("System.Data");
-                                                    isok = engine.Options.Namespaces.Add("System.Data.SqlClient");
-                                                    isok = engine.Options.Namespaces.Add("System.Data.Common");
-                                                    isok = engine.Options.Namespaces.Add("System.Data.OleDb");
-                                                    isok = engine.Options.Namespaces.Add("System.Globalization");
-                                                    isok = engine.Options.Namespaces.Add("System.Net");
-                                                    isok = engine.Options.Namespaces.Add("System.Net.Http");
-                                                    isok = engine.Options.Namespaces.Add("System.Net.Http.Headers");
-                                                    isok = engine.Options.Namespaces.Add("System.Net.Mail");
-                                                    isok = engine.Options.Namespaces.Add("System.Net.Security");
-                                                    isok = engine.Options.Namespaces.Add("System.Net.Sockets");
-                                                    isok = engine.Options.Namespaces.Add("System.Net.WebSockets");
-                                                    isok = engine.Options.Namespaces.Add("System.Drawing");
-                                                    isok = engine.Options.Namespaces.Add("System.Drawing.Printing");
-                                                    isok = engine.Options.Namespaces.Add("Newtonsoft.Json");
-                                                    isok = engine.Options.Namespaces.Add("Newtonsoft.Json.Linq");
-                                                    isok = engine.Options.Namespaces.Add("System.Numerics"); 
-                                                    isok = engine.Options.Namespaces.Add("Microsoft.AspNetCore.Authentication");
-                                                    isok = engine.Options.Namespaces.Add("Microsoft.AspNetCore.Authorization");
-                                                    isok = engine.Options.Namespaces.Add("Microsoft.Extensions.DependencyInjection");
-                                                    isok = engine.Options.Namespaces.Add("Microsoft.AspNetCore.Mvc");
-                                                  
-                                                 
-                                                    if (!string.IsNullOrEmpty( s.ReferenceDlls))
+                                                    if (!string.IsNullOrEmpty(s.ReferenceDlls))
                                                     {
                                                         string[] dllnams = s.ReferenceDlls.Split(',');
                                                         foreach (var n in dllnams)
                                                         {
-                                                            isok = engine.Options.Namespaces.Add(n.TrimEnd(".dll".ToCharArray())); 
-                                                        } 
+                                                            var rootname = n.TrimEnd(".dll".ToCharArray());
+                                                            engine.Options.Namespaces.Add(n.TrimEnd(".dll".ToCharArray()));
+                                                            stringbuilder.AppendLine(rootname);
+                                                        }
                                                     }
-                                                    var objParams = newrunmodel.GetPoolResuce(s.ArgNames.Split(','));
-                                                    var modelArg = objParams[0];
-                                                    var cachekey2 = template.DesEncrypt().SafeSubString(128) + "_" + modelArg.ToJson().DesEncrypt().SafeSubString(64);
-                                                    var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2);
+                                                    stringbuilder.AppendLine("\r\n@{ DisableEncoding = true;  ");
+                                                    stringbuilder.AppendLine("\r\n var Page = new RazorTool(); }");
+                                                    //stringbuilder.AppendLine("\r\n var page.Step=");
+                                                    var objParams = new List<object>();
+                                                    if (!string.IsNullOrEmpty(s.ArgNames))
+                                                    {
+                                                        objParams = newrunmodel.GetPoolResuce(s.ArgNames.Split(','));
+                                                    }
+                                                    dynamic modelArg = null;
+                                                    if(objParams != null&& objParams.Count>0)
+                                                    {
+                                                        modelArg= new { Step = s, Item = objParams[0] };
+                                                    }
+                                                   else
+                                                    {
+                                                        modelArg = new { Step = s, Item = new { } };
+                                                    }
+                                                    var cachekey2 = template.DesEncrypt().SafeSubString(128);
+                                                    var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2); 
+                                                    template = stringbuilder.AppendLine("\r\n").Append(template).ToString();
                                                     if (cacheResult.Success)
                                                     {
                                                         stepResult = await engine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), modelArg);
@@ -377,8 +393,8 @@ namespace UniOrm.Application
 
                                                 rebject = stepResult;
 
-                                            } 
-                                            catch(Exception exp)
+                                            }
+                                            catch (Exception exp)
                                             {
                                                 Logger.LogError(logName, "parser RazorText wrong: " + exp.Message + "-------" + LoggerHelper.GetExceptionString(exp));
                                             }
@@ -410,7 +426,7 @@ namespace UniOrm.Application
             }
         }
 
-        private static object HandleGetData(RuntimeModel newrunmodel, IDbFactory dbFactory, string ormname, AConFlowStep s )
+        private static object HandleGetData(RuntimeModel newrunmodel, IDbFactory dbFactory, string ormname, AConFlowStep s)
         {
             object DynaObject;
             //var ormname = config.GetValue<string>("App", "UsingDBConfig", "OrmName");
@@ -500,7 +516,7 @@ namespace UniOrm.Application
                         HashCode = nextcon.GetHash()
                     };
                     //nextRnmodel.ResouceInfos.Remove(newrunmodel.NextRunTimeKey);
-                   await  RunComposity(requsetHash, nextRnmodel, dbFactory, codeService, config);
+                    await RunComposity(requsetHash, nextRnmodel, dbFactory, codeService, config);
 
                 }
             }

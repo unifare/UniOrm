@@ -26,6 +26,7 @@ namespace UniOrm
 {
     public class APP
     {
+        public static IConfiguration Configuration { get; set; }
         public static ServiceProvider ApplicationServices;
         public static RuntimeCache RuntimeCache;
         public static ContainerBuilder Builder = new ContainerBuilder();
@@ -66,8 +67,7 @@ namespace UniOrm
                     isok = razorengine.Options.Namespaces.Add("System.Threading.Tasks");
                     isok = razorengine.Options.Namespaces.Add("System.Reflection");
                     isok = razorengine.Options.Namespaces.Add("System.Dynamic");
-                    isok = razorengine.Options.Namespaces.Add("System.Diagnostics");
-                    isok = razorengine.Options.Namespaces.Add("System.Web.Mvc.ViewPage");
+                    isok = razorengine.Options.Namespaces.Add("System.Diagnostics"); 
                     isok = razorengine.Options.Namespaces.Add("System.Linq.Expressions");
                     isok = razorengine.Options.Namespaces.Add("System.Xml");
                     isok = razorengine.Options.Namespaces.Add("System.Xml.Linq");
@@ -267,6 +267,7 @@ namespace UniOrm
 
         public static void Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
             var allModules = ModuleManager.RegistedModules;
             foreach (var m in allModules)
             {
@@ -355,6 +356,15 @@ namespace UniOrm
 
             return DynaObject;
 
+        }
+
+        public static void InitDbMigrate()
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                m.EnsureDaContext();
+            }
         }
 
         public static object GetData(object db, string ssql, params object[] inParamters)

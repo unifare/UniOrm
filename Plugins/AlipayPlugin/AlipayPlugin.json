@@ -13,7 +13,7 @@
       "DBType": 0, //0 sqlite,1 mssql 2 mysql
       "Name": "sys_mysql",
       "DefaultDbPrefixName": "uniorm_",
-      "ConnectionString": "Data Source = ./config/aconstate.db"
+      "ConnectionString": "Data Source = ./config/aconstate2.db"
       //"Server=localhost;Port=3306;Database=dddw; User=root;Password=root;"
 
     },
