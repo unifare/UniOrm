@@ -247,6 +247,7 @@ namespace SqlKata
         /// <returns></returns>
         public Q From(string table)
         {
+
             return ClearComponent("from").AddComponent("from", new FromClause
             {
                 Table = table

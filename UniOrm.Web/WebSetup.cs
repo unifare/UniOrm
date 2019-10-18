@@ -20,16 +20,65 @@ using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using static IdentityModel.OidcConstants;
 using UniOrm.Loggers;
+using MediatR;
+using System.Threading.Tasks;
+using NetCoreCMS.Framework.Core.App;
+using Microsoft.AspNetCore;
+using System.Threading;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace UniOrm.Startup.Web
 {
     public static class WebSetup
     {
-        private static AppConfig appConfig = null;
+        private static IWebHost nccWebHost;
+        private static Thread starterThread = new Thread(StartApp);
+        private static AppConfig appConfig = GodWorker.appConfig;
         private const string LoggerName = "WebSetup";
+
+
+
+        public static void StartApp(object argsObj)
+        {
+            BuildWebHost((string[])argsObj).Run();
+        }
+
+        public static IWebHost BuildWebHost(string[] args)
+        {
+
+            nccWebHost = WebHost.CreateDefaultBuilder(args)
+               .UseStartup<Startup>()
+                 .Build();
+            //nccWebHost = WebHost.CreateDefaultBuilder(args)
+            //    .UseKestrel(c => c.AddServerHeader = false)
+            //    .UseContentRoot(Directory.GetCurrentDirectory())
+            //    .UseIISIntegration()
+            //    .UseStartup<Startup>()
+            //    .UseDefaultServiceProvider(options => options.ValidateScopes = false)
+            //    //.UseApplicationInsights()
+            //    .Build();
+            return nccWebHost;
+        }
+
+        public static async Task RestartAppAsync()
+        {
+            await NetCoreCmsHost.StopAppAsync(nccWebHost);
+        }
+
+        public static async Task ShutdownAppAsync()
+        {
+            await NetCoreCmsHost.ShutdownAppAsync(nccWebHost);
+        }
+        public static void Startup(this IConfiguration configuration)
+        {
+            APP.Startup(configuration);
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         public static IServiceProvider ConfigureServices(this IServiceCollection services)
         {
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddMediatR(typeof(WebSetup).Assembly);
             //register configer
             JsonConfig jsonConfig = new JsonConfig();
             var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
@@ -44,13 +93,18 @@ namespace UniOrm.Startup.Web
                     options.CheckConsentNeeded = context => true;
                     options.MinimumSameSitePolicy = SameSiteMode.None;
                 });
-
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromSeconds(60 * 60);
+            });
 
             // 配置授权
             var config = tempcontainer.Resolve<IConfig>();
-            appConfig = config.GetValue<AppConfig>("App");
+            GodWorker.appConfig = appConfig = config.GetValue<AppConfig>("App");
             var signingkey = GetDicstring(appConfig, "JWT.IssuerSigningKey");
             var backendfoldername = GetDicstring(appConfig, "backend.foldername");
+            var AuthorizeCookiesName = GetDicstring(appConfig, "AuthorizeCookiesName");
+            var OdicCookiesName = GetDicstring(appConfig, "OdicCookiesName");
             var identityserver4url = GetDicstring(appConfig, "Identityserver4.url");
             var Identityserver4ApiResouceKey = GetDicstring(appConfig, "Identityserver4.ApiResouceKey");
             var idsr4_ClientId = GetDicstring(appConfig, "idsr4_ClientId");
@@ -61,10 +115,14 @@ namespace UniOrm.Startup.Web
             var IsUsingIdentityserver4 = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserver4"));
             var isAllowCros = Convert.ToBoolean(GetDicstring(appConfig, "isAllowCros"));
             var AllowCrosUrl = GetDicstring(appConfig, "AllowCrosUrl");
+            var IsUserAutoUpdatedb = Convert.ToBoolean(GetDicstring(appConfig, "IsUserAutoUpdatedb"));
             var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
             //services.AddMvcCore().AddAuthorization().AddJsonFormatters(); 
             var IsUsingLocalIndentity = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingLocalIndentity"));
             // var IsUsingDB = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingDB"));
+            var IsUsingCmsGlobalRouterFilter = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingCmsGlobalRouterFilter"));
+
+
 
             if (isEnableSwagger)
             {
@@ -74,7 +132,7 @@ namespace UniOrm.Startup.Web
                             c.SwaggerDoc("v1", new Info
                             {
                                 Version = "v1",
-                                Title = "yilezhu's API",
+                                Title = " API",
                                 Description = "A simple example ASP.NET Core Web API",
                                 Contact = new Contact
                                 {
@@ -92,7 +150,7 @@ namespace UniOrm.Startup.Web
             }
 
             if (IsUsingLocalIndentity)
-            { 
+            {
                 services.AddAuthentication(
                     options =>
                 {
@@ -161,18 +219,18 @@ namespace UniOrm.Startup.Web
                 services.AddAuthentication(options =>
                  {
                      // 使用cookie来本地登录用户（通过DefaultScheme = "Cookies"）
-                     options.DefaultScheme = "Cookies";
+                     options.DefaultScheme = AuthorizeCookiesName;
                      // 设置 DefaultChallengeScheme = "oidc" 时，表示我们使用 OIDC 协议
-                     options.DefaultChallengeScheme = "oidc";
+                     options.DefaultChallengeScheme = OdicCookiesName;
                  })
                     // 我们使用添加可处理cookie的处理程序
-                    .AddCookie("Cookies")
+                    .AddCookie(AuthorizeCookiesName)
                     // 配置执行OpenID Connect协议的处理程序
 
-                    .AddOpenIdConnect("oidc", options =>
+                    .AddOpenIdConnect(OdicCookiesName, options =>
                     {
                         // 
-                        options.SignInScheme = "Cookies";
+                        options.SignInScheme = AuthorizeCookiesName;
                         // 表明我们信任IdentityServer客户端
                         options.Authority = identityserver4url;
                         // 表示我们不需要 Https
@@ -183,7 +241,7 @@ namespace UniOrm.Startup.Web
                         {
                             options.ClientId = idsr4_ClientId; // "mvc_client";
                             options.ClientSecret = idsr4_ClientSecret;
-                            options.ResponseType = idsr4_ReponseType;   
+                            options.ResponseType = idsr4_ReponseType;
                         }
                         catch (Exception exp)
                         {
@@ -223,17 +281,29 @@ namespace UniOrm.Startup.Web
                     });
                 });
             }
+
             services.AddMvc(o =>
             {
-                o.Filters.Add<GlobalActionFilter>();
+                if (IsUsingCmsGlobalRouterFilter)
+                {
+                    o.Filters.Add<GlobalActionFilter>();
+                }
             })
             .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var asses = AppDomain.CurrentDomain.GetAssemblies();
             var we = services.InitAutofac(asses);
-            SuperManager.Container.Resolve<IConfig>().GetValue<AppConfig>().ResultDictionary = appConfig.ResultDictionary;
-            InitDbMigrate();
-             
+            APP.Container.Resolve<IConfig>().GetValue<AppConfig>().ResultDictionary = appConfig.ResultDictionary;
+            if (IsUserAutoUpdatedb)
+            {
+                InitDbMigrate();
+            }
+
+
+            APP.ConfigureSiteAllModulesServices(services);
+            APP.ApplicationServices = services.BuildServiceProvider();
+            APP.SetServiceProvider();
+
             return we;
         }
         public static string GetDicstring(AppConfig appConfig, string key)
@@ -245,9 +315,10 @@ namespace UniOrm.Startup.Web
             }
             return string.Empty;
         }
+
         public static void InitDbMigrate()
         {
-            ApplicationStartUp.EnsureDaContext();
+            DbMigrationUnit.EnsureDaContext(APP.AppConfig.UsingDBConfig);
         }
         public static void ConfigureSite(this IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -259,7 +330,8 @@ namespace UniOrm.Startup.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            var webroot = Path.Combine(Directory.GetCurrentDirectory(), "webroot");
+            var UserDefaultStaticalDir = GetDicstring(appConfig, "UserDefaultStaticalDir");
+            var webroot = Path.Combine(Directory.GetCurrentDirectory(), UserDefaultStaticalDir);
             if (!Directory.Exists(webroot))
             {
                 Directory.CreateDirectory(webroot);
@@ -269,13 +341,19 @@ namespace UniOrm.Startup.Web
                 FileProvider = new PhysicalFileProvider(webroot),
                 RequestPath = ""
             });
+
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
                 RequestPath = ""
             });
-            app.UseCookiePolicy();
+
+            APP.ConfigureSiteAllModules(app);
+
+            app.UseCookiePolicy(); //是否启用cookie隐私
+
             var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
             if (isEnableSwagger)
             {
@@ -287,8 +365,9 @@ namespace UniOrm.Startup.Web
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 });
             }
-            app.UseAuthentication();//配置授权
-                                    //处理异常
+            app.UseAuthentication();
+            //配置授权
+            //处理异常
             //app.UseStatusCodePages(new StatusCodePagesOptions()
             //{
             //    //HandleAsync = (context) =>
@@ -312,17 +391,32 @@ namespace UniOrm.Startup.Web
             {
                 app.UseCors("allow_all");
             }
+            var AreaName = GetDicstring(appConfig, "AreaName");
+
+            //url 重写。。。
+            // var rewrite = new RewriteOptions()
+            //.AddRewrite("first", "home/index", 301);
+            // app.UseRewriter(rewrite);
+
+            //用户session服务
+            app.UseSession();
+
             app.UseMvc(routes =>
             {
-                routes.MapRoute("areaRoute", "{area:exists}/{controller}/{action=Index}/{id?}");
+                routes.MapRoute(
+                 "areas",
+                    "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                //routes.MapRoute("areaRoute", "{"+ AreaName + ":exists}/{controller}/{action=Index}/{id?}");
                 routes.MapRoute(
                    "factory", "/fact/{action}", new { controller = "Fact", action = "Index" });
+                routes.MapRoute(
+                "cmsinstall", "/CmsInstall/{action}", new { controller = "CmsInstall", action = "Index" });
 
                 routes.MapRoute(
                    name: "default",
                    template: "{controller=Home}/{action=Index}/{id?}");
-                //routes.MapRoute(
-                //   "all", @"{**path}", new { controller = "Home", action = "Index" });
+                routes.MapRoute(
+                   "all", @"{**path}", new { controller = "FactoryBuilder", action = "Index" });
 
             });
 

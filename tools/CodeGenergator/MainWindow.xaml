@@ -1,0 +1,16 @@
+﻿<Window x:Class="CodeGenergator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CodeGenergator"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Content="Open File" HorizontalAlignment="Left" Margin="19,35,0,0" VerticalAlignment="Top" Click="Button_Click" Width="85"/>
+        <TextBox HorizontalAlignment="Left"  Height="81" Margin="113,33,0,0" Name="FileNameTextBox" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="518"/>
+        <Button Content="GenerFiles" Name="BtnGenerFiles" HorizontalAlignment="Left" Margin="19,406,0,0" VerticalAlignment="Top" Click="BtnGenerFiles_Click" Width="85"/>
+        <Label Content="Classes" HorizontalAlignment="Left" Margin="21,135,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

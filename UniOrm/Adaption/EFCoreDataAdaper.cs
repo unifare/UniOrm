@@ -75,19 +75,22 @@ namespace UniOrm.Adaption
                         break;
                     case DBType.SqlServer:
 
-                        optionsBuilder.UseSqlServer(connectionstring);
+                        optionsBuilder.UseSqlServer(connectionstring,
+                             x => x.MigrationsHistoryTable("__MyMigrationsHistory", "VersionInfo").UseRowNumberForPaging()
+                            ); 
                         break;
                     case DBType.Postgre:
 
                         optionsBuilder.UseNpgsql(connectionstring);
                         break;
                 }
-
+              
                 lock (Singleton_Lock)
                 {
                     memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
                 }
                 var db = new EFDbContext(optionsBuilder.Options, memoryCache, RegistedModelTypes.GetAllTypes());
+                db.DefaultDbPrefixName = ConnectionConfig. DefaultDbPrefixName;
                 return db;
             }
         }

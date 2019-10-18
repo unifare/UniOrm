@@ -14,11 +14,19 @@ using UniOrm.Application;
 using UniOrm.Model.DataService;
 using System.Security.Cryptography;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using UniOrm.Loggers;
+using RazorLight;
 
 namespace UniOrm
 {
-    public class SuperManager
+    public class APP
     {
+        public static ServiceProvider ApplicationServices;
         public static RuntimeCache RuntimeCache;
         public static ContainerBuilder Builder = new ContainerBuilder();
         public static IResover Container;
@@ -29,12 +37,79 @@ namespace UniOrm
         public static List<ComposeEntity> Composeentitys = new List<ComposeEntity>();
         public static List<ComposeTemplate> ComposeTemplates = new List<ComposeTemplate>();
         public static List<AConFlowStep> AConFlowSteps = new List<AConFlowStep>();
+        public static DefaultModuleManager ModuleManager { get; set; } = new DefaultModuleManager();
+        private static RazorLightEngine razorengine = null;
+        public static RazorLightEngine Razorengine
+        {
+            get
+            {
+                if (razorengine == null)
+                {
+                    razorengine = new RazorLightEngineBuilder().UseMemoryCachingProvider().Build();
+                    var isok = razorengine.Options.Namespaces.Add("UniOrm");
+                    isok = razorengine.Options.Namespaces.Add("UniOrm.Application");
+                    isok = razorengine.Options.Namespaces.Add("UniOrm.Common");
+                    isok = razorengine.Options.Namespaces.Add("UniOrm.Model");
+                    isok = razorengine.Options.Namespaces.Add("UniOrm.Startup.Web");
+
+                    isok = razorengine.Options.Namespaces.Add("System");
+                    isok = razorengine.Options.Namespaces.Add("System.Web");
+                    isok = razorengine.Options.Namespaces.Add("System.IO");
+                    isok = razorengine.Options.Namespaces.Add("System.Text");
+                    isok = razorengine.Options.Namespaces.Add("System.Text.Encodings");
+                    isok = razorengine.Options.Namespaces.Add("System.Text.RegularExpressions");
+                    isok = razorengine.Options.Namespaces.Add("System.Collections.Generic");
+                    isok = razorengine.Options.Namespaces.Add("System.Diagnostics");
+                    isok = razorengine.Options.Namespaces.Add("System.Linq");
+                    isok = razorengine.Options.Namespaces.Add("System.Security.Claims");
+                    isok = razorengine.Options.Namespaces.Add("System.Threading");
+                    isok = razorengine.Options.Namespaces.Add("System.Threading.Tasks");
+                    isok = razorengine.Options.Namespaces.Add("System.Reflection");
+                    isok = razorengine.Options.Namespaces.Add("System.Dynamic");
+                    isok = razorengine.Options.Namespaces.Add("System.Diagnostics");
+                    isok = razorengine.Options.Namespaces.Add("System.Web.Mvc.ViewPage");
+                    isok = razorengine.Options.Namespaces.Add("System.Linq.Expressions");
+                    isok = razorengine.Options.Namespaces.Add("System.Xml");
+                    isok = razorengine.Options.Namespaces.Add("System.Xml.Linq");
+                    isok = razorengine.Options.Namespaces.Add("System.Configuration");
+
+                    isok = razorengine.Options.Namespaces.Add("System.Data");
+                    isok = razorengine.Options.Namespaces.Add("System.Data.SqlClient");
+                    isok = razorengine.Options.Namespaces.Add("System.Data.Common");
+                    isok = razorengine.Options.Namespaces.Add("System.Data.OleDb");
+                    isok = razorengine.Options.Namespaces.Add("System.Globalization");
+                    isok = razorengine.Options.Namespaces.Add("System.Net");
+                    isok = razorengine.Options.Namespaces.Add("System.Net.Http");
+                    isok = razorengine.Options.Namespaces.Add("System.Net.Http.Headers");
+                    isok = razorengine.Options.Namespaces.Add("System.Net.Mail");
+                    isok = razorengine.Options.Namespaces.Add("System.Net.Security");
+                    isok = razorengine.Options.Namespaces.Add("System.Net.Sockets");
+                    isok = razorengine.Options.Namespaces.Add("System.Net.WebSockets");
+                    isok = razorengine.Options.Namespaces.Add("System.Drawing");
+                    isok = razorengine.Options.Namespaces.Add("System.Drawing.Printing");
+                    isok = razorengine.Options.Namespaces.Add("Newtonsoft.Json");
+                    isok = razorengine.Options.Namespaces.Add("Newtonsoft.Json.Linq");
+                    isok = razorengine.Options.Namespaces.Add("System.Numerics");
+                    isok = razorengine.Options.Namespaces.Add("Microsoft.AspNetCore.Authentication");
+                    isok = razorengine.Options.Namespaces.Add("Microsoft.AspNetCore.Authorization");
+                    isok = razorengine.Options.Namespaces.Add("Microsoft.Extensions.DependencyInjection");
+                    isok = razorengine.Options.Namespaces.Add("Microsoft.AspNetCore.Mvc");
+
+                }
+                return razorengine;
+            }
+        }
         public static Dictionary<string, MethodInfo> MethodInfos = new Dictionary<string, MethodInfo>();
         //public  List<RuntimeModel> RuntimeModels = new List<RuntimeModel>();
         public static ConcurrentDictionary<string, object> StepResults = new ConcurrentDictionary<string, object>();
         readonly static string logName = "ACon.Unver.Manager";
-        public SuperManager()
+        static APP()
         {
+            //var allModules = ModuleManager.RegistedModules;
+            //foreach (var m in allModules)
+            //{
+            //    m.Init();
+            //}
         }
 
         public static DefaultUser LoginDefaultUser(string username, string password)
@@ -47,6 +122,20 @@ namespace UniOrm
 
             }
             return Container.Resolve<ICodeService>().GetDefaultUser(username, password);
+        }
+        private static AppConfig _AppConfig;
+        public static AppConfig AppConfig
+        {
+            get
+            {
+                if (_AppConfig == null)
+                {
+                    var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
+                    var configroot = JToken.Parse(File.ReadAllText(configpath));
+                    _AppConfig = JsonConvert.DeserializeObject<AppConfig>(configroot["App"].ToString());
+                }
+                return _AppConfig;
+            }
         }
 
         public static AdminUser LoginAdmin(string username, string password)
@@ -62,7 +151,7 @@ namespace UniOrm
         }
         public static string GetDicstring(string key)
         {
-            var item = ApplicationStartUp.AppConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
+            var item = AppConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
             if (item != null)
             {
                 return item.Value;
@@ -73,9 +162,37 @@ namespace UniOrm
         {
             return Container.Resolve<IGodWorker>();
         }
-        public static IModule GetModule(ModuleName name, string othername = null)
+
+
+
+        public static void RegisterAutofacModule(Autofac.Module moudle)
         {
-            return DefaultModuleManager.RegistedModules.FirstOrDefault(p => p.ModuleName == name.ToString());
+
+            Builder.RegisterModule(moudle);
+        }
+
+        public static void RegisterAutofacAssemblies(IEnumerable<Assembly> modulesAssembly)
+        {
+            if (modulesAssembly != null)
+            {
+
+                foreach (var m in modulesAssembly)
+                {
+                    Builder.RegisterAssemblyModules(m);
+                }
+            }
+        }
+        public static void RegisterAutofacModuleTypes()
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                var mms = m.GetAutofacModules();
+                foreach (var item in mms)
+                {
+                    Builder.RegisterModule(item);
+                }
+            }
             //loger
         }
         public static void ClearCache()
@@ -139,7 +256,106 @@ namespace UniOrm
 
             return method;
         }
+        public static void ConfigureSiteAllModulesServices(IServiceCollection services)
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                m.ConfigureSiteServices(services);
+            }
+        }
 
+        public static void Startup(IConfiguration configuration)
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                m.Startup(configuration);
+            }
+        }
+
+
+        public static void ConfigureSiteAllModules(IApplicationBuilder app)
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                var mms = m.GetAutofacModules();
+                foreach (var item in mms)
+                {
+                    Builder.RegisterModule(item);
+                }
+            }
+        }
+
+
+        public static object OpenDBSession(object dbFactory, string ormname, string connectionstring)
+        {
+
+            var adp = dbFactory.GetIndexer(ormname);
+            //  .GetIndexer(ormname);
+
+            if (!string.IsNullOrEmpty(connectionstring))
+            {
+                return adp.CallMethod("CreateDefaultInstance", connectionstring);
+            }
+            else
+            {
+                return adp.CallMethod("CreateDefaultInstance");
+            }
+
+
+        }
+
+        public static object GetData(string ssql, params object[] inParamters)
+        {
+
+            object DynaObject;
+            var dbFactory = Container.Resolve<IDbFactory>();
+            var ormname = AppConfig.UsingDBConfig.OrmName;
+            var cacheormnameKey = string.Concat(AppConfig.UsingDBConfig.Connectionstring);
+            object dbgrouder = APP.RuntimeCache.GetOrCreate(cacheormnameKey, entry =>
+            {
+                object dbgroudernew = OpenDBSession(dbFactory, ormname, null);
+                APP.RuntimeCache.Set(cacheormnameKey, dbgroudernew);
+                return dbgroudernew;
+            });
+
+            if (dbgrouder == null)
+            {
+                Logger.LogError(logName, "dbgrouder is null");
+            }
+            //var usingdbtype=  config.GetValue<int>("App", "UsingDBConfig", "DBType")
+            //  var dbtype = (DBType)_dbtype;
+            //  if (dbtype == config.)
+
+            var objParams2 = inParamters;
+            //if (!string.IsNullOrEmpty(s.ArgNames))
+            //{
+            //    var args = s.ArgNames.Split(',');
+            //    foreach (var aarg in args)
+            //    {
+            //        object obj = aarg;
+            //        if (aarg.StartsWith("&"))
+            //        {
+            //            obj = newrunmodel.Resuce(aarg);
+
+            //        }
+            //        objParams2.Add(obj);
+            //    }
+            //}
+            if (objParams2 == null || objParams2.Length == 0)
+            {
+                DynaObject = APP.GetData(dbgrouder, ssql);
+            }
+            else
+            {
+                DynaObject = APP.GetData(dbgrouder, ssql, objParams2);
+            }
+
+            return DynaObject;
+
+        }
 
         public static object GetData(object db, string ssql, params object[] inParamters)
         {
@@ -169,6 +385,15 @@ namespace UniOrm
 
             //t.
             return null;
+        }
+
+        public static void SetServiceProvider()
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                m.SetServiceProvider(ApplicationServices);
+            }
         }
     }
 }

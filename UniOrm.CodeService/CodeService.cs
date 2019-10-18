@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using UniOrm.Common;
-using UniOrm;
-using UniOrm.Model;
+using System.Linq.Expressions; 
+using UniOrm; 
 using UniOrm.Loggers;
 
 namespace UniOrm.Model.DataService
@@ -40,9 +38,9 @@ namespace UniOrm.Model.DataService
             //using (var db = dbFactory.Orms[ormname].CreateDefaultInstance())
             //{
 
-            var q = KataDB.From(nameof(SystemACon));
+           // var q = KataDB.From(nameof(SystemACon));
             // var sss = db.ToSql(q);
-            return Db.ToTyped<SystemACon>().Query(q).FirstOrDefault();  //$"select top 1 * from  {nameof(SystemACon)}=@FirstNameParam"' <SystemACon>().First();
+            return Db.ToTyped<SystemACon>().QueryFrom().FirstOrDefault();  //$"select top 1 * from  {nameof(SystemACon)}=@FirstNameParam"' <SystemACon>().First();
             //}
         }
         public int InsertCode<T>(T objcode) where T : class, new()
@@ -53,12 +51,12 @@ namespace UniOrm.Model.DataService
             return Convert.ToInt32(Db.Insert<T>(objcode));
             //}
         }
+
         public TypeDefinition GetTypeDefinition(string typeName)
         {
             OpenSession();
-            var q = KataDB.From(nameof(TypeDefinition)).Where("AliName", typeName);
-
-            var typeds = Db.ToTyped<TypeDefinition>().Query(q);
+            var q = Db.From(nameof(TypeDefinition)).Where("AliName", typeName);
+            var typeds = q.ToList< TypeDefinition>() ;
             if (typeds.Count() == 0)
             {
                 throw new Exception("TypeDefinition ali name " + typeName + " is shown more than twice. ");

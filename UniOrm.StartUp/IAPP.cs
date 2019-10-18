@@ -6,6 +6,6 @@ namespace UniOrm.Application
 {
     public interface IApp
     {
-        SuperManager SuperManager { get;   }
+        APP SuperManager { get;   }
     }
 }

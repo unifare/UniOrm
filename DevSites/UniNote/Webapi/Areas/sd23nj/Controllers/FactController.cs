@@ -189,14 +189,14 @@ namespace AConStateFactory.Controllers
                 dllfile = Path.Combine(dir, dll);
             }
             Assembly asm = null;
-            if (!SuperManager.Dlls.ContainsKey(dllfile))
+            if (!APP.Dlls.ContainsKey(dllfile))
             {
                 asm = Assembly.LoadFrom(dllfile);
-                SuperManager.Dlls.Add(dllfile, asm);
+                APP.Dlls.Add(dllfile, asm);
             }
             else
             {
-                asm = SuperManager.Dlls[dllfile];
+                asm = APP.Dlls[dllfile];
             }
             var list = new List<dynamic>();
             var alltypes = asm.GetTypes();
@@ -222,14 +222,14 @@ namespace AConStateFactory.Controllers
             var dllfile = id;
             //Assembly asm = Assembly.LoadFrom(dllfile);
             Assembly asm = null;
-            if (!SuperManager.Dlls.ContainsKey(dllfile))
+            if (!APP.Dlls.ContainsKey(dllfile))
             {
                 asm = Assembly.LoadFrom(dllfile);
-                SuperManager.Dlls.Add(dllfile, asm);
+                APP.Dlls.Add(dllfile, asm);
             }
             else
             {
-                asm = SuperManager.Dlls[dllfile];
+                asm = APP.Dlls[dllfile];
             }
             FileInfo fi = new FileInfo(id);
             bool isbuilin = true;
@@ -305,15 +305,15 @@ namespace AConStateFactory.Controllers
         [HttpPost]
         public int UpdateCache()
         {
-            SuperManager.Dlls.Clear();
-            SuperManager.Types.Clear();
-            SuperManager.MethodInfos.Clear();
-            SuperManager.RuntimeCodes.Clear();
-            SuperManager.Composeentitys.Clear();
-            SuperManager.DynamicReferenceDlls.Clear();
-            SuperManager.AConFlowSteps.Clear();
-            SuperManager.ComposeTemplates.Clear();
-            SuperManager.ClearCache();
+            APP.Dlls.Clear();
+            APP.Types.Clear();
+            APP.MethodInfos.Clear();
+            APP.RuntimeCodes.Clear();
+            APP.Composeentitys.Clear();
+            APP.DynamicReferenceDlls.Clear();
+            APP.AConFlowSteps.Clear();
+            APP.ComposeTemplates.Clear();
+            APP.ClearCache();
             return 0;
         }
         [HttpPost]

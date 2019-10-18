@@ -1,19 +1,25 @@
 ﻿using SqlKata;
+using SqlKata.Compilers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace UniOrm
 {
-    public class KataDB
-    {
-        public static Query From(string tableName)
-        {
-            return new Query(tableName);
-        }
-        public static Query From<T>( )
-        {
-            return new Query(typeof(T).Name);
-        }
-    }
+    //public class KataDB
+    //{
+    //    //internal static Query From(string tableName)
+    //    //{
+    //    //    var q = new Query();
+    //    //    var wholeTablename = q.DataGrounder.OrmAdaptor.ConnectionConfig.DefaultDbPrefixName + tableName;
+    //    //    return q.From(wholeTablename);
+    //    //}
+    //    //internal static Query From<T>()
+    //    //{
+    //    //    var q = new Query();
+    //    //    var wholeTablename = q.DataGrounder.OrmAdaptor.ConnectionConfig.DefaultDbPrefixName + typeof(T).Name;
+    //    //    return q.From(wholeTablename);
+    //    //}
+    //}
+
 }

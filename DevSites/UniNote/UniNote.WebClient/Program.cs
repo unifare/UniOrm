@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using UniOrm.Startup.Web;
 
 namespace UniNote.WebClient
 {
@@ -15,10 +16,25 @@ namespace UniNote.WebClient
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
+            //WebSetup.StartApp(args);
         }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        private static string[] ScanBack(string dlldir)
+        {
+            return Directory.GetFiles(dlldir, "*.json");
+        }
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+          var webHostBuilder =  WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(builder =>
+                {
+                    var alljsons = ScanBack(AppDomain.CurrentDomain.BaseDirectory);
+                    foreach (var json in alljsons)
+                    {
+                        builder.AddJsonFile(json);
+                    } 
+                })
                 .UseStartup<Startup>();
+            return webHostBuilder;
+        }
     }
 }

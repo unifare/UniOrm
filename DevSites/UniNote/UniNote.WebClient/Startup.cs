@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
+using UniNote.DBMigration;
 using UniOrm.Application;
 using UniOrm.Startup.Web;
 using static IdentityModel.OidcConstants;
@@ -17,6 +18,7 @@ namespace UniNote
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Configuration.Startup();
         }
 
         public IConfiguration Configuration { get; }
@@ -26,7 +28,7 @@ namespace UniNote
         {
             var serv = services.ConfigureServices();
 
-            //ApplicationStartUp.EnsureDaContext(typeof(MigrationVersion1).Assembly);
+           // ApplicationStartUp.EnsureDaContext(typeof(MigrationVersion1).Assembly);
             return serv;
         }
 

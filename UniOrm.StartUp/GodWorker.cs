@@ -15,6 +15,7 @@ using UniOrm.Common;
 using UniOrm;
 using UniOrm.Model;
 using UniOrm.Loggers;
+using RazorLight;
 
 namespace UniOrm.Application
 {
@@ -30,13 +31,14 @@ namespace UniOrm.Application
 
     public class GodWorker : IGodWorker
     {
+   
         public string WorkerName { get; set; }
         readonly static object lockobj = new object();
         static string logName = "AConState.Application.GodMaker";
         //public static Dictionary<string, RuntimeModel> RuntimeModels = new Dictionary<string, RuntimeModel>();
         public static AppConfig appConfig = null;
 
-        public DefaultModuleManager ModuleManager { get; set; }
+        // public DefaultModuleManager ModuleManager { get; set; }
         ICodeService CodeService;
         IConfig Config;
         IDbFactory DbFactory;
@@ -46,11 +48,11 @@ namespace UniOrm.Application
             DbFactory = dbFactory;
             CodeService = codeService;
             Config = config;
-            ModuleManager = new DefaultModuleManager();
+            //ModuleManager = new DefaultModuleManager();
         }
 
 
-        public void Run(params object[] parameters)
+        public async Task Run(params object[] parameters)
         {
 
             var st = new System.Diagnostics.StackTrace();
@@ -59,7 +61,7 @@ namespace UniOrm.Application
 
             if (appConfig == null)
             {
-                //appConfig = SuperManager.Container.Resolve
+                //appConfig = SuperManager.Container.Resolve<IApp>
                 //{
                 //    AppType = "aspnetcore",
                 //    Connectionstrings = new List<DcConnectionConfig>()
@@ -104,13 +106,17 @@ namespace UniOrm.Application
                     ComposeEntity = cons,
                     HashCode = cons.GetHash()
                 };
-                RuntimeModel.StaticResouceInfos["__httpcontext"] = parameters[0];
+                RuntimeModel.StaticResouceInfos["__actioncontext"] = parameters[0];
+                RuntimeModel.StaticResouceInfos["__httpcontext"] = parameters[0].GetProp("HttpContext") ;
+
+                RuntimeModel.StaticResouceInfos["__config"] = appConfig;
+              
                 if (!string.IsNullOrEmpty(cons.Templateid))
                 {
                     newrunmodel.ComposeTemplate = FindComposeTemplet(cons.Templateid);
                 }
 
-                RunComposity(parameters[0].GetHashCode(), newrunmodel, DbFactory, CodeService, Config);
+                await RunComposity(parameters[0].GetHashCode(), newrunmodel, DbFactory, CodeService, Config);
 
 
             }
@@ -130,7 +136,7 @@ namespace UniOrm.Application
         //}
 
 
-        private static void RunComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ICodeService codeService, IConfig config)
+        private async static Task RunComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ICodeService codeService, IConfig config)
         {
             var cons = newrunmodel.ComposeEntity;
             if (cons.RunMode == RunMode.Coding)
@@ -142,7 +148,7 @@ namespace UniOrm.Application
                 //Manager.RuntimeModels.Add(newrunmodel);
                 else
                 {
-                    var steps = FindSteps(  cons.Guid, codeService);
+                    var steps = FindSteps(cons.Guid, codeService);
 
                     foreach (var s in steps)
                     {
@@ -150,13 +156,13 @@ namespace UniOrm.Application
                         object DynaObject = null;
 
                         var cacheKey = string.Concat(cons.Guid, "_", s.ExcuteType, "_", s.FlowStepType, "_", s.Guid, "_", s.ArgNames);
-                        object model = SuperManager.RuntimeCache.GetOrCreate(cacheKey, entry =>
+                        object stepResult = APP.RuntimeCache.GetOrCreate(cacheKey, entry =>
                       {
                           object newobj = null;
-                          SuperManager.RuntimeCache.Set(cacheKey, newobj);
+                          APP.RuntimeCache.Set(cacheKey, newobj);
                           return newobj;
                       });
-                        if (model == null || !s.IsUsingCache)
+                        if (stepResult == null || !s.IsUsingCache)
                         {
                             switch (s.ExcuteType)
                             {
@@ -169,7 +175,7 @@ namespace UniOrm.Application
                                                 {
                                                     //root.Usings[2].Name.ToString()
                                                     // var rebject2 = Manager.GetData(spec.InParamter1, spec.InParamter2);
-                                                    var runcode = SuperManager.FindOrAddRumtimeCode(s.Guid);
+                                                    var runcode = APP.FindOrAddRumtimeCode(s.Guid);
                                                     var so_default = ScriptOptions.Default;
                                                     if (runcode == null)
                                                     {
@@ -188,13 +194,13 @@ namespace UniOrm.Application
                                                         if (!string.IsNullOrEmpty(s.TypeLib))
                                                         {
                                                             var dllfile = dllbase + s.TypeLib;
-                                                            if (SuperManager.DynamicReferenceDlls.Contains(dllfile))
+                                                            if (APP.DynamicReferenceDlls.Contains(dllfile))
                                                             {
                                                                 isref = false;
                                                             }
                                                             else
                                                             {
-                                                                SuperManager.DynamicReferenceDlls.Add(dllfile);
+                                                                APP.DynamicReferenceDlls.Add(dllfile);
                                                                 isref = true;
                                                                 dlls.Add(dllfile);
                                                             }
@@ -205,7 +211,7 @@ namespace UniOrm.Application
                                                             string[] dllnams = s.ReferenceDlls.Split(',');
                                                             foreach (var n in dllnams)
                                                             {
-                                                                SuperManager.DynamicReferenceDlls.Add(dllbase + n);
+                                                                APP.DynamicReferenceDlls.Add(dllbase + n);
                                                             }
 
                                                             dlls.AddRange(dllnams);
@@ -220,7 +226,7 @@ namespace UniOrm.Application
                                                         //    state = state.ContinueWithAsync(submission).Result;
                                                         //}
                                                         runcode.Script = state;
-                                                        SuperManager.RuntimeCodes.Add(s.Guid, runcode);
+                                                        APP.RuntimeCodes.Add(s.Guid, runcode);
                                                     }
                                                     if (!string.IsNullOrEmpty(s.ReferenceDlls))
                                                     {
@@ -235,61 +241,12 @@ namespace UniOrm.Application
                                         case FlowStepType.GetData:
                                             {
                                                 var ormname = config.GetValue<string>("App", "UsingDBConfig", "OrmName");
-
-                                                var cacheormnameKey = string.Concat(s.InParamter1, "_", s.Connectionstring);
-                                                object dbgrouder = SuperManager.RuntimeCache.GetOrCreate(cacheormnameKey, entry =>
-                                                {
-                                                    var isusingsystem = s.IsUsingParentConnstring;
-                                                    object dbgroudernew = null;
-                                                    if (!isusingsystem.HasValue || (isusingsystem.HasValue && isusingsystem.Value == true))
-                                                    {
-                                                        dbgroudernew = newrunmodel.OpenDBSession(dbFactory, ormname, null);
-                                                    }
-                                                    else
-                                                    {
-                                                        dbgroudernew = newrunmodel.OpenDBSession(dbFactory, ormname, s.Connectionstring);
-                                                    }
-                                                    SuperManager.RuntimeCache.Set(cacheKey, dbgroudernew);
-
-                                                    return dbgroudernew;
-                                                });
-
-                                                if (dbgrouder == null)
-                                                {
-                                                    Logger.LogError(logName, "dbgrouder is null");
-                                                }
-                                                //var usingdbtype=  config.GetValue<int>("App", "UsingDBConfig", "DBType")
-                                                //  var dbtype = (DBType)_dbtype;
-                                                //  if (dbtype == config.)
-
-                                                var objParams2 = new List<object>();
-                                                if (!string.IsNullOrEmpty(s.ArgNames))
-                                                {
-                                                    var args = s.ArgNames.Split(',');
-                                                    foreach (var aarg in args)
-                                                    {
-                                                        object obj = aarg;
-                                                        if (aarg.StartsWith("&"))
-                                                        {
-                                                            obj = newrunmodel.Resuce(aarg);
-
-                                                        }
-                                                        objParams2.Add(obj);
-                                                    }
-                                                }
-                                                if (objParams2 == null || objParams2.Count == 0)
-                                                {
-                                                    DynaObject = SuperManager.GetData(dbgrouder, s.InParamter1);
-                                                }
-                                                else
-                                                {
-                                                    DynaObject = SuperManager.GetData(dbgrouder, s.InParamter1, objParams2.ToArray());
-                                                }
+                                                DynaObject = HandleGetData(newrunmodel, dbFactory, ormname, s );
                                             }
                                             break;
                                         case FlowStepType.CallMethod:
                                             {
-                                                var methodsub = SuperManager.GetMethodFromConfig(s.IsBuildIn.Value, s.TypeLib, s.TypeFullName, s.MethodName);
+                                                var methodsub = APP.GetMethodFromConfig(s.IsBuildIn.Value, s.TypeLib, s.TypeFullName, s.MethodName);
                                                 var objParams = new List<object>();
                                                 if (!string.IsNullOrEmpty(s.ArgNames))
                                                 {
@@ -334,6 +291,98 @@ namespace UniOrm.Application
                                                 //proxyMethode(objParams.ToArray());
                                             }
                                             break;
+                                        case FlowStepType.RazorText:
+                                            try
+                                            {
+                                                var engine = APP.Razorengine;
+                                                string template = s.ProxyCode;
+                                                if (string.IsNullOrEmpty(template))
+                                                {
+                                                    stepResult = "";
+                                                }
+                                                else
+                                                {
+                                                    var isok=  engine.Options.Namespaces.Add("UniOrm");
+                                                    isok = engine.Options.Namespaces.Add("UniOrm.Application");
+                                                    isok = engine.Options.Namespaces.Add("UniOrm.Common");
+                                                    isok = engine.Options.Namespaces.Add("UniOrm.Model");
+                                                    isok = engine.Options.Namespaces.Add("UniOrm.Startup.Web");
+
+                                                    isok = engine.Options.Namespaces.Add("System");
+                                                    isok = engine.Options.Namespaces.Add("System.Web");
+                                                    isok = engine.Options.Namespaces.Add("System.IO");
+                                                    isok = engine.Options.Namespaces.Add("System.Text");
+                                                    isok = engine.Options.Namespaces.Add("System.Text.Encodings");
+                                                    isok = engine.Options.Namespaces.Add("System.Text.RegularExpressions");
+                                                    isok = engine.Options.Namespaces.Add("System.Collections.Generic");
+                                                    isok = engine.Options.Namespaces.Add("System.Diagnostics");
+                                                    isok = engine.Options.Namespaces.Add("System.Linq");
+                                                    isok = engine.Options.Namespaces.Add("System.Security.Claims");
+                                                    isok = engine.Options.Namespaces.Add("System.Threading");
+                                                    isok = engine.Options.Namespaces.Add("System.Threading.Tasks");
+                                                    isok = engine.Options.Namespaces.Add("System.Reflection");
+                                                    isok = engine.Options.Namespaces.Add("System.Dynamic"); 
+                                                    isok = engine.Options.Namespaces.Add("System.Diagnostics");
+                                                    isok = engine.Options.Namespaces.Add("System.Web.Mvc.ViewPage");
+                                                    isok = engine.Options.Namespaces.Add("System.Linq.Expressions");
+                                                    isok = engine.Options.Namespaces.Add("System.Xml");
+                                                    isok = engine.Options.Namespaces.Add("System.Xml.Linq");
+                                                    isok = engine.Options.Namespaces.Add("System.Configuration");
+
+                                                    isok = engine.Options.Namespaces.Add("System.Data");
+                                                    isok = engine.Options.Namespaces.Add("System.Data.SqlClient");
+                                                    isok = engine.Options.Namespaces.Add("System.Data.Common");
+                                                    isok = engine.Options.Namespaces.Add("System.Data.OleDb");
+                                                    isok = engine.Options.Namespaces.Add("System.Globalization");
+                                                    isok = engine.Options.Namespaces.Add("System.Net");
+                                                    isok = engine.Options.Namespaces.Add("System.Net.Http");
+                                                    isok = engine.Options.Namespaces.Add("System.Net.Http.Headers");
+                                                    isok = engine.Options.Namespaces.Add("System.Net.Mail");
+                                                    isok = engine.Options.Namespaces.Add("System.Net.Security");
+                                                    isok = engine.Options.Namespaces.Add("System.Net.Sockets");
+                                                    isok = engine.Options.Namespaces.Add("System.Net.WebSockets");
+                                                    isok = engine.Options.Namespaces.Add("System.Drawing");
+                                                    isok = engine.Options.Namespaces.Add("System.Drawing.Printing");
+                                                    isok = engine.Options.Namespaces.Add("Newtonsoft.Json");
+                                                    isok = engine.Options.Namespaces.Add("Newtonsoft.Json.Linq");
+                                                    isok = engine.Options.Namespaces.Add("System.Numerics"); 
+                                                    isok = engine.Options.Namespaces.Add("Microsoft.AspNetCore.Authentication");
+                                                    isok = engine.Options.Namespaces.Add("Microsoft.AspNetCore.Authorization");
+                                                    isok = engine.Options.Namespaces.Add("Microsoft.Extensions.DependencyInjection");
+                                                    isok = engine.Options.Namespaces.Add("Microsoft.AspNetCore.Mvc");
+                                                  
+                                                 
+                                                    if (!string.IsNullOrEmpty( s.ReferenceDlls))
+                                                    {
+                                                        string[] dllnams = s.ReferenceDlls.Split(',');
+                                                        foreach (var n in dllnams)
+                                                        {
+                                                            isok = engine.Options.Namespaces.Add(n.TrimEnd(".dll".ToCharArray())); 
+                                                        } 
+                                                    }
+                                                    var objParams = newrunmodel.GetPoolResuce(s.ArgNames.Split(','));
+                                                    var modelArg = objParams[0];
+                                                    var cachekey2 = template.DesEncrypt().SafeSubString(128) + "_" + modelArg.ToJson().DesEncrypt().SafeSubString(64);
+                                                    var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2);
+                                                    if (cacheResult.Success)
+                                                    {
+                                                        stepResult = await engine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), modelArg);
+                                                    }
+                                                    else
+                                                    {
+                                                        stepResult = await engine.CompileRenderAsync(cachekey2, template, modelArg);
+                                                    }
+
+                                                }
+
+                                                rebject = stepResult;
+
+                                            } 
+                                            catch(Exception exp)
+                                            {
+                                                Logger.LogError(logName, "parser RazorText wrong: " + exp.Message + "-------" + LoggerHelper.GetExceptionString(exp));
+                                            }
+                                            break;
                                     }
                                     break;
                             }
@@ -342,11 +391,11 @@ namespace UniOrm.Application
                                 rebject = MagicExtension.BackToInst(DynaObject);
 
                             }
-                            SuperManager.RuntimeCache.Set(cacheKey, rebject);
+                            APP.RuntimeCache.Set(cacheKey, rebject);
                         }
                         else
                         {
-                            rebject = model;
+                            rebject = stepResult;
                         }
                         if (!string.IsNullOrEmpty(s.StorePoolKey) && rebject != null)
                         {
@@ -354,14 +403,72 @@ namespace UniOrm.Application
                         }
 
                     }
-                    CheckAndRunNextRuntimeComposity(  requsetHash, newrunmodel, dbFactory, codeService, config);
+                    await CheckAndRunNextRuntimeComposity(requsetHash, newrunmodel, dbFactory, codeService, config);
                 }
 
                 //Manager.RuntimeModels.Remove(newrunmodel);
             }
         }
 
-        private static void CheckAndRunNextRuntimeComposity(  int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ICodeService codeService, IConfig config)
+        private static object HandleGetData(RuntimeModel newrunmodel, IDbFactory dbFactory, string ormname, AConFlowStep s )
+        {
+            object DynaObject;
+            //var ormname = config.GetValue<string>("App", "UsingDBConfig", "OrmName");
+
+            var cacheormnameKey = string.Concat(s.InParamter1, "_", s.Connectionstring);
+            object dbgrouder = APP.RuntimeCache.GetOrCreate(cacheormnameKey, entry =>
+            {
+                var isusingsystem = s.IsUsingParentConnstring;
+                object dbgroudernew = null;
+                if (!isusingsystem.HasValue || (isusingsystem.HasValue && isusingsystem.Value == true))
+                {
+                    dbgroudernew = newrunmodel.OpenDBSession(dbFactory, ormname, null);
+                }
+                else
+                {
+                    dbgroudernew = newrunmodel.OpenDBSession(dbFactory, ormname, s.Connectionstring);
+                }
+                APP.RuntimeCache.Set(cacheormnameKey, dbgroudernew);
+
+                return dbgroudernew;
+            });
+
+            if (dbgrouder == null)
+            {
+                Logger.LogError(logName, "dbgrouder is null");
+            }
+            //var usingdbtype=  config.GetValue<int>("App", "UsingDBConfig", "DBType")
+            //  var dbtype = (DBType)_dbtype;
+            //  if (dbtype == config.)
+
+            var objParams2 = new List<object>();
+            if (!string.IsNullOrEmpty(s.ArgNames))
+            {
+                var args = s.ArgNames.Split(',');
+                foreach (var aarg in args)
+                {
+                    object obj = aarg;
+                    if (aarg.StartsWith("&"))
+                    {
+                        obj = newrunmodel.Resuce(aarg);
+
+                    }
+                    objParams2.Add(obj);
+                }
+            }
+            if (objParams2 == null || objParams2.Count == 0)
+            {
+                DynaObject = APP.GetData(dbgrouder, s.InParamter1);
+            }
+            else
+            {
+                DynaObject = APP.GetData(dbgrouder, s.InParamter1, objParams2.ToArray());
+            }
+
+            return DynaObject;
+        }
+
+        private static async Task CheckAndRunNextRuntimeComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ICodeService codeService, IConfig config)
         {
             var resouce = newrunmodel.Resuce(newrunmodel.NextRunTimeKey);
             if (resouce != null)
@@ -393,7 +500,7 @@ namespace UniOrm.Application
                         HashCode = nextcon.GetHash()
                     };
                     //nextRnmodel.ResouceInfos.Remove(newrunmodel.NextRunTimeKey);
-                    RunComposity( requsetHash, nextRnmodel, dbFactory, codeService, config);
+                   await  RunComposity(requsetHash, nextRnmodel, dbFactory, codeService, config);
 
                 }
             }
@@ -408,13 +515,13 @@ namespace UniOrm.Application
         {
             lock (lockobj)
             {
-                ComposeEntity cons = SuperManager.Composeentitys.FirstOrDefault(p => p.Guid == appconfig.StartUpCompoistyID);
+                ComposeEntity cons = APP.Composeentitys.FirstOrDefault(p => p.Guid == appconfig.StartUpCompoistyID);
                 if (cons == null)
                 {
                     cons = CodeService.GetConposity(appconfig.StartUpCompoistyID, allname).FirstOrDefault();
                     if (cons != null)
                     {
-                        SuperManager.Composeentitys.Add(cons);
+                        APP.Composeentitys.Add(cons);
                     }
                 }
 
@@ -426,7 +533,7 @@ namespace UniOrm.Application
                         RunMode = RunMode.Coding
                     };
                     var reint = CodeService.InsertCode(cons);
-                    SuperManager.Composeentitys.Add(cons);
+                    APP.Composeentitys.Add(cons);
                 }
 
                 return cons;
@@ -436,13 +543,13 @@ namespace UniOrm.Application
         {
             lock (lockobj)
             {
-                var cons = SuperManager.ComposeTemplates.FirstOrDefault(p => p.Guid == tid);
+                var cons = APP.ComposeTemplates.FirstOrDefault(p => p.Guid == tid);
                 if (cons == null)
                 {
                     cons = CodeService.GetSimpleCodeLinq<ComposeTemplate>(p => p.Guid == tid).FirstOrDefault();
                     if (cons != null)
                     {
-                        SuperManager.ComposeTemplates.Add(cons);
+                        APP.ComposeTemplates.Add(cons);
                     }
                 }
 
@@ -450,16 +557,16 @@ namespace UniOrm.Application
                 return cons;
             }
         }
-        private static IEnumerable<AConFlowStep> FindSteps( string ComId, ICodeService codeService)
+        private static IEnumerable<AConFlowStep> FindSteps(string ComId, ICodeService codeService)
         {
 
-            var cons = SuperManager.AConFlowSteps.Where(p => p.AComposityId == ComId);
+            var cons = APP.AConFlowSteps.Where(p => p.AComposityId == ComId);
             if (cons == null || cons.Count() == 0)
             {
                 cons = codeService.GetAConStateSteps(ComId).OrderBy(p => p.StepOrder).ToList();
                 if (cons != null)
                 {
-                    SuperManager.AConFlowSteps.AddRange(cons);
+                    APP.AConFlowSteps.AddRange(cons);
                 }
             }
 

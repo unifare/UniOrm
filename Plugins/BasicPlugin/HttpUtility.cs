@@ -1,5 +1,4 @@
-﻿ 
-using System;
+﻿ using System;
 using System.Collections.Generic; 
 using System.Linq;
 using System.Text;
@@ -8,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.IO;
 using Plugin.Common;
 using System.Collections.Concurrent;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BasicPlugin
 {
@@ -16,7 +17,7 @@ namespace BasicPlugin
     {
         static ConcurrentBag<RegexEn> regexEns = new ConcurrentBag<RegexEn>();
    
-        public static string GetIsTriger(List<dynamic> assrules, string url)
+        public static string GetIsTriger(List<dynamic> assrules, HttpContext context  )
         {
             //var assrules = assrulesPbj.AsDynamic();
             //var url = urlobj.AsDynamic() ;
@@ -27,34 +28,41 @@ namespace BasicPlugin
             //List<sdf> sdf = new List<sdf>();
             //sdf.Count
             //var allrows = (int)inparams1.GetPropertyValue("Count");
-
+            var url= context.Request.Path.Value;
+            var method = context.Request.Method;
             for (var i = 0; i < assrules.Count; i++)
             {
                 var TrigerRow = assrules[i];
-
-                string ruleText = TrigerRow.Rule;
-                if (string.IsNullOrEmpty(ruleText))
+                //if(string.IsNullOrEmpty( TrigerRow.HttpMethod ?? "GET"))
+                //{
+                //    TrigerRow.HttpMethod = "GET";
+                //}
+                if (   string.Compare( TrigerRow.HttpMethod , method, true)==0 )
                 {
-                    continue;
-                }
-                else
-                {
-                    Regex reg = null;
-                    var exsUrlrule = regexEns.FirstOrDefault(p => p.RuleText == TrigerRow.Rule);
-                    if (exsUrlrule == null)
+                    string ruleText = TrigerRow.Rule;
+                    if (string.IsNullOrEmpty(ruleText))
                     {
-                        reg = new Regex(TrigerRow.Rule);
-                        exsUrlrule = new RegexEn() { Regex = reg, RuleText = TrigerRow.Rule };
-                        regexEns.Add(exsUrlrule);
+                        continue;
                     }
                     else
                     {
-                        reg = exsUrlrule.Regex;
-                    }
-                    var ismach = reg.IsMatch(url);
-                    if (ismach)
-                    {
-                        return TrigerRow.ComposityId;
+                        Regex reg = null;
+                        var exsUrlrule = regexEns.FirstOrDefault(p => p.RuleText == TrigerRow.Rule);
+                        if (exsUrlrule == null)
+                        {
+                            reg = new Regex(TrigerRow.Rule);
+                            exsUrlrule = new RegexEn() { Regex = reg, RuleText = TrigerRow.Rule };
+                            regexEns.Add(exsUrlrule);
+                        }
+                        else
+                        {
+                            reg = exsUrlrule.Regex;
+                        }
+                        var ismach = reg.IsMatch(url);
+                        if (ismach)
+                        {
+                            return TrigerRow.ComposityId;
+                        }
                     }
                 }
             }
@@ -63,35 +71,47 @@ namespace BasicPlugin
             return "";
         }
   
-        public static object GetRequestUrl(ActionExecutingContext context)
+        public static object GetRequestUrl(HttpContext context)
         {
-            return context.HttpContext.Request.Path.Value;
-
+            return context.Request.Path.Value; 
         }
 
-   
-        public static void ResponseText(ActionExecutingContext context, string returnObject)
+        public static HttpContext GetHttpContext (HttpContext context)
         {
-            //var 
-            var resp = context.HttpContext.Response;
-            resp.ContentType = "text/html";
+            return context;
+        }
 
-            using (StreamWriter sw = new StreamWriter(resp.Body))
+        public static string GetRequestParam(HttpContext context,string key)
+        {
+            return context.Request.Query[key];
+        }
+
+
+        public static void ResponseText(ActionExecutingContext action,  string returnObject)
+        {
+            ////var 
+            //var resp = context.Response;
+            //resp.ContentType = "text/html";
+
+            //using (StreamWriter sw = new StreamWriter(resp.Body))
+            //{
+            //    sw.Write(returnObject);
+            //}
+            action.Result = new ContentResult()
             {
-                sw.Write(returnObject);
-            }
+                Content = returnObject,
+                 ContentType = "text/html",
+                StatusCode = 200
+            };
+
         }
        
-        public static void ResponseAjaxt(ActionExecutingContext context,object returnObject )
-        {
-            //var 
-            var resp = context.HttpContext.Response;
-            resp.ContentType = "application/json";
-
-            using (StreamWriter sw = new StreamWriter(resp.Body))
-            {
-                sw.Write(returnObject.ToJson());
-            }
+        public static void ResponseAjaxt(ActionExecutingContext action, object returnObject )
+        { 
+            action.Result = new JsonResult(returnObject)
+            {  
+                StatusCode = 200
+            };
         }
     }
 }

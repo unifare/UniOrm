@@ -47,10 +47,7 @@ namespace UniOrm.Adaption
             return new List<Assembly>() { typeof(PetaPoco.Database).Assembly };
         }
 
-        public void GetCloseAction(object dbOperator)
-        {
-            // var db = dbOperator as Database; 
-        }
+      
         public int GetSqlCommandAction(object dbOperator, string sql, params object[] objparameters)
         {
             if (objparameters == null)

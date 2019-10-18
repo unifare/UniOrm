@@ -15,6 +15,8 @@ namespace UniOrm.Common
     }
     public class DcConnectionConfig
     {
+        public string DefaultDbPrefixName { get; set; }
+        
         public bool IsNeedRegModel { get; set; }
         public string OrmName { get; set; }
         public string Name { get; set; }

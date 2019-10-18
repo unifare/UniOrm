@@ -43,11 +43,11 @@ namespace UniNote.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Login(string userName, string password)
+        public async Task<object> Login(  string userName, string password)
         {
-            var response = await authorizeHelper.LoginToIds4Async(userName, password);
+            var response = await authorizeHelper.LoginToIds4Async(HttpContext, userName, password);
            
-            return new { isok = false, msg = "登录失败，用户名密码不正确" , response };
+            return new {  response };
 
         }
 

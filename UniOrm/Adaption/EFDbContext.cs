@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using System.Text; 
+using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 using JetBrains.Annotations;
@@ -18,9 +18,11 @@ namespace UniOrm.Adaption
         private readonly IMemoryCache _cache;
         public ModelBuilder ModelBuilder;
         private static string DynamicCacheKey = "DynamicModel";
-
+        protected DbContextOptions<EFDbContext> Options;
+        public string DefaultDbPrefixName { get; set; }
         public EFDbContext(DbContextOptions<EFDbContext> options, IMemoryCache cache, List<Type> typesTobeRegisted = null) : base(options)
         {
+            Options = options;
             TypesUnRegisted = typesTobeRegisted;
             _cache = cache;
         }
@@ -34,15 +36,25 @@ namespace UniOrm.Adaption
                     _modelBuilder.Model.AddEntityType(s);
                 }
                 ModelBuilder = _modelBuilder;
+                foreach (var entity in ModelBuilder.Model.GetEntityTypes())
+                {
+                    var currentTableName = ModelBuilder.Entity(entity.Name).Metadata.Relational().TableName;
+                    ModelBuilder.Entity(entity.Name).ToTable( DefaultDbPrefixName+ currentTableName );
+
+                    //var properties = entity.GetProperties();
+                    //foreach (var property in properties)
+                    //    builder.Entity(entity.Name).Property(property.Name).HasColumnName(property.Name.ToLower());
+                }
             }
-            
+
             //AddTypeByObject(entity);
             //AddToREgistedType(modelBuilder);
             base.OnModelCreating(ModelBuilder);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
+        { 
             optionsBuilder.UseMemoryCache(_cache);
+            // optionsBuilder.con
             //optionsBuilder.Options.ContextType.
 
             //if (m_modelBuilder == null)

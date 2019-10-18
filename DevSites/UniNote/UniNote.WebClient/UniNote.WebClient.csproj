@@ -12,9 +12,61 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\js\app.js" />
+    <None Include="wwwroot\content\img\technology.png" />
     <None Include="wwwroot\js\oidc-client.js" />
     <None Include="wwwroot\js\oidc-client.min.js" />
+    <None Include="wwwroot\lib\layui\dist\font\iconfont.svg" />
+    <None Include="wwwroot\lib\layui\dist\font\iconfont.woff2" />
+    <None Include="wwwroot\lib\layui\dist\layui.all.js" />
+    <None Include="wwwroot\lib\layui\dist\layui.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\carousel.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\code.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\colorpicker.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\element.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\flow.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\form.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\jquery.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\laydate.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\layedit.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\layer.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\laypage.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\laytpl.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\mobile.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\rate.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\slider.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\table.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\transfer.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\tree.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\upload.js" />
+    <None Include="wwwroot\lib\layui\dist\lay\modules\util.js" />
+    <None Include="wwwroot\lib\layui\src\font\iconfont.svg" />
+    <None Include="wwwroot\lib\layui\src\font\iconfont.woff2" />
+    <None Include="wwwroot\lib\layui\src\layui.js" />
+    <None Include="wwwroot\lib\layui\src\lay\all-mobile.js" />
+    <None Include="wwwroot\lib\layui\src\lay\all.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\carousel.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\code.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\colorpicker.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\element.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\flow.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\form.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\jquery.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\laydate.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\layedit.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\layer.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\laypage.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\laytpl.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\mobile.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\mobile\layer-mobile.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\mobile\layim-mobile-open.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\mobile\zepto.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\rate.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\slider.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\table.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\transfer.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\tree.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\upload.js" />
+    <None Include="wwwroot\lib\layui\src\lay\modules\util.js" />
   </ItemGroup>
 
 
@@ -26,8 +78,11 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Plugins\AlipayPlugin\AlipayPlugin.csproj" />
+    <ProjectReference Include="..\..\..\Plugins\BasicPlugin\BasicPlugin.csproj" />
     <ProjectReference Include="..\..\..\UniOrm.Web\UniOrm.Startup.Web.csproj" />
     <ProjectReference Include="..\..\..\UniOrm\UniOrm.csproj" />
+    <ProjectReference Include="..\UniNote.DBMigration\UniNote.DBMigration.csproj" />
     <ProjectReference Include="..\UniNote.Web.Model\UniNote.Web.Model.csproj" />
   </ItemGroup>
 
@@ -36,6 +91,36 @@
     <Content Update="config\System.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="Areas\sd23nj\Views\Admin\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\sd23nj\Views\Admin\Signin.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\sd23nj\Views\Admin\urlmng.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\sd23nj\Views\_ViewStart.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Areas\sd23nj\Data\" />
+    <Folder Include="Areas\sd23nj\Models\" />
+    <Folder Include="config\moduleConfig\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Update="Pages\Admin\csd3 - 复制.cshtml.cs">
+      <DependentUpon>csd3 - 复制.cshtml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

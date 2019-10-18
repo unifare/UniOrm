@@ -20,23 +20,29 @@ namespace UniOrm.Startup.Web
             await ExcuteFilter(context, next);
             // logger.LogWarning("全局ActionFilter执行之后");
         }
+
+
         public static string regtext = @"\.(css|ico|jpg|png|gif|bmp|js)+\?*.*$";
         public static Regex reg = new Regex(regtext);
 
         private async Task ExcuteFilter(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            //var repath = context.HttpContext.Request.Path.Value.ToLower();
+            var repath = context.HttpContext.Request.Path.Value.ToLower();
 
-            //if (repath.StartsWith("/sdfsdf/") || repath.StartsWith("/api/fact") || reg.IsMatch(repath))
-            //{
+            if (repath.StartsWith("/sdfsdf/") || repath.StartsWith("/api/fact") || reg.IsMatch(repath))
+            {
                 await next();
 
-            //}
-            //else
-            //{
-            //    TypeMaker.Run(context);
-            //    await next();
-            //}
+            }
+            else
+            {
+                await TypeMaker.Run(context);
+                if (context.Result == null)
+                {
+                    await next();
+                }
+
+            }
             //var resp = context.HttpContext.Response;
             //resp.ContentType = "text/html";
 

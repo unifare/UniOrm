@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text; 
-namespace UniOrm.Common
+namespace UniOrm
 {
-    public class MagicExtension
+    public static class MagicExtension
     {
         public static object BackToInst(object obj)
         {
@@ -17,5 +18,52 @@ namespace UniOrm.Common
             }
             return ww.Instance;
         }
+
+        public static object GetProp(this object obj , string PropName)
+        {
+            if (obj == null)
+                return null;
+           
+            var pi= obj.GetType().GetProperty(PropName);
+            if(pi==null)
+            {
+                return null;
+            }
+            else
+            {
+                return pi.GetValue(obj);
+            }
+           
+        }
+
+        public static object Invoke(this object obj, string methodName, object[] args = null)
+        {
+            if (obj == null)
+                return null;
+            var pi = obj.GetType().GetMethod(methodName);
+            if (pi == null)
+            {
+                return null;
+            }
+            else
+            {
+                return pi.Invoke(obj, args);
+            }
+        }
+        public static object Invoke(this Type type, object obj, string methodName, object[] args = null)
+        {
+            if (obj == null)
+                return null;
+            var pi = type.GetMethod(methodName);
+            if (pi == null)
+            {
+                return null;
+            }
+            else
+            {
+                return pi.Invoke(obj, args);
+            }
+        }
+
     }
 }

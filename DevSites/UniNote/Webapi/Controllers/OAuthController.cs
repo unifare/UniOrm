@@ -36,15 +36,15 @@ namespace TestWeb.Controllers
                 if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password", "密码不能为空！");
 
                 //验证用户名和密码
-                var user = SuperManager.LoginDefaultUser(userName, password);
+                var user = APP.LoginDefaultUser(userName, password);
                 var claims = new Claim[]
                 {
                        new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
-                var signingkey = SuperManager.GetDicstring("JWT.IssuerSigningKey");
-                var isuser = SuperManager.GetDicstring("JWT.Issuer");
-                var audience = SuperManager.GetDicstring("JWT.Audience");
+                var signingkey = APP.GetDicstring("JWT.IssuerSigningKey");
+                var isuser = APP.GetDicstring("JWT.Issuer");
+                var audience = APP.GetDicstring("JWT.Audience");
                 //配置授权
                 var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey));
                 var expires = DateTime.Now.AddDays(28);//

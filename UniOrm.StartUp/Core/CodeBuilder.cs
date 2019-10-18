@@ -94,9 +94,9 @@ namespace UniOrm.Core
     {
         public static Type GetTypeFromCache(string TypeName)
         {
-            if(SuperManager.Types.ContainsKey(  TypeName))
+            if(APP.Types.ContainsKey(  TypeName))
             {
-              return  SuperManager.Types[TypeName];
+              return  APP.Types[TypeName];
             }
             return null;
         }

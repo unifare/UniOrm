@@ -8,6 +8,6 @@ namespace UniOrm
     {
         EFCore,
         PatePoco
-            , InMemory
+        , InMemory
     }
 }

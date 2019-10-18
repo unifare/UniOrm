@@ -8,8 +8,7 @@ namespace UniOrm.Model
         GetData,
         Set,
         Declare,
-        CallMethodAndStore,
-      
+        CallMethodAndStore, 
         CallMethod,
         Action,
         Function,
@@ -18,7 +17,9 @@ namespace UniOrm.Model
         Else,
         ElseIF,
         StaiticFile,
-        Text, 
+        Text,
+        RazorText,
+        RazorFile,
     }
     public enum ExcuteType
     {
@@ -67,11 +68,13 @@ namespace UniOrm.Model
     {
         public AConFlowStep()
         {
-            IsBuildIn = false;
-            IsUsingCache = true;
+            IsBuildIn = true;
+            IsUsingCache = false;
             AddTime = DateTime.Now;
+            IsUsingParentConnstring = true;
         }
         public int Id { get; set; }
+        public string AppName { get; set; } = "default";
         public bool IsUsingCache { get; set; }
         public string Guid { get; set; }
         public string AComposityId { get; set; }

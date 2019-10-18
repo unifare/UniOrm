@@ -78,6 +78,12 @@
         "SystemDictionarytype": 0
       },
       {
+        "KeyName": "IocName",
+        "Value": "autofac",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
         "KeyName": "JWT.Issuer",
         "Value": "UniOauthDistribution",
         "IsSystem": true,
@@ -102,8 +108,22 @@
         "SystemDictionarytype": 0
       },
       {
+        "KeyName": "AuthorizeCookiesName",
+        "Value": "Cookies",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "OdicCookiesName",
+        "Value": "oidc",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
         "KeyName": "IsUsingLocalIndentity",
-        "Value": "false",
+        "Value": "true",
         "IsSystem": true,
         "SystemDictionarytype": 0
 
@@ -117,14 +137,14 @@
       },
       {
         "KeyName": "IsUsingIdentityserverClient",
-        "Value": "true",
+        "Value": "false",
         "IsSystem": true,
         "SystemDictionarytype": 0
 
       },
       {
         "KeyName": "Identityserver4.ApiResouceKey",
-        "Value": "UniNote_WebApi",
+        "Value": "UniNote_localApi",
         "IsSystem": true,
         "SystemDictionarytype": 0
 
@@ -136,12 +156,23 @@
         "SystemDictionarytype": 0
       },
       {
-        "KeyName": "OauthClientConfig",
-        "Value": "mvc_client,uninoteapisdkfsldfsdfber232g4gnip,id_token code",
+        "KeyName": "idsr4_ReponseType",
+        "Value": "id_token code",
         "IsSystem": true,
         "SystemDictionarytype": 0
       },
-
+      {
+        "KeyName": "idsr4_ClientId",
+        "Value": "mvc_client",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
+      {
+        "KeyName": "idsr4_ClientSecret",
+        "Value": "uninoteapisdkfsldfsdfber232g4gnip",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+      },
       {
         "KeyName": "OauthClientConfig_scopes",
         "Value": "UniNote_WebApi,openid,profile,offline_access",
@@ -171,7 +202,69 @@
         "SystemDictionarytype": 0
 
       },
+      {
+        "KeyName": "CmsInstallDir",
+        "Value": "/install",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
 
+      },
+      {
+        "KeyName": "CmsInstallkey",
+        "Value": "sdfsj23nSDfj23oj0snwoue",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "CmsInstallLockFileName",
+        "Value": "lock.txt",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "UserDefaultStaticalDir",
+        "Value": "webroot",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "UserDefaultStaticalDirAsDir",
+        "Value": "/",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "IsUserAutoUpdatedb",
+        "Value": "true",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "DBBuilderModel",
+        "Value": "dbfirst",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "IsUsingCmsInstall",
+        "Value": "true",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
+      {
+        "KeyName": "IsUsingCmsGlobalRouterFilter",
+        "Value": "false",
+        "IsSystem": true,
+        "SystemDictionarytype": 0
+
+      },
       {
         "KeyName": "IsUniGloabalWorkflow",
         "Value": "false",

@@ -34,7 +34,7 @@ namespace UniNote.Controllers
 
         public async Task<object> SignOut(string Token)
         {
-            var respone = await authorizeHelper.Logout(Token);
+            var respone = await authorizeHelper.Logout(HttpContext,Token);
             return respone;
         }
 
@@ -44,7 +44,7 @@ namespace UniNote.Controllers
         [HttpPost]
         public async Task<object> Login(string userName, string password, string refreshToken)
         {
-            var response = await authorizeHelper.LoginToIds4Async(userName, password, refreshToken);
+            var response = await authorizeHelper.LoginToIds4Async(HttpContext, userName, password, refreshToken);
 
             return new { response };
 

@@ -16,6 +16,7 @@ namespace UniOrm.Model
         public ComposeEntity()
         {
             AddTime = DateTime.Now;
+            AppType = "aspnetcore";
             //resouceInfos = new List<ResouceInfo>();
             IsUsingParentConnstring = true; 
         }
@@ -26,10 +27,11 @@ namespace UniOrm.Model
         }
         public int Id { get; set; }
         public string Guid { get; set; }
-        public string Templateid { get; set; } 
+        public string Templateid { get; set; }
+        public string AppName { get; set; } = "default";
         public string VersionNum { get; set; }
         public string Connectionstring { get; set; }
-        public bool? IsBuildIn { get; set; }
+        public bool IsBuildIn { get; set; }
         public bool? IsUsingParentConnstring { get; set; } 
         public string AppType { get; set; }
         public string TrigeMethod { get; set; }

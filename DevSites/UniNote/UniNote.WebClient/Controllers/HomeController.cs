@@ -19,7 +19,14 @@ namespace UniNote.WebClient.Controllers
         {
             //dbFactory = _dbFactory;
         }
-      
+        public IActionResult Index2()
+        {
+            //var ss = dbFactory.EFCore<pigcms_adma>().CreateDefaultInstance();
+
+            //var qlist = ss.From<pigcms_adma>();
+            //var allist = qlist.ToList<pigcms_adma>();
+            return View();
+        }
         public IActionResult Index()
         {
             //var ss = dbFactory.EFCore<pigcms_adma>().CreateDefaultInstance();

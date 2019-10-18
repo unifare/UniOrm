@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UniOrm;
 using UniOrm.Application;
 using UniOrm.Startup.Web;
 
@@ -29,7 +30,7 @@ namespace TestWeb
         {
            
             var serv = services.ConfigureServices();
-            ApplicationStartUp.EnsureDaContext(typeof(DataMigrationiHistrory.Init).Assembly);
+            DbMigrationUnit.EnsureDaContext( APP.AppConfig.UsingDBConfig, typeof(DataMigrationiHistrory.Init).Assembly);
             return serv;
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace UniOrm 
+namespace UniOrm
 {
     public static class KataQueryExten
     {
@@ -15,7 +15,19 @@ namespace UniOrm
         //}
         public static List<T> ToList<T>(this Query q) where T : class, new()
         {
-            return q.DataGrounder.ToTyped<T>().Query(q); 
+            if (q.DataGrounder == null)
+            {
+                throw new Exception("no DataGrounder ");
+            }
+            return q.DataGrounder.ToTyped<T>().Query( q);
+        }
+        public static T FirstOrDefault<T>(this Query q) where T : class, new()
+        {
+            if (q.DataGrounder == null)
+            {
+                throw new Exception("no DataGrounder ");
+            }
+            return q.ToList<T>().FirstOrDefault();
         }
         public static string DealExpress(Expression exp)
         {

@@ -15,18 +15,18 @@ using UniOrm.Common;
 
 namespace UniOrm.Startup.Web.Authorize
 {
-    public class AuthorizeHelper:IAuthorizeHelper
+    public class AuthorizeHelper : IAuthorizeHelper
     {
-        HttpContext httpContext = null;
-         AppConfig AppConfig { get; set; }
+
+        AppConfig AppConfig { get; set; }
         public AuthorizeHelper(IConfig config)
         {
             AppConfig = config.GetValue<AppConfig>("App");
         }
-        public async Task<TokenResponse> LoginToIds4Async(string usename, string password, string refreshToken=null)
+        public async Task<TokenResponse> LoginToIds4Async(HttpContext httpContext, string usename, string password, string refreshToken = null)
         {
             var identityserver4url = AppConfig.GetDicstring("Identityserver4.url");
-            var ClientId = AppConfig.GetDicstring("idsr4_ClientId") ;
+            var ClientId = AppConfig.GetDicstring("idsr4_ClientId");
             var ClientSecret = AppConfig.GetDicstring("idsr4_ClientSecret");
             var clientmodel = new OauthClientModel()
             {
@@ -37,18 +37,18 @@ namespace UniOrm.Startup.Web.Authorize
                 Password = password
 
             };
-            return await LoginToIds4Async( clientmodel,  refreshToken);
+            return await LoginToIds4Async(httpContext, clientmodel, refreshToken);
 
         }
 
-        public async Task<TokenResponse> LoginToIds4Async(OauthClientModel clientmodel,  string refreshToken = null)
+        public async Task<TokenResponse> LoginToIds4Async(HttpContext httpContext, OauthClientModel clientmodel, string refreshToken = null)
         {
             var client = new HttpClient();
             var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
-                        { Address = clientmodel.IdentityUrl, Policy = { RequireHttps = false } } );
-           //Token作废
+            { Address = clientmodel.IdentityUrl, Policy = { RequireHttps = false } });
+            //Token作废
             //var oldaccesstoken= wait client.RevokeTokenAsync(new TokenRevocationRequest() { Token = "" });
-            if (refreshToken != null&& refreshToken.Length>20)
+            if (refreshToken != null && refreshToken.Length > 20)
             {
                 var RequesttokenResponse = await client.RequestRefreshTokenAsync(new RefreshTokenRequest()
                 {
@@ -119,18 +119,17 @@ namespace UniOrm.Startup.Web.Authorize
 
         }
 
-  
-        public async Task<Response> Logout(string token)
+
+        public async Task<Response> Logout(HttpContext httpContext, string token)
         {
+            JwtSecurityToken jwt = new JwtSecurityToken(token);
             var identityserver4url = AppConfig.GetDicstring("Identityserver4.url");
             var ClientId = AppConfig.GetDicstring("idsr4_ClientId");
             var ClientSecret = AppConfig.GetDicstring("idsr4_ClientSecret");
-           await  httpContext.SignOutAsync();
+            await httpContext.SignOutAsync();
             await httpContext.SignOutAsync("oidc");
             var client = new HttpClient();
 
-            JwtSecurityToken jwt = new JwtSecurityToken(token);
-             
             var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
             { Address = identityserver4url, Policy = { RequireHttps = false } });
 
@@ -145,7 +144,7 @@ namespace UniOrm.Startup.Web.Authorize
                 Token = token
             });
             //client.vil
-            var RequesttokenResponse = await client.RevokeTokenAsync(new  TokenRevocationRequest()
+            var RequesttokenResponse = await client.RevokeTokenAsync(new TokenRevocationRequest()
             {
                 Address = disco.RevocationEndpoint,
                 ClientId = ClientId,

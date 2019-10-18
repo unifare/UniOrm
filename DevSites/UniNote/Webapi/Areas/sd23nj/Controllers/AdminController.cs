@@ -53,7 +53,7 @@ namespace TestWeb.Controllers
         [HttpPost]
         public async Task<object> Login(string userName, string password)
         {
-            var user = SuperManager.LoginAdmin(userName, password);
+            var user = APP.LoginAdmin(userName, password);
             // var user = _userService.Login(userName, password);
             if (user != null)
             {

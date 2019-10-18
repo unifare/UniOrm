@@ -3,30 +3,57 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using UniOrm.Application;
+using System.IO;
+using System.Reflection;
+using UniOrm.Application.ModuleStander;
 
 namespace UniOrm.Application
 {
     public enum ModuleName
     {
+        Other,
         Security,
         WebUtility,
-        Other
+
     }
-   
+
     public class DefaultModuleManager
     {
-        public static ModuleCollection RegistedModules { get; set; }
+        public ModuleCollection RegistedModules { get; set; } = new ModuleCollection();
 
-        public static Guid Guid { get; set; }
+        public Guid Guid { get; set; }
         public DefaultModuleManager()
         {
+            var dlls = GetAllPluginDlls(AppDomain.CurrentDomain.BaseDirectory);
+            foreach (var dll in dlls)
+            {
+                var ass = Assembly.LoadFrom(dll);
+                var alltypes = ass.GetTypes().Where(p => p.IsSubclassOf(typeof(ModuleBase)));
+                foreach (var item in alltypes)
+                {
+                    RegistedModules.Add((IModule)Activator.CreateInstance(item));
+                }
+
+            }
             Guid = new Guid();
+
         }
-        public static RequireItemCollection TotalRequireItems
+
+        /// <summary>
+        /// 扫描后端
+        /// </summary>
+        /// <param name="filePath">bin目录</param>
+        private static string[] GetAllPluginDlls(string dlldir)
+        {
+
+            return Directory.GetFiles(dlldir, "*Plugin.dll");
+        }
+
+        public RequireItemCollection TotalRequireItems
         {
             get
             {
-                var cachemodel = SuperManager.RuntimeCache.GetOrCreate(Guid, entry =>
+                var cachemodel = APP.RuntimeCache.GetOrCreate(Guid, entry =>
                {
                    RequireItemCollection totalRequireItems = new RequireItemCollection();
                    foreach (var m in RegistedModules)
@@ -38,9 +65,9 @@ namespace UniOrm.Application
                                totalRequireItems.Add(mc);
                            }
 
-                       } 
+                       }
                    }
-                   SuperManager.RuntimeCache.Set(Guid, totalRequireItems);
+                   APP.RuntimeCache.Set(Guid, totalRequireItems);
                    return totalRequireItems;
                });
 
@@ -48,12 +75,26 @@ namespace UniOrm.Application
             }
         }
 
-        public static IModule GetModule(ModuleName name, string othername = null)
+        public IModule GetModule(ModuleName? name = null, string othername = null)
         {
-            return RegistedModules.FirstOrDefault(p => p.ModuleName == name.ToString());
+            if (null == null)
+            {
+                return RegistedModules.FirstOrDefault(p => p.ModuleName == othername);
+            }
+            else
+            {
+                if (name != ModuleName.Other)
+                {
+                    return RegistedModules.FirstOrDefault(p => p.ModuleName == name.ToString());
+                }
+                else
+                {
+                    return RegistedModules.FirstOrDefault(p => p.ModuleName == othername);
+                }
+            }
             //loger
         }
-        public static IModule AddModule(IModule module)
+        public IModule AddModule(IModule module)
         {
             RegistedModules.Add(module);
             return module;

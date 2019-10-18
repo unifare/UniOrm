@@ -42,7 +42,7 @@ namespace UniOrm.Application
         public AConFlowStep AddMathodStep(bool isBuildIn, string comguidi, string dllName, string typeName, string methodInfoName,
            string returnValueName = null, List<string> Inparas = null)
         {
-            var methodInfo = SuperManager.GetMethodFromConfig(isBuildIn, dllName, typeName, methodInfoName);
+            var methodInfo = APP.GetMethodFromConfig(isBuildIn, dllName, typeName, methodInfoName);
             return AddMathodStep(comguidi, methodInfo, returnValueName, Inparas);
         }
 

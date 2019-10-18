@@ -36,123 +36,12 @@ namespace UniOrm.Application
         /// 扫描后端
         /// </summary>
         /// <param name="filePath">bin目录</param>
-        private static string[] ScanBack(string dlldir)
+        private static string[] GetAllPluginDlls(string dlldir)
         {
 
-            return Directory.GetFiles(dlldir, "*.dll");
+            return Directory.GetFiles(dlldir, "*Plugin.dll");
         }
-        public static AppConfig AppConfig { get; set; }
-        public static DcConnectionConfig SystemConConfig { get; set; }
-        public static void EnsureDaContext()
-        {
-            var dbtype = (DBType)SystemConConfig.DBType;
-            if (dbtype != DBType.InMemory)
-            {
-                var fuType = FlunentDBType.Sqlite;
-
-                switch (dbtype)
-                {
-                    case DBType.Sqlite:
-                        fuType = FlunentDBType.Sqlite;
-                        break;
-                    case DBType.SqlServer:
-                        fuType = FlunentDBType.MsSql;
-                        break;
-                    case DBType.Mysql:
-                        fuType = FlunentDBType.MySql4;
-                        break;
-                    case DBType.Postgre:
-                        fuType = FlunentDBType.Postgre;
-                        break;
-                }
-                MigratorFactory.CreateServices(fuType, SystemConConfig.Connectionstring, MigrationOperation.MigrateUp, 0, typeof(Init).Assembly);
-            }
-        }
-        public static void EnsureDaContext(params Assembly[] assemblies)
-        {
-            var dbtype = (DBType)SystemConConfig.DBType;
-            if (dbtype != DBType.InMemory)
-            {
-                var fuType = FlunentDBType.Sqlite;
-
-                switch (dbtype)
-                {
-                    case DBType.Sqlite:
-                        fuType = FlunentDBType.Sqlite;
-                        break;
-                    case DBType.SqlServer:
-                        fuType = FlunentDBType.MsSql;
-                        break;
-                    case DBType.Mysql:
-                        fuType = FlunentDBType.MySql4;
-                        break;
-                    case DBType.Postgre:
-                        fuType = FlunentDBType.Postgre;
-                        break;
-                }
-                MigratorFactory.CreateServices(fuType, SystemConConfig.Connectionstring, MigrationOperation.MigrateUp, 0, assemblies);
-            }
-        }
-        public static IServiceProvider InitAutofac(this IServiceCollection services, IEnumerable<Assembly> modulesAssembly)
-        {
-            if (s_isInit)
-            {
-                return autofacServiceProvider;
-            }
-            services.AddAutofac();
-            var builder = SuperManager.Builder;
-
-            builder.RegisterModule(new AutofacModule());
-            if (modulesAssembly != null)
-            {
-
-                foreach (var m in modulesAssembly)
-                {
-                    SuperManager.Builder.RegisterAssemblyModules(m);
-                }
-            }
-
-
-            builder.RegisterInstance<IDbFactory>(new DbFactory());
-
-            builder.Populate(services);
-
-            var container = builder.Build();
-
-            ///////////using /////////////////////
-
-            IConfig config = container.Resolve<IConfig>();
-            AppConfig = config.GetValue<AppConfig>("App");
-            var memoryCache = container.Resolve<IMemoryCache>();
-            SuperManager.RuntimeCache = new RuntimeCache(memoryCache);
-            var currentAssembly = typeof(PatePocoOrmAdaptor).GetTypeInfo().Assembly;
-            var basedir = AppDomain.CurrentDomain.BaseDirectory;
-            //foreach (var ea in Directory.GetFiles(  basedir).Where(p=>p.EndsWith(".dll")))
-            //{
-            //    Manager.Dlls.Add(ea)
-            //}
-            var ormProviders = currentAssembly.GetImplementationsOf<IOrmAdaptor>();
-
-
-            var ormfactory = container.Resolve<IDbFactory>();
-
-
-            SystemConConfig = AppConfig.UsingDBConfig;//.Connectionstrings.FirstOrDefault(p => p.Name == "sys_default");
-
-            var listtypedModels = ReadTypeFromConfig(AppConfig.EFRegestedModels);
-            foreach (var orm in ormProviders)
-            {
-                orm.RegistedModelTypes.AddTypes(listtypedModels);
-                orm.ConnectionConfig = SystemConConfig;
-                ormfactory.AddOrm(orm);
-            }
-            autofacServiceProvider = container.Resolve<IServiceProvider>();
-            var systemResover = new AutofacResover() { Container = container };
-            builder.RegisterInstance<IResover>(systemResover);
-
-            SuperManager.Container = systemResover;
-            return autofacServiceProvider;
-        }
+   
 
         private static List<Type> ReadTypeFromConfig(List<RegestedModel> regestedModels)
         {
@@ -173,6 +62,60 @@ namespace UniOrm.Application
 
             }
             return listtypedModels;
+        }
+       
+      
+        public static IServiceProvider InitAutofac(this IServiceCollection services, IEnumerable<Assembly> modulesAssembly)
+        {
+            if (s_isInit)
+            {
+                return autofacServiceProvider;
+            }
+            services.AddAutofac();
+            var builder = APP.Builder;
+            APP.RegisterAutofacModule(new AutofacModule()); 
+            APP.RegisterAutofacModuleTypes();
+            APP.RegisterAutofacAssemblies(modulesAssembly);
+          
+            builder.RegisterInstance<IDbFactory>(new DbFactory());
+
+            builder.Populate(services);
+
+            var container = builder.Build();
+
+            ///////////using /////////////////////
+
+            IConfig config = container.Resolve<IConfig>();
+         
+            var memoryCache = container.Resolve<IMemoryCache>();
+            APP.RuntimeCache = new RuntimeCache(memoryCache);
+            var currentAssembly = typeof(PatePocoOrmAdaptor).GetTypeInfo().Assembly;
+            var basedir = AppDomain.CurrentDomain.BaseDirectory;
+            //foreach (var ea in Directory.GetFiles(  basedir).Where(p=>p.EndsWith(".dll")))
+            //{
+            //    Manager.Dlls.Add(ea)
+            //}
+            var ormProviders = currentAssembly.GetImplementationsOf<IOrmAdaptor>();
+
+
+            var ormfactory = container.Resolve<IDbFactory>();
+
+
+            var systemConConfig = APP.AppConfig.UsingDBConfig;//.Connectionstrings.FirstOrDefault(p => p.Name == "sys_default");
+
+            var listtypedModels = ReadTypeFromConfig(APP.AppConfig.EFRegestedModels);
+            foreach (var orm in ormProviders)
+            {
+                orm.RegistedModelTypes.AddTypes(listtypedModels);
+                orm.ConnectionConfig = systemConConfig;
+                ormfactory.AddOrm(orm);
+            }
+            autofacServiceProvider = container.Resolve<IServiceProvider>();
+            var systemResover = new AutofacResover() { Container = container };
+            builder.RegisterInstance<IResover>(systemResover);
+
+            APP.Container = systemResover;
+            return autofacServiceProvider;
         }
     }
 }

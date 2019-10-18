@@ -15,7 +15,9 @@ namespace UniOrm
             ResultDictionary = new Dictionary<string, object>(); 
         }
         public string AppType { get; set; }
-
+        public string ModuleConfigDir { get; set; } = "./";
+        public string AppName{ get; set; }
+        public string DefaultDbPrefixName { get; set; }
         public DcConnectionConfig UsingDBConfig { get; set; }
         public List<DcConnectionConfig> Connectionstrings { get; set; }
         public List<RegestedModel> EFRegestedModels { get; set; }

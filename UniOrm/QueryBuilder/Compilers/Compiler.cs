@@ -16,7 +16,7 @@ namespace SqlKata.Compilers
         protected virtual string TableAsKeyword { get; set; } = "AS ";
         protected virtual string LastId { get; set; } = "";
         protected virtual string EscapeCharacter { get; set; } = "\\";
-
+        protected virtual string TablePrefix { get; set; } = "";
         protected Compiler()
         {
             _compileConditionMethodsProvider = new ConditionsCompilerProvider(this);

@@ -1,17 +1,20 @@
 ﻿using FluentMigrator;
 using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 namespace UniOrm.DataMigrationiHistrory
 {
-    [Migration(10000000000000)]
-    public class Init : Migration
+    [Migration(1)]
+    public class Init : DBMIgrateBase
     {
+       
         public override void Up()
         {
 
-            Create.Table("SystemACon")
+            Create.Table(WholeTableName("SystemACon"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("AppName").AsString(200)
                 .WithColumn("AppDiscription").AsString(300)
@@ -23,7 +26,7 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("LastRunTime").AsDateTime().Nullable()
                  .WithColumn("CreateTime").AsDateTime().Nullable()
                 ;
-            Create.Table("SystemRegitionInfo")
+            Create.Table(WholeTableName("SystemRegitionInfo"))
               .WithColumn("Id").AsInt64().PrimaryKey().Identity()
               .WithColumn("AuthorizeWay").AsString(200)
               .WithColumn("VersionNum").AsString(100).Nullable()
@@ -38,7 +41,7 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("CreateTime").AsDateTime().Nullable()
               ;
 
-            Create.Table("FieldInfoDefinition")
+            Create.Table(WholeTableName("FieldInfoDefinition"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("BelongTypeId").AsInt64().Nullable()
                 .WithColumn("Name").AsString(200)
@@ -51,7 +54,7 @@ namespace UniOrm.DataMigrationiHistrory
              .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-            Create.Table("ProperityDefinition")
+            Create.Table(WholeTableName("ProperityDefinition"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                .WithColumn("BelongTypeId").AsInt64().Nullable()
                .WithColumn("Name").AsString(400)
@@ -66,7 +69,7 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-            Create.Table("MethodDefinition")
+            Create.Table(WholeTableName("MethodDefinition"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                .WithColumn("BelongTypeId").AsInt64().Nullable()
                .WithColumn("Name").AsString(400)
@@ -81,7 +84,7 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("VersionNum").AsString(100).Nullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
-            Create.Table("TypeDefinition")
+            Create.Table(WholeTableName("TypeDefinition"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                .WithColumn("AliName").AsString(400)
                .WithColumn("ClassName").AsString(400)
@@ -109,7 +112,7 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("VersionNum").AsString(100).Nullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
-            Create.Table("ClassACon")
+            Create.Table(WholeTableName("ClassACon"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("VersionNum").AsString(100).Nullable()
                  .WithColumn("Name").AsString(700).Nullable()
@@ -120,7 +123,7 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-            Create.Table("AssemblyACon")
+            Create.Table(WholeTableName("AssemblyACon"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("NameSpace").AsString(600).Nullable()
                  .WithColumn("Name").AsString(700).Nullable()
@@ -133,13 +136,14 @@ namespace UniOrm.DataMigrationiHistrory
             ;
 
 
-            Create.Table("AConFlowStep")
+            Create.Table(WholeTableName("AConFlowStep"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                  .WithColumn("Guid").AsString(70).Nullable()
+                  .WithColumn("AppName").AsString(200).WithDefaultValue("default")
                  .WithColumn("AComposityId").AsString(80)
                   .WithColumn("IsUsingParentConnstring").AsBoolean().Nullable()
                   .WithColumn("IsBuildIn").AsBoolean().Nullable()
-                 .WithColumn("IsUsingCache").AsBoolean().WithDefaultValue(true) 
+                 .WithColumn("IsUsingCache").AsBoolean().WithDefaultValue(true)
                 .WithColumn("DBType").AsInt16().Nullable()
                 .WithColumn("Connectionstring").AsString(700).Nullable()
                  .WithColumn("StepOrder").AsInt32()
@@ -151,8 +155,8 @@ namespace UniOrm.DataMigrationiHistrory
                  .WithColumn("OutPutText").AsString().Nullable()
                 .WithColumn("ReferenceDlls").AsString(300).Nullable()
                 .WithColumn("StoreValueProposal").AsInt32().Nullable()
-            .WithColumn("ExcuteType").AsInt32() 
-               .WithColumn("GetValueProposal").AsInt32().Nullable() 
+            .WithColumn("ExcuteType").AsInt32()
+               .WithColumn("GetValueProposal").AsInt32().Nullable()
                 .WithColumn("TypeLib").AsString(100).Nullable()
                  .WithColumn("TypeLibform").AsString(100).Nullable()
                   .WithColumn("TypeFullName").AsString(400).Nullable()
@@ -175,29 +179,30 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-            
-        Create.Table("ComposeTemplate")
-            .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-            .WithColumn("Name").AsString(700).Nullable()
-            .WithColumn("StepIds").AsString(700).Nullable()
-            .WithColumn("Isenable").AsBoolean( ).Nullable() 
-            .WithColumn("AddTime").AsDateTime().Nullable();
-            ;
-           
 
-        Create.Table("AConStateModule")
-            .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-            .WithColumn("Name").AsString(700).Nullable()
-            .WithColumn("Description").AsString(700).Nullable()
-            .WithColumn("VersionNum").AsString(100).Nullable()
-            .WithColumn("AddTime").AsDateTime().Nullable();
+            Create.Table(WholeTableName("ComposeTemplate"))
+                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("Name").AsString(700).Nullable()
+                .WithColumn("StepIds").AsString(700).Nullable()
+                .WithColumn("Isenable").AsBoolean().Nullable()
+                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
 
-            Create.Table("ComposeEntity")
+            Create.Table(WholeTableName("AConStateModule"))
+                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("Name").AsString(700).Nullable()
+                .WithColumn("Description").AsString(700).Nullable()
+                .WithColumn("VersionNum").AsString(100).Nullable()
+                .WithColumn("AddTime").AsDateTime().Nullable();
+            ;
+
+
+            Create.Table(WholeTableName("ComposeEntity"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                  .WithColumn("Guid").AsString(70).Nullable()
-                .WithColumn("Name").AsString(700).Nullable() 
+                .WithColumn("Name").AsString(700).Nullable()
+                 .WithColumn("AppName").AsString(200).WithDefaultValue("default")
                 .WithColumn("RunMode").AsInt32()
                   .WithColumn("IsBuildIn").AsBoolean().Nullable()
                 .WithColumn("IsUsingParentConnstring").AsBoolean().Nullable()
@@ -205,9 +210,9 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("Connectionstring").AsString(700).Nullable()
                .WithColumn("TrigeMethod").AsString(100).Nullable()
                 .WithColumn("TrigeType").AsString(100).Nullable()
-                .WithColumn("Description").AsString(700).Nullable() 
+                .WithColumn("Description").AsString(700).Nullable()
                     .WithColumn("Templateid").AsString(700).Nullable()
-                .WithColumn("RegisterGuid").AsString(80).WithDefaultValue(Guid.NewGuid().ToString("N"))
+                //.WithColumn("RegisterGuid").AsString(80).WithDefaultValue(Guid.NewGuid().ToString("N"))
                 .WithColumn("CalStackMD5").AsString(100).Nullable()
                 .WithColumn("IsStatic").AsBoolean().Nullable().WithDefaultValue(true)
                 .WithColumn("TransferParamterLib").AsString(300).Nullable()
@@ -220,7 +225,7 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-            Create.Table("StepParamter")
+            Create.Table(WholeTableName("StepParamter"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Name").AsString(700).Nullable()
                  .WithColumn("ModuleId").AsInt64().Nullable()
@@ -231,7 +236,7 @@ namespace UniOrm.DataMigrationiHistrory
             ;
 
 
-            Create.Table("ResouceInfo")
+            Create.Table(WholeTableName("ResouceInfo"))
              .WithColumn("Id").AsInt64().PrimaryKey().Identity()
               .WithColumn("FlowId").AsInt64().Nullable()
               .WithColumn("ModuleId").AsInt64().Nullable()
@@ -243,25 +248,27 @@ namespace UniOrm.DataMigrationiHistrory
              .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-           
 
-            Create.Table("TrigerRuleInfo")
+
+            Create.Table(WholeTableName("TrigerRuleInfo"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("VersionNum").AsString(100).Nullable()
+                .WithColumn("VersionNum").AsString(100).Nullable() 
+                 .WithColumn("AppName").AsString(200).WithDefaultValue("default")
                 .WithColumn("RuleName").AsString(100).Nullable()
-                 .WithColumn("HttpMethod").AsString(20).Nullable()
+                 .WithColumn("HttpMethod").AsString(20).Nullable().WithDefaultValue("Get")
                 .WithColumn("ComposityId").AsString(70).Nullable()
                 .WithColumn("Rule").AsString(100).Nullable()
                 .WithColumn("IsEnable").AsBoolean().Nullable().WithDefaultValue(true)
                 .WithColumn("AddTime").AsDateTime().Nullable();
             ;
-         
+
             var s = new
             {
                 Guid = "D506C9B6-AC0C-421A-BD6F-BD94A92DA418",
+                AppName = "default",
                 AddTime = DateTime.Now,
                 RunMode = 0,
-                IsBuildIn=true,
+                IsBuildIn = true,
                 IsUsingParentConnstring = true,
                 Connectionstring = "sys_default",
                 AppType = "aspnetcore",
@@ -271,104 +278,112 @@ namespace UniOrm.DataMigrationiHistrory
 
             };
 
-            Insert.IntoTable("ComposeEntity").Row(s);
+            Insert.IntoTable(WholeTableName("ComposeEntity")).Row(s);
             var ste = new
             {
                 Guid = "3E3F7118-8282-4476-A903-7400336B9A9F",
                 AddTime = DateTime.Now,
+                AppName = "default",
                 IsBuildIn = true,
                 FlowStepType = 0,
-                ExcuteType=0,
+                ExcuteType = 0,
                 GetValueProposal = 5,
                 IsUsingParentConnstring = true,
                 AComposityId = s.Guid,
                 Description = "defaultweb_Setp1",
                 StepOrder = 0,
-                InParamter1 = "select * from TrigerRuleInfo",
+                InParamter1 = "select * from  "+ WholeTableName("TrigerRuleInfo"),
                 StorePoolKey = "allrules",
                 //StoreValueType = typeof(List<ComposeEntity>).FullName
             };
-            Insert.IntoTable("AConFlowStep").Row(ste);
-         
-            var ste2 = new
-            {
-                Guid = "38E13CBA-4456-43B7-B3B3-A7611F738C16",
-                AddTime = DateTime.Now,
-                IsBuildIn = true,
-                FlowStepType = 4,
-                ExcuteType = 0,
-                GetValueProposal = 4,
-                IsUsingParentConnstring = true,
-                AComposityId = s.Guid,
-                IsUsingCache=false,
-                Description = "defaultweb_Setp2",
-                StepOrder = 1,
-                TypeLib = "BasicPlugin.dll",
-                MethodName = "GetRequestUrl",
-                TypeFullName = "BasicPlugin.HttpUtility",
-                StorePoolKey = "url",
-                ArgNames = "__httpcontext",
-            };
-            Insert.IntoTable("AConFlowStep").Row(ste2);
-            var ste33 = new
-            {
-                Guid = "1d9F",
-                AddTime = DateTime.Now,
-                IsBuildIn = true,
-                FlowStepType = 2,
-                ExcuteType = 0,
-                GetValueProposal = 5,
-                IsUsingParentConnstring = true,
-                AComposityId = s.Guid,
-                StepOrder =2,
-                ProxyCode = "BasicPlugin.QueryGeneratorcs.test( \"3 \",\"4\")",
-                TypeLib = "BasicPlugin.dll",
-                StorePoolKey = "",
-                //StoreValueType = typeof(List<ComposeEntity>).FullName
-            };
-            Insert.IntoTable("AConFlowStep").Row(ste33);
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste);
+
+            //var ste2 = new
+            //{
+            //    Guid = "38E13CBA-4456-43B7-B3B3-A7611F738C16",
+            //    AddTime = DateTime.Now,
+            //    AppName = "default",
+            //    IsBuildIn = true,
+            //    FlowStepType = 4,
+            //    ExcuteType = 0,
+            //    GetValueProposal = 4,
+            //    IsUsingParentConnstring = true,
+            //    AComposityId = s.Guid,
+            //    IsUsingCache = false,
+            //    Description = "defaultweb_Setp2",
+            //    StepOrder = 1,
+            //    TypeLib = "BasicPlugin.dll",
+            //    MethodName = "GetRequestUrl",
+            //    TypeFullName = "BasicPlugin.HttpUtility",
+            //    StorePoolKey = "url",
+            //    ArgNames = "__actioncontext",
+            //};
+            //Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste2);
+            //var ste33 = new
+            //{
+            //    Guid = "1d9F",
+            //    AddTime = DateTime.Now,
+            //    IsBuildIn = true,
+            //    FlowStepType = 2,
+            //    AppName = "default",
+            //    ExcuteType = 0,
+            //    GetValueProposal = 5,
+            //    IsUsingParentConnstring = true,
+            //    AComposityId = s.Guid,
+            //    StepOrder = 2,
+            //    ProxyCode = "BasicPlugin.QueryGeneratorcs.test( \"3 \",\"4\")",
+            //    TypeLib = "BasicPlugin.dll",
+            //    StorePoolKey = "",
+            //    //StoreValueType = typeof(List<ComposeEntity>).FullName
+            //};
+            //Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste33);
             var ste3 = new
             {
                 Guid = "BBF6B4BC-AEDA-4607-83ED-406E8BB67351",
                 AddTime = DateTime.Now,
                 IsBuildIn = true,
                 FlowStepType = 4,
+                AppName = "default",
                 ExcuteType = 0,
-                GetValueProposal = 4, 
+                GetValueProposal = 4,
                 IsUsingCache = false,
                 IsUsingParentConnstring = true,
                 AComposityId = s.Guid,
                 Description = "defaultweb_Setp2",
-                StepOrder = 3,
+                StepOrder = 2,
                 TypeLib = "BasicPlugin.dll",
                 MethodName = "GetIsTriger",
                 TypeFullName = "BasicPlugin.HttpUtility",
-                ArgNames = "allrules,url",
+                ArgNames = "allrules,__httpcontext",
                 StorePoolKey = "_NextRunTimeKey",
             };
-            Insert.IntoTable("AConFlowStep").Row(ste3);
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste3);
 
 
-            Insert.IntoTable("TrigerRuleInfo").Row(new { RuleName = "default", Rule = @"\/test", ComposityId = "1111" });
-            Insert.IntoTable("TrigerRuleInfo").Row(new { RuleName = "default", Rule = @"\/_fact", ComposityId = "_fact" });
+            Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "default", HttpMethod = "GET", Rule = @"\/test", ComposityId = "1111" });
+            Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "default", HttpMethod = "GET", Rule = @"\/_fact", ComposityId = "_fact" });
+            Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "pay", HttpMethod = "GET", Rule = @"\/pay", ComposityId = "1e1cb869-2512-8dfc-81ee-ed3150836182" });
+            Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "hellorazor", HttpMethod = "GET", Rule = @"\/r", ComposityId = "e984ff96-c112-7133-3c00-df09f7338338" });
             var s_fact = new
             {
                 Guid = "_fact",
                 AddTime = DateTime.Now,
-                IsBuildIn=false,
+                IsBuildIn = false,
+                AppName = "default",
                 IsUsingParentConnstring = true,
                 Connectionstring = "sys_default",
                 RunMode = 0,
                 AppType = "aspnetcore",
                 Description = "defaultweb_fact",
-                TrigeType = "urlreg", 
+                TrigeType = "urlreg",
                 Name = "defaultweb_fact",
 
             };
-            Insert.IntoTable("ComposeEntity").Row(s_fact);
+            Insert.IntoTable(WholeTableName("ComposeEntity")).Row(s_fact);
             var ste_fact = new
             {
                 Guid = "_factS1",
+                AppName = "default",
                 AddTime = DateTime.Now,
                 IsBuildIn = true,
                 FlowStepType = 2,
@@ -382,11 +397,12 @@ namespace UniOrm.DataMigrationiHistrory
                 StorePoolKey = "restext",
                 //StoreValueType = typeof(List<ComposeEntity>).FullName
             };
-            Insert.IntoTable("AConFlowStep").Row(ste_fact);
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_fact);
             var ste_fact1 = new
             {
                 Guid = "_factS2",
                 AddTime = DateTime.Now,
+                AppName = "default",
                 IsBuildIn = true,
                 FlowStepType = 4,
                 ExcuteType = 0,
@@ -399,10 +415,192 @@ namespace UniOrm.DataMigrationiHistrory
                 TypeLib = "BasicPlugin.dll",
                 MethodName = "ResponseText",
                 TypeFullName = "BasicPlugin.HttpUtility",
-                ArgNames = "__httpcontext,restext",
+                ArgNames = "__actioncontext,restext",
                 StorePoolKey = "",
             };
-            Insert.IntoTable("AConFlowStep").Row(ste_fact1);
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_fact1);
+
+
+            var s_pay = new
+            {
+                Guid = "1e1cb869-2512-8dfc-81ee-ed3150836182",
+                
+                AddTime = DateTime.Now,
+                IsBuildIn = false,
+                AppName = "default",
+                IsUsingParentConnstring = true,
+                Connectionstring = "sys_default",
+                RunMode = 0,
+                AppType = "aspnetcore",
+                Description = "paycom",
+               
+                Name = "paycom",
+
+            };
+
+            Insert.IntoTable(WholeTableName("ComposeEntity")).Row(s_pay);
+
+            var ste_s_pay1 = new
+            {
+                Guid = "d6f55a47-0b6f-b30e-d7cc-724c24705bd4",
+                AddTime = DateTime.Now,
+                AppName = "default",
+                IsBuildIn = false,
+                FlowStepType = 2,
+                ExcuteType = 0,
+                GetValueProposal = 4,
+                IsUsingParentConnstring = true,
+                ProxyCode= @"new { Body=""APP支付描述信息"",
+Subject = ""APP支付测试"",
+                TotalAmount = ""0.01"",
+                OutTradeNo = System.DateTime.Now.ToString(""yyyyMMddHHmmssfff""),
+                ProductCode = ""FAST_INSTANT_TRADE_PAY"",
+                NotifyUrl = ""http://localhost:6008/alipay/pagepayreturn"",
+                ReturnUrl = ""http://ocalhost:6008/notify/alipay/pagepay""
+            }",
+                AComposityId = s_pay.Guid,
+                Description = "pay_step1",
+                StepOrder = 0,
+               
+                StorePoolKey = "model",
+            };
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_s_pay1);
+
+            var ste_s_pay2= new
+            {
+                Guid = "af89bbba-dd09-711d-a88f-b794a6be63ae",
+                AddTime = DateTime.Now,
+                AppName = "default",
+                IsBuildIn = false,
+                FlowStepType = 4,
+                ExcuteType = 0,
+                GetValueProposal = 4,
+                IsUsingParentConnstring = true,
+                Description = "ste_s_pay_step2",
+                StepOrder = 1,
+                TypeLib = "AlipayPlugin.dll",
+                MethodName = "PagePay",
+                TypeFullName = "AlipayPlugin.AliDevelop",
+                ArgNames = "model",
+                AComposityId = s_pay.Guid,
+                StorePoolKey = "resonse",
+            };
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_s_pay2);
+
+
+
+            var ste_s_pay3= new
+            {
+                Guid = "0769f3fe-579b-c1c3-a4a2-bc10000f9d31",
+                AddTime = DateTime.Now,
+                AppName = "default",
+                IsBuildIn = false,
+                FlowStepType = 4,
+                ExcuteType = 0,
+                GetValueProposal = 4,
+                IsUsingParentConnstring = true,
+                Description = "ste_s_pay_step3",
+                StepOrder =2,
+                TypeLib = "BasicPlugin.dll",
+                MethodName = "ResponseText",
+                TypeFullName = "BasicPlugin.HttpUtility",
+                ArgNames = "__actioncontext,resonse",
+                AComposityId = s_pay.Guid, 
+            };
+
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_s_pay3);
+
+            var s_razor  = new
+            {
+                Guid = "e984ff96-c112-7133-3c00-df09f7338338",
+
+                AddTime = DateTime.Now,
+                IsBuildIn = false,
+                AppName = "default",
+                IsUsingParentConnstring = true,
+                Connectionstring = "sys_default",
+                RunMode = 0,
+                AppType = "aspnetcore",
+                Description = "razor", 
+                Name = "razor",
+
+            };
+
+            Insert.IntoTable(WholeTableName("ComposeEntity")).Row(s_razor);
+
+
+            var ste_razor1 = new
+            {
+                Guid = "75b50d33-ccfd-f398-e395-3e2df84550f7",
+                AddTime = DateTime.Now,
+                AppName = "default",
+                IsBuildIn = false,
+                FlowStepType = 2,
+                ExcuteType = 0,
+                GetValueProposal = 4,
+                IsUsingParentConnstring = true,
+                ProxyCode = @"new {Name=""ttttttttttttttttttt <span style =\""color:red\"" >tttttt</span>tttt""
+            }",
+                AComposityId = s_razor.Guid,
+                Description = "ste_razor1",
+                StepOrder = 0,
+                Name= "makemodel",
+                StorePoolKey = "model",
+            };
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_razor1);
+
+            var ste_razor2 = new
+            {
+                Guid = "364f2237-87de-068e-957f-388e65aab63e",
+                AddTime = DateTime.Now,
+                AppName = "default",
+                IsBuildIn = false,
+                FlowStepType = 13,
+                ExcuteType = 0,
+                GetValueProposal = 4,
+                IsUsingParentConnstring = true,
+                ProxyCode = @"@using UniOrm
+@{
+  DisableEncoding = true;
+   var tool =new RazorTool();
+tool.Session(""key"",""sdfsdfd"");
+            }
+Hello, @Model.Name .Welcome to RazorLight repository
+
+<br/>
+@tool.Session(""key"")",
+                AComposityId = s_razor.Guid,
+                Description = "ste_razor2",
+                StepOrder = 1,
+                Name = "getresult",
+                ArgNames = "model",
+                StorePoolKey = "restext",
+            };
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_razor2);
+
+
+            var ste_razor3 = new
+            {
+                Guid = "3bfb7e30-ad3d-db7e-0dd4-65f84fd9364d",
+                AddTime = DateTime.Now,
+                AppName = "default",
+                IsBuildIn = true,
+                FlowStepType = 4,
+                ExcuteType = 0,
+                GetValueProposal = 4,
+                IsUsingParentConnstring = true,
+                Description = "ste_razor3",
+                StepOrder = 2,
+                TypeLib = "BasicPlugin.dll",
+                MethodName = "ResponseText",
+                TypeFullName = "BasicPlugin.HttpUtility",
+                ArgNames = "__actioncontext,restext",
+                Name = "reponse",
+                AComposityId = s_razor.Guid,
+            };
+
+            Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_razor3);
+
             //var aGateWay_fact = new
             //{
             //    Guid = "9CBCEE00-2AB2-40D3-8406-4A1B923432cc",
@@ -411,20 +609,20 @@ namespace UniOrm.DataMigrationiHistrory
             //    AConFlowStepId = ste_fact.Guid,
             //    InParamter1 = "select * from TrigerRuleInfo",
             //    StorePoolKeys = "url",
-            //    PoolKey1 = "__httpcontext",
+            //    PoolKey1 = "__actioncontext",
             //    //StorePoolsKeys = "allrules",
             //    //StoreValueType = typeof(ComposeEntity).FullName
             //};
             //Insert.IntoTable("AConGetWay").Row(aGateWay);
-            Create.Table("AdminUser")
+            Create.Table(WholeTableName("AdminUser"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Guid").AsString(50).Nullable()
                  .WithColumn("UserName").AsString(100).Nullable()
                 .WithColumn("Password").AsString(100).Nullable()
-                .WithColumn("IsDisable").AsBoolean().NotNullable()  
+                .WithColumn("IsDisable").AsBoolean().NotNullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
-            var password =  "admin";
+            var password = "admin";
             using (var md5 = MD5.Create())
             {
                 var result = md5.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -438,12 +636,12 @@ namespace UniOrm.DataMigrationiHistrory
                 AddTime = DateTime.Now,
                 UserName = "admin",
                 Password = password,
-                IsDisable = false, 
+                IsDisable = false,
             };
-            Insert.IntoTable("AdminUser").Row(addAdminUser);
+            Insert.IntoTable(WholeTableName("AdminUser")).Row(addAdminUser);
 
 
-            Create.Table("DefaultUser")
+            Create.Table(WholeTableName("DefaultUser"))
              .WithColumn("Id").AsInt64().PrimaryKey().Identity()
               .WithColumn("Guid").AsString(50).Nullable()
                .WithColumn("UserName").AsString(100).Nullable()
@@ -467,13 +665,13 @@ namespace UniOrm.DataMigrationiHistrory
                 Password = defaultUserpassword,
                 IsDisable = false,
             };
-            Insert.IntoTable("DefaultUser").Row(addDefaultUser);
+            Insert.IntoTable(WholeTableName("DefaultUser")).Row(addDefaultUser);
 
-            Create.Table("SystemDictionary")
+            Create.Table(WholeTableName("SystemDictionary"))
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("KeyName").AsString(450).Nullable()
-                 .WithColumn("Value").AsString(900 ).Nullable()
-                .WithColumn("SystemDictionarytype").AsInt16( ) 
+                 .WithColumn("Value").AsString(900).Nullable()
+                .WithColumn("SystemDictionarytype").AsInt16()
                 .WithColumn("IsSystem").AsBoolean().NotNullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
@@ -486,30 +684,31 @@ namespace UniOrm.DataMigrationiHistrory
                 SystemDictionarytype = 0,
                 AddTime = DateTime.Now,
             };
-            Insert.IntoTable("SystemDictionary").Row(SystemDictionary1);
+            Insert.IntoTable(WholeTableName("SystemDictionary")).Row(SystemDictionary1);
         }
 
         public override void Down()
         {
-            Delete.Table("SystemACon");
-            Delete.Table("SystemRegitionInfo");
-            Delete.Table("FieldInfoDefinition");
-            Delete.Table("ProperityDefinition");
-            Delete.Table("MethodDefinition");
-            Delete.Table("TypeDefinition");
-            Delete.Table("ClassACon");
-            Delete.Table("AssemblyACon");
-            Delete.Table("AConStateModule");
-            Delete.Table("AuthorizeInfo");
-            Delete.Table("AConStateFlow");
-            Delete.Table("AConFlowStep");
-            Delete.Table("GetWay");
-            Delete.Table("StepParamter");
-            Delete.Table("TrigerRuleInfo");
-            Delete.Table("ComposeEntity");
-            Delete.Table("SystemRegistionInfo");
-            Delete.Table("AdminUser");
-            Delete.Table("DefaultUser");
+            Delete.Table(WholeTableName("SystemACon"));
+            Delete.Table(WholeTableName("SystemRegitionInfo"));
+            Delete.Table(WholeTableName("FieldInfoDefinition"));
+            Delete.Table(WholeTableName("ProperityDefinition"));
+            Delete.Table(WholeTableName("MethodDefinition"));
+            Delete.Table(WholeTableName("TypeDefinition"));
+            Delete.Table(WholeTableName("ClassACon"));
+            Delete.Table(WholeTableName("AssemblyACon"));
+            Delete.Table(WholeTableName("AConStateModule"));
+            Delete.Table(WholeTableName("AuthorizeInfo"));
+            Delete.Table(WholeTableName("AConStateFlow"));
+            Delete.Table(WholeTableName("AConFlowStep"));
+            Delete.Table(WholeTableName("GetWay"));
+            Delete.Table(WholeTableName("StepParamter"));
+            Delete.Table(WholeTableName("TrigerRuleInfo"));
+            Delete.Table(WholeTableName("ComposeEntity"));
+            Delete.Table(WholeTableName("SystemRegistionInfo"));
+            Delete.Table(WholeTableName("AdminUser"));
+            Delete.Table(WholeTableName("DefaultUser"));
+            Delete.Table(WholeTableName("SystemDictionary"));
         }
     }
 }

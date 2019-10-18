@@ -121,22 +121,26 @@ namespace UniOrm
             Close(OrmObject);
         }
         public Query From<T>()
-        {
-            var newquery = KataDB.From<T>();
-            newquery.DataGrounder = this;
-            return newquery;
+        { 
+            var q = new Query();
+            q.DataGrounder = this;
+            var wholeTablename = q.DataGrounder.OrmAdaptor.ConnectionConfig.DefaultDbPrefixName + typeof(T).Name;
+            return q.From(wholeTablename); 
         }
         public DataGrouderT<T> ToTyped<T>() where T : class, new()
         {
             var typedb = new DataGrouderT<T>();
             typedb.Parent = this;
+
+
             return typedb;
         }
         public Query From(string tablename)
         {
-            var newquery = KataDB.From(tablename);
+            var newquery = new Query();
             newquery.DataGrounder = this;
-            return newquery;
+            var wholeTablename = newquery.DataGrounder.OrmAdaptor.ConnectionConfig.DefaultDbPrefixName + tablename;
+            return newquery.From(wholeTablename); 
         }
         public virtual List<dynamic> Query(Query query)
         {
