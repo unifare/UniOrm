@@ -14,10 +14,10 @@ namespace UniNote.WebClient.Controllers
  
     public class HomeController : Controller
     {
-        //IDbFactory dbFactory;
-        public HomeController( )
+        IDbFactory dbFactory;
+        public HomeController(IDbFactory _dbFactory)
         {
-            //dbFactory = _dbFactory;
+           dbFactory = _dbFactory;
         }
         public IActionResult Index2()
         {

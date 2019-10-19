@@ -28,7 +28,7 @@ namespace UniNote
         { 
             var serv = services.ConfigureServices();
 
-            DbMigrationUnit.EnsureDaContext(APP.AppConfig.UsingDBConfig,typeof(MigrationVersion1).Assembly);
+            DbMigrationHelper.EnsureDaContext(APPCommon.AppConfig.UsingDBConfig,typeof(MigrationVersion1).Assembly);
             return serv;
         }
  

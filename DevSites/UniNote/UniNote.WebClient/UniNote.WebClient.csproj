@@ -80,6 +80,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Plugins\AlipayPlugin\AlipayPlugin.csproj" />
     <ProjectReference Include="..\..\..\Plugins\BasicPlugin\BasicPlugin.csproj" />
+    <ProjectReference Include="..\..\..\Plugins\OauthMngPlugin\OauthMngPlugin.csproj" />
     <ProjectReference Include="..\..\..\UniOrm.Web\UniOrm.Startup.Web.csproj" />
     <ProjectReference Include="..\..\..\UniOrm\UniOrm.csproj" />
     <ProjectReference Include="..\UniNote.DBMigration\UniNote.DBMigration.csproj" />

@@ -24,7 +24,7 @@ namespace UniOrm
     }
     public interface IOrmAdaptor
     {
-        DcConnectionConfig ConnectionConfig { get; set; }
+        DbConnectionConfig ConnectionConfig { get; set; }
         IResover Resover { get; set; }
         bool IsSelfDefineCreation { get; set; }
         Type DataGrounderType { get; set; }

@@ -272,7 +272,7 @@ namespace UniOrm.Application
                                                 }
                                                 catch (Exception exp)
                                                 {
-                                                    Logger.LogError(logName, "Run -> FlowStepType.CallMethod error,composity:{0},step:{1}", cons.Id, s.Guid);
+                                                    Logger.LogError(logName, "Run -> FlowStepType.CallMethod error,composity:{0},step:{1},-------------exception:{2}", cons.Id, s.Guid, LoggerHelper.GetExceptionString(exp)) ;
                                                     break;
                                                 }
 

@@ -19,10 +19,10 @@ namespace UniOrm
         {
             get
             {
-                var configapp = APP.AppConfig.UsingDBConfig;
+                var configapp = APPCommon.AppConfig.UsingDBConfig;
                 var config = new ConnectionConfig()
                 {
-                    ConnectionString = APP.AppConfig.UsingDBConfig.Connectionstring,
+                    ConnectionString = APPCommon.AppConfig.UsingDBConfig.Connectionstring,
 
                     IsAutoCloseConnection = true,
                     ConfigureExternalServices = new ConfigureExternalServices()
@@ -45,7 +45,7 @@ namespace UniOrm
                             }
                             else
                             {
-                                entity.DbTableName = APP.AppConfig.UsingDBConfig.DefaultDbPrefixName + entity.DbTableName;
+                                entity.DbTableName = APPCommon.AppConfig.UsingDBConfig.DefaultDbPrefixName + entity.DbTableName;
                             }
 
                         }

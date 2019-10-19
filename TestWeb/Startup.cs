@@ -30,7 +30,7 @@ namespace TestWeb
         {
            
             var serv = services.ConfigureServices();
-            DbMigrationUnit.EnsureDaContext( APP.AppConfig.UsingDBConfig, typeof(DataMigrationiHistrory.Init).Assembly);
+            DbMigrationHelper.EnsureDaContext( APPCommon.AppConfig.UsingDBConfig, typeof(DataMigrationiHistrory.Init).Assembly);
             return serv;
         }
 

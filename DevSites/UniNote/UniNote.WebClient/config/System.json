@@ -139,14 +139,14 @@
       },
       {
         "KeyName": "IsUsingIdentityserver4",
-        "Value": "false",
+        "Value": "true",
         "IsSystem": true,
         "SystemDictionarytype": 0
 
       },
       {
         "KeyName": "IsUsingIdentityserverClient",
-        "Value": "false",
+        "Value": "true",
         "IsSystem": true,
         "SystemDictionarytype": 0
 

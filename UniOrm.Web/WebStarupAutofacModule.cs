@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UniOrm.Startup.Web.Authorize;
+using UniOrm.Common;
+
 namespace UniOrm.Startup.Web
 {
     public class WebStarupAutofacModule : Module

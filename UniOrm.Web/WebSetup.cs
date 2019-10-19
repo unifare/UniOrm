@@ -318,7 +318,7 @@ namespace UniOrm.Startup.Web
 
         public static void InitDbMigrate()
         {
-            DbMigrationUnit.EnsureDaContext(APP.AppConfig.UsingDBConfig);
+            Application.DbMigrationHelper.EnsureDaContext(APPCommon.AppConfig.UsingDBConfig);
         }
         public static void ConfigureSite(this IApplicationBuilder app, IHostingEnvironment env)
         {

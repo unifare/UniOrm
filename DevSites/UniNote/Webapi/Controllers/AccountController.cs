@@ -54,7 +54,7 @@ namespace UniNote.Controllers
         [HttpPost]
         public async Task<object> Login(string userName, string password)
         {
-            var user = SuperManager.LoginDefaultUser(userName, password);
+            var user = APP.LoginDefaultUser(userName, password);
             // var user = _userService.Login(userName, password);
             if (user != null)
             {

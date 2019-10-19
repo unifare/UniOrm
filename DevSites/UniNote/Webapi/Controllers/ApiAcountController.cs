@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc; 
 using UniOrm;
 using UniOrm.Startup.Web;
-using UniNote.Web.Model;
-using UniOrm.Startup.Web.Authorize;
+using UniNote.Web.Model; 
 using UniNote.WebApi;
+using UniOrm.Common;
 
 namespace UniNote.Controllers
 {

@@ -11,8 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
-using UniOrm;
-using UniOrm.Application.ModuleStander;
+using UniOrm; 
 using UniOrm.Common;
 using System.Text.Encodings.Web;
 using System.Text.Unicode; 
@@ -26,21 +25,20 @@ namespace AlipayPlugin
 {
     public class AlipayModule : ModuleBase
     {
-  
-     
+
+        public override string ModuleName { get;  }= "AlipayPlugin";
         public override string DllPath { get; set; }
         public override AppConfig ModuleAppConfig { get; set; }
-        public override DcConnectionConfig dcConnectionConfig { get  ; set ; }
+        public override DbConnectionConfig dcConnectionConfig { get  ; set ; }
         public AlipayModule()
-        {
-            ModuleName = "AlipayPlugin";
+        { 
         }
 
         public override void EnsureDaContext()
         {
             UniOrm.Common. DbMigrationHelper.EnsureDaContext(
-                APP.AppConfig.UsingDBConfig.Connectionstring,
-                (int)APP.AppConfig.UsingDBConfig.DBType, 
+                APPCommon.AppConfig.UsingDBConfig.Connectionstring,
+                (int)APPCommon.AppConfig.UsingDBConfig.DBType, 
                 typeof(AlipayModule).Assembly);
         }
 
@@ -76,7 +74,10 @@ namespace AlipayPlugin
         {
             return new List<Autofac.Module>();
         }
+        public override void RegisterAutofacTypes()
+        {
 
+        }
         public override void ConfigureSiteServices(IServiceCollection services)
         { 
             // 引入Payment 依赖注入
@@ -102,8 +103,6 @@ namespace AlipayPlugin
         }
 
       
-        public override void ConfigureSite(IApplicationBuilder app)
-        { 
-        }
+      
     }
 }

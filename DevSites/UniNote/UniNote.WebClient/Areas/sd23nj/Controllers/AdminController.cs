@@ -38,10 +38,27 @@ namespace UniNote.WebClient.Controllers
         {
             return View();
         }
+
+        public IActionResult UserList()
+        {
+            return View();
+        }
+
+        //[HttpPost]
+        //public  object  AddUser([FromBody]AConFlowStep id)
+        //{
+        //    return View();
+        //}
+
         public IActionResult welcome()
         {
             return View();
         }
+        public IActionResult UserMng()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         public IActionResult Signin()
         {

@@ -101,9 +101,9 @@ namespace UniOrm.Application
             var ormfactory = container.Resolve<IDbFactory>();
 
 
-            var systemConConfig = APP.AppConfig.UsingDBConfig;//.Connectionstrings.FirstOrDefault(p => p.Name == "sys_default");
+            var systemConConfig = APPCommon.AppConfig.UsingDBConfig;//.Connectionstrings.FirstOrDefault(p => p.Name == "sys_default");
 
-            var listtypedModels = ReadTypeFromConfig(APP.AppConfig.EFRegestedModels);
+            var listtypedModels = ReadTypeFromConfig(APPCommon.AppConfig.EFRegestedModels);
             foreach (var orm in ormProviders)
             {
                 orm.RegistedModelTypes.AddTypes(listtypedModels);

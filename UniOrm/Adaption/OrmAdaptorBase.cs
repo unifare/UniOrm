@@ -9,7 +9,7 @@ namespace UniOrm.Adaption
     public abstract class OrmAdaptorBase
     {
         public Func<object[], object> SelfGetCeateAction { get; set; }
-        public DcConnectionConfig ConnectionConfig { get; set; }
+        public DbConnectionConfig ConnectionConfig { get; set; }
         public IResover Resover { get; set; }
         public bool IsSelfDefineCreation { get; set; }
         public List<Assembly> RegistedModelAssemblies { get; set; }
@@ -26,7 +26,7 @@ namespace UniOrm.Adaption
         public OrmAdaptorBase()
         {
             RegistedModelTypes = new RegistedModelTypes();
-            ConnectionConfig = new DcConnectionConfig();
+            ConnectionConfig = new DbConnectionConfig();
         }
         public virtual void GetCloseAction(object dbOperator)
         {

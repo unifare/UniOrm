@@ -59,7 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlipayPlugin", "Plugins\Ali
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{02FBA953-BB29-47D8-8861-E2A5E7EB90E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniOrm.Startup.Web.Test", "TestProjects\UniOrm.Startup.Web.Test\UniOrm.Startup.Web.Test.csproj", "{A7F6AACB-FBB2-4067-9CE8-94101F0D9963}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.Startup.Web.Test", "TestProjects\UniOrm.Startup.Web.Test\UniOrm.Startup.Web.Test.csproj", "{A7F6AACB-FBB2-4067-9CE8-94101F0D9963}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OauthMngPlugin", "Plugins\OauthMngPlugin\OauthMngPlugin.csproj", "{18DC1D9F-1DD5-4AD4-8C06-F0F5CF39C7CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,6 +161,10 @@ Global
 		{A7F6AACB-FBB2-4067-9CE8-94101F0D9963}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7F6AACB-FBB2-4067-9CE8-94101F0D9963}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7F6AACB-FBB2-4067-9CE8-94101F0D9963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18DC1D9F-1DD5-4AD4-8C06-F0F5CF39C7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18DC1D9F-1DD5-4AD4-8C06-F0F5CF39C7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18DC1D9F-1DD5-4AD4-8C06-F0F5CF39C7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18DC1D9F-1DD5-4AD4-8C06-F0F5CF39C7CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{12260C1E-D53D-4367-ACDB-C0A13B100151} = {FF84958C-C438-4EF7-B6E4-911E7B7875C2}
 		{1A1A521F-6892-4DD7-9D96-2A99EBD0E983} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
 		{A7F6AACB-FBB2-4067-9CE8-94101F0D9963} = {02FBA953-BB29-47D8-8861-E2A5E7EB90E8}
+		{18DC1D9F-1DD5-4AD4-8C06-F0F5CF39C7CD} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9498881A-9669-45A9-A3D3-8912DDB2872D}

@@ -68,7 +68,7 @@ namespace UniOrm.Startup.WPF
         }
         public static void InitDbMigrate()
         {
-            DbMigrationUnit.EnsureDaContext(appConfig.UsingDBConfig);
+            Application.DbMigrationHelper.EnsureDaContext(appConfig.UsingDBConfig);
         }
     
     }
