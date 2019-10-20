@@ -63,6 +63,12 @@ namespace UniNote.WebClient.Controllers
         {
             return View();
         }
+
+        public IActionResult UserList2()
+        {
+            return View();
+        }
+
         public IActionResult VueGrid2()
         {
             return View();

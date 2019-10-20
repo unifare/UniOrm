@@ -27,9 +27,9 @@
                 padding: 3px 3px 3px 8px;
             }
 
-                table th:first-child {
-                    width: 30px;
-                }
+        table th:first-child {
+            width: 30px;
+        }
 
         .tb_container,
         .st {
@@ -142,7 +142,7 @@
 }
 <div class="st">
     <h1>vue实现对数据的增删改查(CURD)</h1>
-    
+
 </div>
 <div class="tb_container" id="app">
     <div>
@@ -153,25 +153,25 @@
         <input type="button" class="add" @@click="add" value="新增">
     </div>
     <div>
-        <table class="tb_table">
+        <table class=" table table-bordered">
             <tr>
                 <td><input type="checkbox" @@click="checkAll" v-model="totalBoxcChecked"></td>
                 <th>id</th>
                 <th>用户名</th>
                 <th>邮箱</th>
-                <th>性别</th>
-                <th>省份</th>
-                <th>爱好</th>
+                <th>姓名</th>
+                <th>手机号</th>
+                <th>登出时间</th>
                 <th>操作</th>
             </tr>
             <tr v-cloak v-for="(item, index) of slist">
                 <td><input type="checkbox" v-model="checkedList" :value="item.id"></td>
                 <td>{{item.id}}</td>
-                <td>{{item.username}}</td>
+                <td>{{item.userName}}</td>
                 <td>{{item.email}}</td>
-                <td>{{item.sex}}</td>
-                <td>{{item.province}}</td>
-                <td>{{item.hobby.join(' | ')}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.phoneNumber}}</td>
+                <td>{{item.lockoutEnd }}</td>
                 <td><a href="javascript:;" @@click="showOverlay(index)">修改</a> | <a href="javascript:;" @@click="del(index)">删除</a></td>
             </tr>
         </table>
@@ -216,18 +216,17 @@
                     <table class="tb_table">
                         <tr>
                             <td>用户名</td>
-                            <td><input type="text" v-model="modifylist.username"></td>
+                            <td><input type="text" v-model="modifylist.userName"></td>
                         </tr>
                         <tr>
                             <td>邮箱</td>
                             <td><input type="text" v-model="modifylist.email"></td>
                         </tr>
                         <tr>
-                            <td>性别</td>
+                            <td>姓名</td>
                             <td>
-                                <label><input type="radio" name="sex" value="男" v-model="modifylist.sex">男</label>
-                                <label><input type="radio" name="sex" value="女" v-model="modifylist.sex">女</label>
-                                <label><input type="radio" name="sex" value="未知" v-model="modifylist.sex">未知</label>
+                                <input type="text" v-model="modifylist.name">
+
                             </td>
                         </tr>
                         <tr>
@@ -293,58 +292,58 @@
                 slist: [],
                 searchlist: [],
                 pageCurrent: 1,
-                pageAll: 20,
+                pageAll: 1,
                 totalBoxcChecked: false, //是否全选
                 checkedList: [], //双向数据绑定的数组，我是用的id
                 list: [
-                    {
-                        id: 0,
-                        username: 'aaaaa',
-                        email: '123@qq.com',
-                        sex: '男',
-                        province: '北京市',
-                        hobby: ['篮球', '读书', '编程']
-                    },
-                    {
-                        id: 1,
-                        username: 'bbbbb',
-                        email: 'bbbbbbb@163.com',
-                        sex: '女',
-                        province: '河北省',
-                        hobby: ['弹琴', '读书', '插画']
-                    },
-                    {
-                        id: 2,
-                        username: 'aaabb',
-                        email: 'abababab@qq.com',
-                        sex: '女',
-                        province: '重庆市',
-                        hobby: ['篮球']
-                    },
-                    {
-                        id: 3,
-                        username: 'cccccc',
-                        email: '123@qq.com',
-                        sex: '男',
-                        province: '北京市',
-                        hobby: ['篮球', '读书', '编程']
-                    },
-                    {
-                        id: 4,
-                        username: 'dddddd',
-                        email: 'bbbbbbb@163.com',
-                        sex: '女',
-                        province: '河北省',
-                        hobby: ['弹琴', '读书', '插画']
-                    },
-                    {
-                        id: 5,
-                        username: 'eeeee',
-                        email: 'abababab@qq.com',
-                        sex: '女',
-                        province: '重庆市',
-                        hobby: ['篮球']
-                    }
+                    //{
+                    //    id: 0,
+                    //    username: 'aaaaa',
+                    //    email: '123@qq.com',
+                    //    sex: '男',
+                    //    province: '北京市',
+                    //    hobby: ['篮球', '读书', '编程']
+                    //},
+                    //{
+                    //    id: 1,
+                    //    username: 'bbbbb',
+                    //    email: 'bbbbbbb@163.com',
+                    //    sex: '女',
+                    //    province: '河北省',
+                    //    hobby: ['弹琴', '读书', '插画']
+                    //},
+                    //{
+                    //    id: 2,
+                    //    username: 'aaabb',
+                    //    email: 'abababab@qq.com',
+                    //    sex: '女',
+                    //    province: '重庆市',
+                    //    hobby: ['篮球']
+                    //},
+                    //{
+                    //    id: 3,
+                    //    username: 'cccccc',
+                    //    email: '123@qq.com',
+                    //    sex: '男',
+                    //    province: '北京市',
+                    //    hobby: ['篮球', '读书', '编程']
+                    //},
+                    //{
+                    //    id: 4,
+                    //    username: 'dddddd',
+                    //    email: 'bbbbbbb@163.com',
+                    //    sex: '女',
+                    //    province: '河北省',
+                    //    hobby: ['弹琴', '读书', '插画']
+                    //},
+                    //{
+                    //    id: 5,
+                    //    username: 'eeeee',
+                    //    email: 'abababab@qq.com',
+                    //    sex: '女',
+                    //    province: '重庆市',
+                    //    hobby: ['篮球']
+                    //}
                 ]
             },
             created() {
@@ -449,7 +448,24 @@
                 },
                 // 获取需要渲染到页面中的数据
                 setSlist(arr) {
-                    this.slist = JSON.parse(JSON.stringify(arr));
+
+
+                    $.ajax({
+                        type: "get",
+                        url: "/api/UserMng/GetAllUserFromServer",
+                        dataType: "json",
+                        //data: urlData,
+                        async: true,
+                        success: function (jsonResult) {
+                            app.list = app.slist = jsonResult;
+                            app.pageAll = 1;
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+
+
                 },
                 // 搜索
                 search(e) {
