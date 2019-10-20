@@ -90,11 +90,11 @@ namespace UniNote.WebClient.Controllers
                 remsg = ("未检测到文件");
                 return new { isok = false, msg = remsg };
             }
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+           string path = AppDomain.CurrentDomain.BaseDirectory ;
+            //if (!Directory.Exists(path))
+            //{
+            //    Directory.CreateDirectory(path);
+            //}
 
             var file = Request.Form.Files[0];
             string fileExt = file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
@@ -141,12 +141,12 @@ namespace UniNote.WebClient.Controllers
         [HttpGet]
         public object GetAllPluginReflections()
         {
-            string dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-            var alldll = Directory.GetFiles(dir, "*.dll");
+            string dir = AppDomain.CurrentDomain.BaseDirectory ;
+            //if (!Directory.Exists(dir))
+            //{
+            //    Directory.CreateDirectory(dir);
+            //}
+            var alldll = Directory.GetFiles(dir, "*Plugin.dll");
             //foreach (var dll in alldll)
             //{
             //    var defaultdll = dll;
@@ -238,10 +238,10 @@ namespace UniNote.WebClient.Controllers
             }
             FileInfo fi = new FileInfo(id);
             bool isbuilin = true;
-            if (string.Compare(fi.Directory.Name, "Plugins", true) == 0)
-            {
-                isbuilin = false;
-            }
+            //if (string.Compare(fi.Directory.Name, "Plugins", true) == 0)
+            //{
+            //    isbuilin = false;
+            //}
             var alltype = asm.GetTypes().Where(p => p.FullName == fullName).FirstOrDefault();//.Select<Type, string>(p => p.FullName);
             if (alltype != null)
             {
@@ -278,6 +278,17 @@ namespace UniNote.WebClient.Controllers
                 .OrderBy(p => p.StepOrder);
             return allFlowSteps;
         }
+        [HttpGet]
+        public IEnumerable<dynamic> GetAllModuleNames(string id)
+        {
+            var list = new List<dynamic>();
+            foreach(var item in  APPCommon.ModuleManager.RegistedModules)
+            {
+                list.Add( new { id = item.ModuleName, value = item.ModuleName });
+            }
+            return list;
+        }
+        
 
         [HttpPost]
         public int AddTriger([FromBody]TrigerRuleInfo id)

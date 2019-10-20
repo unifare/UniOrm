@@ -12,7 +12,7 @@ namespace UniOrm.DataMigrationiHistrory
     [Migration(1)]
     public class Init : DBMIgrateBase
     {
-       
+
         public override void Up()
         {
 
@@ -142,6 +142,8 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                  .WithColumn("Guid").AsString(70).Nullable()
                   .WithColumn("AppName").AsString(200).WithDefaultValue("default")
+                 .WithColumn("ModuleName").AsString(300).Nullable()
+                 .WithColumn("Theme").AsString(200).Nullable()
                  .WithColumn("AComposityId").AsString(80)
                   .WithColumn("IsUsingParentConnstring").AsBoolean().Nullable()
                   .WithColumn("IsBuildIn").AsBoolean().Nullable()
@@ -205,6 +207,7 @@ namespace UniOrm.DataMigrationiHistrory
                  .WithColumn("Guid").AsString(70).Nullable()
                 .WithColumn("Name").AsString(700).Nullable()
                  .WithColumn("AppName").AsString(200).WithDefaultValue("default")
+                 .WithColumn("Theme").AsString(200).Nullable()
                 .WithColumn("RunMode").AsInt32()
                   .WithColumn("IsBuildIn").AsBoolean().Nullable()
                 .WithColumn("IsUsingParentConnstring").AsBoolean().Nullable()
@@ -254,7 +257,7 @@ namespace UniOrm.DataMigrationiHistrory
 
             Create.Table(WholeTableName("TrigerRuleInfo"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("VersionNum").AsString(100).Nullable() 
+                .WithColumn("VersionNum").AsString(100).Nullable()
                  .WithColumn("AppName").AsString(200).WithDefaultValue("default")
                 .WithColumn("RuleName").AsString(100).Nullable()
                  .WithColumn("HttpMethod").AsString(20).Nullable().WithDefaultValue("Get")
@@ -271,6 +274,7 @@ namespace UniOrm.DataMigrationiHistrory
                 AddTime = DateTime.Now,
                 RunMode = 0,
                 IsBuildIn = true,
+                Theme = "default",
                 IsUsingParentConnstring = true,
                 Connectionstring = "sys_default",
                 AppType = "aspnetcore",
@@ -294,7 +298,7 @@ namespace UniOrm.DataMigrationiHistrory
                 AComposityId = s.Guid,
                 Description = "defaultweb_Setp1",
                 StepOrder = 0,
-                InParamter1 = "select * from  "+ WholeTableName("TrigerRuleInfo"),
+                InParamter1 = "select * from  " + WholeTableName("TrigerRuleInfo"),
                 StorePoolKey = "allrules",
                 //StoreValueType = typeof(List<ComposeEntity>).FullName
             };
@@ -369,6 +373,7 @@ namespace UniOrm.DataMigrationiHistrory
             var s_fact = new
             {
                 Guid = "_fact",
+                Theme = "default",
                 AddTime = DateTime.Now,
                 IsBuildIn = false,
                 AppName = "default",
@@ -426,7 +431,7 @@ namespace UniOrm.DataMigrationiHistrory
             var s_pay = new
             {
                 Guid = "1e1cb869-2512-8dfc-81ee-ed3150836182",
-                
+
                 AddTime = DateTime.Now,
                 IsBuildIn = false,
                 AppName = "default",
@@ -435,7 +440,7 @@ namespace UniOrm.DataMigrationiHistrory
                 RunMode = 0,
                 AppType = "aspnetcore",
                 Description = "paycom",
-               
+                Theme = "default",
                 Name = "paycom",
 
             };
@@ -452,7 +457,7 @@ namespace UniOrm.DataMigrationiHistrory
                 ExcuteType = 0,
                 GetValueProposal = 4,
                 IsUsingParentConnstring = true,
-                ProxyCode= @"new { Body=""APP支付描述信息"",
+                ProxyCode = @"new { Body=""APP支付描述信息"",
 Subject = ""APP支付测试"",
                 TotalAmount = ""0.01"",
                 OutTradeNo = System.DateTime.Now.ToString(""yyyyMMddHHmmssfff""),
@@ -463,12 +468,12 @@ Subject = ""APP支付测试"",
                 AComposityId = s_pay.Guid,
                 Description = "pay_step1",
                 StepOrder = 0,
-               
+                Theme = "default",
                 StorePoolKey = "model",
             };
             Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_s_pay1);
 
-            var ste_s_pay2= new
+            var ste_s_pay2 = new
             {
                 Guid = "af89bbba-dd09-711d-a88f-b794a6be63ae",
                 AddTime = DateTime.Now,
@@ -486,12 +491,13 @@ Subject = ""APP支付测试"",
                 ArgNames = "model",
                 AComposityId = s_pay.Guid,
                 StorePoolKey = "resonse",
+                Theme = "default",
             };
             Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_s_pay2);
 
 
 
-            var ste_s_pay3= new
+            var ste_s_pay3 = new
             {
                 Guid = "0769f3fe-579b-c1c3-a4a2-bc10000f9d31",
                 AddTime = DateTime.Now,
@@ -502,17 +508,18 @@ Subject = ""APP支付测试"",
                 GetValueProposal = 4,
                 IsUsingParentConnstring = true,
                 Description = "ste_s_pay_step3",
-                StepOrder =2,
+                StepOrder = 2,
                 TypeLib = "BasicPlugin.dll",
                 MethodName = "ResponseText",
                 TypeFullName = "BasicPlugin.HttpUtility",
                 ArgNames = "__actioncontext,resonse",
-                AComposityId = s_pay.Guid, 
+                AComposityId = s_pay.Guid,
+                Theme = "default",
             };
 
             Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_s_pay3);
 
-            var s_razor  = new
+            var s_razor = new
             {
                 Guid = "e984ff96-c112-7133-3c00-df09f7338338",
 
@@ -523,9 +530,9 @@ Subject = ""APP支付测试"",
                 Connectionstring = "sys_default",
                 RunMode = 0,
                 AppType = "aspnetcore",
-                Description = "razor", 
+                Description = "razor",
                 Name = "razor",
-
+                Theme = "default",
             };
 
             Insert.IntoTable(WholeTableName("ComposeEntity")).Row(s_razor);
@@ -545,8 +552,9 @@ Subject = ""APP支付测试"",
                 AComposityId = s_razor.Guid,
                 Description = "ste_razor1",
                 StepOrder = 0,
-                Name= "makemodel",
+                Name = "makemodel",
                 StorePoolKey = "model",
+                Theme = "default",
             };
             Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_razor1);
 
@@ -573,6 +581,7 @@ Hello, @Model.Item.Name .Welcome to RazorLight repository
                 Name = "getresult",
                 ArgNames = "model",
                 StorePoolKey = "restext",
+                Theme = "default",
             };
             Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_razor2);
 
@@ -595,6 +604,7 @@ Hello, @Model.Item.Name .Welcome to RazorLight repository
                 ArgNames = "__actioncontext,restext",
                 Name = "reponse",
                 AComposityId = s_razor.Guid,
+                Theme = "default",
             };
 
             Insert.IntoTable(WholeTableName("AConFlowStep")).Row(ste_razor3);

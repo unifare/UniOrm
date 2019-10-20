@@ -7,7 +7,7 @@ namespace UniOrm.Model
     public class RequsetEnviroment
     {
         public string VersionNum { get; set; }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string ReqVersion { get; set; }
         public string ModuleId { get; set; }
         public string dllJson { get; set; } 

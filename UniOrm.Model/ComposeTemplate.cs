@@ -6,7 +6,7 @@ namespace UniOrm.Model
 {
     public class ComposeTemplate
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Guid { get; set; }
         public string Name { get; set; }
         public string StepIds { get; set; }

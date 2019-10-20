@@ -72,8 +72,9 @@ namespace UniOrm.Model
             IsUsingCache = false;
             AddTime = DateTime.Now;
             IsUsingParentConnstring = true;
+            Theme = "default";
         }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string AppName { get; set; } = "default";
         public bool IsUsingCache { get; set; }
         public string Guid { get; set; }
@@ -83,6 +84,9 @@ namespace UniOrm.Model
         public string Name { get; set; }
         public string Description { get; set; }
         public string OutPutText { get; set; }
+
+        public string ModuleName { get; set; }
+        public string Theme { get; set; }
         public FlowStepType FlowStepType { get; set; }
         public ExcuteType ExcuteType { get; set; }
         public GetValueProposal? GetValueProposal { get; set; }

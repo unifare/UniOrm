@@ -401,6 +401,8 @@ namespace UniOrm.Startup.Web
             //用户session服务
             app.UseSession();
 
+            APPCommon.ConfigureSite(app, env);
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -417,6 +419,8 @@ namespace UniOrm.Startup.Web
                    template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
                    "all", @"{**path}", new { controller = "FactoryBuilder", action = "Index" });
+
+                APPCommon.ConfigureRouter(routes);
 
             });
 

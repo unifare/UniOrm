@@ -27,14 +27,7 @@ namespace UniNote.WebClient.Controllers
             //var allist = qlist.ToList<pigcms_adma>();
             return View();
         }
-        public IActionResult Index()
-        {
-            //var ss = dbFactory.EFCore<pigcms_adma>().CreateDefaultInstance();
-
-            //var qlist = ss.From<pigcms_adma>();
-            //var allist = qlist.ToList<pigcms_adma>();
-           return View(); 
-        }
+       
         public IActionResult odic_login()
         {
             return View();

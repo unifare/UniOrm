@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Reflection;
 using UniOrm;
 using UniOrm.Common;
@@ -16,6 +15,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Autofac;
 using static IdentityModel.OidcConstants;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace OauthMngPlugin
 {
@@ -24,7 +26,7 @@ namespace OauthMngPlugin
         public override string ModuleName { get; } = nameof(OauthMngModule);
         public override string DllPath { get; set; }
         public override AppConfig ModuleAppConfig { get; set; }
-        public override DbConnectionConfig dcConnectionConfig { get; set; }
+        public override DbConnectionConfig MouduleDbConfig { get; set; }
         public OauthMngModule()
         {
         }
@@ -32,7 +34,7 @@ namespace OauthMngPlugin
         public override void EnsureDaContext()
         {
             UniOrm.Common.DbMigrationHelper.EnsureDaContext(
-               dcConnectionConfig.Connectionstring,
+               MouduleDbConfig.Connectionstring,
                (int)APPCommon.AppConfig.UsingDBConfig.DBType,
                typeof(OauthMngModule).Assembly);
         }
@@ -42,11 +44,7 @@ namespace OauthMngPlugin
             base.Init();
             return true;
         }
-        public override void SetServiceProvider(ServiceProvider serviceProvider)
-        {
 
-            ServiceProvider = serviceProvider;
-        }
 
         public override bool MigrateDB()
         {
@@ -70,11 +68,7 @@ namespace OauthMngPlugin
             return new List<Autofac.Module>();
         }
 
-        public override void ConfigureSiteServices(IServiceCollection services)
-        {
-            //Builder.RegisterInstance<OauthMngPlugin.OauthMngModule>()
 
-        }
 
         public override void RegisterAutofacTypes()
         {
@@ -93,6 +87,33 @@ namespace OauthMngPlugin
             OauthClient.Password = Configuration["OauthMngModule:idsr4_password"];
             OauthClient.GrantType = GrantTypes.Password;
             //OauthClient = Configuration["OauthMngModule:OidcApiName"];
+        }
+
+        public override void ConfigureSite(IApplicationBuilder app, IHostingEnvironment env)
+        {
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(  Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OauthTheme")),
+                RequestPath = "/OauthTheme"
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(   Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Output")),
+                RequestPath = ""
+            });
+        }
+
+        public override void ConfigureRouter(IRouteBuilder routeBuilder)
+        {
+
+        }
+
+
+
+        public override void ConfigureSiteServices(IServiceCollection services)
+        {
+
         }
     }
 }

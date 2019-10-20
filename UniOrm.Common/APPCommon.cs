@@ -6,14 +6,17 @@ using UniOrm;
 using UniOrm.Common;
 using Autofac;
 using System.IO;
-using System.Collections.Concurrent; 
+using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 
 namespace UniOrm
 {
@@ -21,12 +24,12 @@ namespace UniOrm
     {
         public static HttpClient Client { get; set; } = new HttpClient();
         public static IConfiguration Configuration { get; set; }
-        public static ServiceProvider ApplicationServices; 
+        public static ServiceProvider ApplicationServices;
         public static ContainerBuilder Builder = new ContainerBuilder();
         public static IResover Container;
         public static Dictionary<string, Assembly> Dlls = new Dictionary<string, Assembly>();
-        public static List<string> DynamicReferenceDlls = new List<string>(); 
-        public static Dictionary<string, Type> Types = new Dictionary<string, Type>(); 
+        public static List<string> DynamicReferenceDlls = new List<string>();
+        public static Dictionary<string, Type> Types = new Dictionary<string, Type>();
         public static Dictionary<string, MethodInfo> MethodInfos = new Dictionary<string, MethodInfo>();
         //public  List<RuntimeModel> RuntimeModels = new List<RuntimeModel>();
         public static ConcurrentDictionary<string, object> StepResults = new ConcurrentDictionary<string, object>();
@@ -50,13 +53,9 @@ namespace UniOrm
         }
         static APPCommon()
         {
-            //var allModules = ModuleManager.RegistedModules;
-            //foreach (var m in allModules)
-            //{
-            //    m.Init();
-            //}
+
         }
-       
+
         public static void RegisterAutofacModule(Autofac.Module moudle)
         {
 
@@ -67,22 +66,22 @@ namespace UniOrm
         {
             if (modulesAssembly != null)
             {
-
                 foreach (var m in modulesAssembly)
                 {
                     Builder.RegisterAssemblyModules(m);
                 }
             }
         }
-     
-       
+
+
+
         public static MethodInfo GetMethodFromConfig(bool IsPlugin, string libname, string typename, string methodName)
         {
             var dir = AppDomain.CurrentDomain.BaseDirectory;
-            if (!IsPlugin)
-            {
-                dir = Path.Combine(dir, "Plugins");
-            }
+            //if (!IsPlugin)
+            //{
+            //    dir = Path.Combine(dir, "Plugins");
+            //}
             var filepath = Path.Combine(dir, libname);
             Assembly assembley;
             if (!Dlls.ContainsKey(filepath))
@@ -123,8 +122,24 @@ namespace UniOrm
 
             return method;
         }
-     
-         
+
+        public static void ConfigureSite(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                m.ConfigureSite(app, env);
+            }
+        }
+        public static void ConfigureRouter(IRouteBuilder routeBuilder)
+        {
+            var allModules = ModuleManager.RegistedModules;
+            foreach (var m in allModules)
+            {
+                m.ConfigureRouter(routeBuilder);
+            }
+        }
+
         public static object GetData(object db, string ssql, params object[] inParamters)
         {
 
@@ -137,7 +152,7 @@ namespace UniOrm
             return alldatas;
 
         }
-   
-    
+
+
     }
 }

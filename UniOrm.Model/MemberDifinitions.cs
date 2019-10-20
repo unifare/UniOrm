@@ -8,8 +8,8 @@ namespace UniOrm.Model
     public class MemberDifinitions
     {
         public string VersionNum { get; set; }
-        public int Id { get; set; }
-        public int? BelongTypeId { get; set; }
+        public long Id { get; set; }
+        public long? BelongTypeId { get; set; }
         public string Name { get; set; }
         public bool IsPublic { get; set; }
         public virtual MemberTypes MemberType { get; set; }

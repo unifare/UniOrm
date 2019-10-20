@@ -6,7 +6,7 @@ namespace UniOrm.Model
 {
     public   class AConStateModule
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         
         public string VersionNum { get; set; } 
         public string Name { get; set; }

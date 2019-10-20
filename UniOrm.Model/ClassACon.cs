@@ -7,7 +7,7 @@ namespace UniOrm.Model
     public class ClassACon
     {
         public string VersionNum { get; set; }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public bool? IsVirtual { get; set; }
         public string Name { get; set; }
         public string Guid { get; set; }

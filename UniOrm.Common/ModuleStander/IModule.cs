@@ -1,4 +1,7 @@
 ﻿using Autofac;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,7 +16,7 @@ namespace UniOrm.Common
         ContainerBuilder Builder { get; }
         IResover Container { get; }
         string DllPath { get; set; }
-        string ModuleName { get;  }
+        string ModuleName { get; }
         bool Init();
         AppConfig ModuleAppConfig { get; set; }
         void EnsureDaContext();
@@ -22,7 +25,7 @@ namespace UniOrm.Common
         DB DB { get; set; }
         List<string> ModelTypeStrings();
 
-        DbConnectionConfig dcConnectionConfig { get; set; }
+        DbConnectionConfig MouduleDbConfig { get; set; }
         List<Type> FunctionalTypes { get; set; }
         string GetDBTablePrefixConfig();
         bool MigrateDB();
@@ -37,7 +40,7 @@ namespace UniOrm.Common
         //DbMigrationUnit ModuleMigrationUnit { get; set; }
 
         void ConfigureSiteServices(IServiceCollection services);
-
-
+        void ConfigureSite(IApplicationBuilder app, IHostingEnvironment env);
+        void ConfigureRouter(IRouteBuilder routeBuilder);
     }
 }

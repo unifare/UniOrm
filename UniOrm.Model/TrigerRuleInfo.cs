@@ -10,7 +10,7 @@ namespace UniOrm.Model
         {
             AddTime = DateTime.Now;
         }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string RuleName { get; set; } 
         public string Rule { get; set; }
         public string ComposityId { get; set; }

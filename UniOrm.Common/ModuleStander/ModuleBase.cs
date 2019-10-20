@@ -11,6 +11,10 @@ using UniOrm;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Autofac;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.FileProviders;
 
 namespace UniOrm.Common
 {
@@ -41,7 +45,7 @@ namespace UniOrm.Common
             Configuration = configuration;
         }
         public abstract void RegisterAutofacTypes();
-           
+
 
         public virtual void EnsureDaContext()
         {
@@ -49,7 +53,7 @@ namespace UniOrm.Common
         }
 
         public abstract string DllPath { get; set; }
-        public abstract string ModuleName { get;  }
+        public abstract string ModuleName { get; }
         public static Dictionary<string, Type> Types = new Dictionary<string, Type>();
         public RequireItemCollection RequireItems { get; set; }
 
@@ -62,7 +66,10 @@ namespace UniOrm.Common
             return Directory.GetFiles(dlldir, "*.dll");
         }
 
-        public abstract void SetServiceProvider(ServiceProvider serviceProvider);
+        public virtual void SetServiceProvider(ServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
         public ModuleBase()
         {
             Types = new Dictionary<string, Type>();
@@ -95,7 +102,7 @@ namespace UniOrm.Common
         {
             SetModuleAppConfig();
             var configFileDir = GetModuleConfig("IsUsingAppDB").ToBool();
-            dcConnectionConfig = ModuleAppConfig.UsingDBConfig;
+            MouduleDbConfig = ModuleAppConfig.UsingDBConfig;
             DB = new DB(ModuleAppConfig.UsingDBConfig);
             return true;
         }
@@ -121,12 +128,25 @@ namespace UniOrm.Common
         }
 
         public abstract AppConfig ModuleAppConfig { get; set; }
-
+        public virtual void ConfigureSite(IApplicationBuilder app, IHostingEnvironment env)
+        { 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,  ModuleName )),
+                RequestPath = ModuleName
+            });
+            //app.UseStaticFiles(new StaticFileOptions
+            //{0\5'\
+            //    FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Output")),
+            //    RequestPath = ""
+            //});
+        }
+        
         public abstract List<Type> ModelType();
 
         public abstract List<string> ModelTypeStrings();
 
-        public abstract DbConnectionConfig dcConnectionConfig { get; set; }
+        public abstract DbConnectionConfig MouduleDbConfig { get; set; }
 
         public abstract List<Type> FunctionalTypes { get; set; }
         public virtual bool MigrateDB()
@@ -134,8 +154,10 @@ namespace UniOrm.Common
             return true;
         }
         public DB DB { get; set; }
+
+        public abstract void ConfigureRouter(IRouteBuilder routeBuilder);
+
         public abstract void ConfigureSiteServices(IServiceCollection services);
-
-
+         
     }
 }

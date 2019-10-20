@@ -369,13 +369,18 @@ namespace UniOrm.Application
                                                         objParams = newrunmodel.GetPoolResuce(s.ArgNames.Split(','));
                                                     }
                                                     dynamic modelArg = null;
-                                                    if(objParams != null&& objParams.Count>0)
+                                                    var module = APPCommon.ModuleManager.GetModule(null, s.ModuleName);
+                                                    if(module==null)
                                                     {
-                                                        modelArg= new { Step = s, Item = objParams[0] };
+                                                        throw new Exception($"No module {s.ModuleName} found");
+                                                    }
+                                                    if (objParams != null&& objParams.Count>0)
+                                                    {
+                                                        modelArg= new { Step = s, Module= module, Item = objParams[0] };
                                                     }
                                                    else
                                                     {
-                                                        modelArg = new { Step = s, Item = new { } };
+                                                        modelArg = new { Step = s, Module = module, Item = new { } };
                                                     }
                                                     var cachekey2 = template.DesEncrypt().SafeSubString(128);
                                                     var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2); 

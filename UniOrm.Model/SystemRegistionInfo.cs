@@ -6,7 +6,7 @@ namespace UniOrm.Model
 {
     public class SystemRegistionInfo
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string AuthorizeWay { get; set; }
         public string MachineCode { get; set; }
         public string RigesterCode { get; set; } 

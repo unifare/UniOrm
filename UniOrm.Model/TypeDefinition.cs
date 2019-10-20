@@ -9,7 +9,7 @@ namespace UniOrm.Model
     public class TypeDefinition
     {
         public string VersionNum { get; set; }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string ClassName { get; set; }
         public string AliName { get; set; }
 

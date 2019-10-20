@@ -11,15 +11,16 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
-using UniOrm; 
+using UniOrm;
 using UniOrm.Common;
 using System.Text.Encodings.Web;
-using System.Text.Unicode; 
+using System.Text.Unicode;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc; 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Routing;
 
 namespace AlipayPlugin
 {
@@ -29,7 +30,7 @@ namespace AlipayPlugin
         public override string ModuleName { get;  }= "AlipayPlugin";
         public override string DllPath { get; set; }
         public override AppConfig ModuleAppConfig { get; set; }
-        public override DbConnectionConfig dcConnectionConfig { get  ; set ; }
+        public override DbConnectionConfig MouduleDbConfig { get  ; set ; }
         public AlipayModule()
         { 
         }
@@ -102,7 +103,15 @@ namespace AlipayPlugin
             //});
         }
 
-      
-      
+        public override void ConfigureSite(IApplicationBuilder app, IHostingEnvironment env)
+        {
+
+        }
+       
+
+        public override void ConfigureRouter(IRouteBuilder routeBuilder)
+        {
+            
+        }
     }
 }

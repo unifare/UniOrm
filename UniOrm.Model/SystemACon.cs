@@ -6,7 +6,7 @@ namespace UniOrm.Model
 {
     public class SystemACon
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string AppName { get; set; }
         public string AppDiscription { get; set; }
         public string AppConfigs { get; set; }

@@ -402,7 +402,7 @@
                                                             <label class="temp_input_label">
                                                                 <span class="temp_input_label-content">IsCache</span>
                                                             </label>
-                                                            <input class="temp_input_field" v-model="editingStep.IsUsingCache"  type="checkbox">
+                                                            <input class="temp_input_field" v-model="editingStep.IsUsingCache" type="checkbox">
                                                         </span>
                                                     </div>
                                                 </div>
@@ -413,6 +413,20 @@
                                                                 <span class="temp_input_label-content">MethodName</span>
                                                             </label>
                                                             <input class="temp_input_field" v-model="editingStep.MethodName" type="text">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <span class="  ">
+
+                                                            <label class="temp_input_label">
+                                                                <span class="temp_input_label-content">ModuleName</span>
+                                                            </label>
+                                                            <select v-model="editingStep.ModuleName"   >
+                                                                <option :value="item.id" v-for="item in allmodules"  >{{item.value }}</option>
+                                                                
+                                                            </select>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -557,9 +571,11 @@
         var dlls = [];
         var types = [];
         var Methods = [];
+        var allmodules = [];
         var app = new Vue({
             el: '#app',
             data: {
+                allmodules:allmodules,
                 actointype: "add",
                 editingStep: {},
                 editingTriger: {},
@@ -572,6 +588,22 @@
                 plugindlls: plugindlls,
                 types: types,
                 methods: Methods
+            },
+            created: function(){
+                 $.ajax({
+                type: "get",
+                url: "/api/Fact/GetAllModuleNames",
+                dataType: "json",
+                //data: urlData,
+                async: true,
+                success: function (jsonResult) {
+
+                    app.allmodules = jsonResult;
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
             },
             filters: {
                 GetFlowStepType: function (value) {

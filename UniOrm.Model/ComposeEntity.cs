@@ -17,6 +17,7 @@ namespace UniOrm.Model
         {
             AddTime = DateTime.Now;
             AppType = "aspnetcore";
+            Theme = "default";
             //resouceInfos = new List<ResouceInfo>();
             IsUsingParentConnstring = true; 
         }
@@ -25,10 +26,11 @@ namespace UniOrm.Model
         {
             return this.GetHashCode();
         }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Guid { get; set; }
         public string Templateid { get; set; }
         public string AppName { get; set; } = "default";
+        public string Theme { get; set; } = "default";
         public string VersionNum { get; set; }
         public string Connectionstring { get; set; }
         public bool IsBuildIn { get; set; }
