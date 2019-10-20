@@ -22,7 +22,7 @@ var config = {
     client_secret: "uninoteapisdkfsldfsdfber232g4gnip",
     redirect_uri: "http://localhost:6008/public/callback.html",
     response_type: "id_token token",
-    scope: "UniNote_WebApi UniNote_localApi api1 openid profile offline_access",
+    scope: "UniNote_WebApi UniNote_localApi api1 openid profile offline_access id4adminId_api",
     post_logout_redirect_uri: "http://localhost:6008",
 };
 

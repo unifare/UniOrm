@@ -184,7 +184,7 @@
       },
       {
         "KeyName": "OauthClientConfig_scopes",
-        "Value": "UniNote_WebApi,openid,profile,offline_access",
+        "Value": "UniNote_WebApi,openid,profile,offline_access,id4adminId_api",
         "IsSystem": true,
         "SystemDictionarytype": 0
       },

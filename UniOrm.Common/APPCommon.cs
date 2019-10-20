@@ -12,12 +12,14 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.DependencyInjection; 
-using Microsoft.Extensions.Configuration; 
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
 
 namespace UniOrm
 {
     public partial class APPCommon
     {
+        public static HttpClient Client { get; set; } = new HttpClient();
         public static IConfiguration Configuration { get; set; }
         public static ServiceProvider ApplicationServices; 
         public static ContainerBuilder Builder = new ContainerBuilder();

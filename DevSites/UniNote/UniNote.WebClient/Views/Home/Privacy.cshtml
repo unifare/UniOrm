@@ -18,13 +18,13 @@
 @section Scripts{ 
     <script>
         function requestapi() {
-            //var headers = {};
-            //headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+            var headers = {};
+            headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
 
             $.ajax({
                 type: "get",
-                url: "http://uninote.66wave.com/api/values",
-                //headers: headers,
+                url: "http://oauth2.66wave.com/api/users",
+                headers: headers,
                 dataType: "json",
                 //data: urlData,
                 async: true,

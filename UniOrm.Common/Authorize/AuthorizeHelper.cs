@@ -16,7 +16,17 @@ namespace UniOrm.Common
 {
     public class AuthorizeHelper : IAuthorizeHelper
     {
-
+        public HttpClient Client
+        {
+            get
+            {
+                return APPCommon.Client;
+            }
+        }
+        public AuthorizeHelper()
+        {
+            //Client = new HttpClient();
+        }
         AppConfig AppConfig { get; set; }
         public AuthorizeHelper(IConfig config)
         {
@@ -33,23 +43,33 @@ namespace UniOrm.Common
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,
                 UserName = usename,
-                Password = password
-
+                Password = password,
+                RefreshToken = refreshToken
             };
-            return await LoginToIds4Async(httpContext, clientmodel, refreshToken);
+            return await LoginToIds4Async(httpContext, clientmodel);
 
         }
 
-        public async Task<TokenResponse> LoginToIds4Async(HttpContext httpContext, OauthClientModel clientmodel, string refreshToken = null)
+        public async Task<TokenResponse> LoginToIds4Async(HttpContext httpContext, OauthClientModel clientmodel)
         {
-            var client = new HttpClient();
-            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
+            if (!string.IsNullOrEmpty(clientmodel.AccessToken) && clientmodel.ExpiresTime > DateTime.Now)
+            {
+                return null;
+            }
+
+
+            var disco = await Client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
             { Address = clientmodel.IdentityUrl, Policy = { RequireHttps = false } });
+            var refreshToken = clientmodel.RefreshToken;
+
+            //获取用户角色
+            //var userres = RequestUserInfo(disco.UserInfoEndpoint, Client, clientmodel.AccessToken);
+
             //Token作废
-            //var oldaccesstoken= wait client.RevokeTokenAsync(new TokenRevocationRequest() { Token = "" });
+            TokenResponse RequesttokenResponse = null;
             if (refreshToken != null && refreshToken.Length > 20)
             {
-                var RequesttokenResponse = await client.RequestRefreshTokenAsync(new RefreshTokenRequest()
+                RequesttokenResponse = await Client.RequestRefreshTokenAsync(new RefreshTokenRequest()
                 {
                     Address = disco.TokenEndpoint,
                     ClientId = clientmodel.ClientSecret,
@@ -61,16 +81,26 @@ namespace UniOrm.Common
 
                 if (RequesttokenResponse.IsError)
                 {
-                    var tokenResponse = await LoginGetAccesstoken(client, clientmodel.ClientId,
+                    RequesttokenResponse = await LoginGetAccesstoken(Client, clientmodel.ClientId,
                         clientmodel.ClientSecret, clientmodel.UserName, clientmodel.Password,
                         disco.TokenEndpoint);
-                    return tokenResponse;
-                }
-                else
-                {
-                    var expiresAt = DateTime.UtcNow + TimeSpan.FromSeconds(RequesttokenResponse.ExpiresIn);
 
-                    var tokens = new[] {
+                }
+
+            }
+            else
+            {
+                RequesttokenResponse = await LoginGetAccesstoken(Client, clientmodel.ClientId,
+                    clientmodel.ClientSecret, clientmodel.UserName, clientmodel.Password,
+                    disco.TokenEndpoint);
+
+
+
+            }
+
+            var expiresAt = DateTime.Now + TimeSpan.FromSeconds(RequesttokenResponse.ExpiresIn);
+
+            var tokens = new[] {
                         new AuthenticationToken
                         {
                             Name = OpenIdConnectParameterNames.IdToken,
@@ -92,29 +122,19 @@ namespace UniOrm.Common
                                 Value = expiresAt.ToString("o",CultureInfo.InvariantCulture)
                             }
                         };
-                    // 获取身份认证的结果，包含当前的pricipal和 properties
-                    var currentAuthenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // 获取身份认证的结果，包含当前的pricipal和 properties
+            var currentAuthenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    // 把新的tokens存起来
-                    currentAuthenticateResult.Properties.StoreTokens(tokens);
+            // 把新的tokens存起来
+            currentAuthenticateResult.Properties.StoreTokens(tokens);
 
-                    // 登陆
-                    await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        currentAuthenticateResult.Principal, currentAuthenticateResult.Properties);
-                    //HttpContext.Response.Cookies.Append(["refreshToken"]. = tokenResponse.RefreshToken;
-
-                    return RequesttokenResponse;
-                }
-            }
-            else
-            {
-                var tokenResponse = await LoginGetAccesstoken(client, clientmodel.ClientId,
-                    clientmodel.ClientSecret, clientmodel.UserName, clientmodel.Password,
-                    disco.TokenEndpoint);
-
-                return tokenResponse;
-
-            }
+            // 登陆
+            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                currentAuthenticateResult.Principal, currentAuthenticateResult.Properties);
+            clientmodel.AccessToken = RequesttokenResponse.AccessToken;
+            clientmodel.RefreshToken = RequesttokenResponse.RefreshToken;
+            clientmodel.ExpiresTime = expiresAt;
+            return RequesttokenResponse;
 
         }
 
@@ -127,14 +147,13 @@ namespace UniOrm.Common
             var ClientSecret = AppConfig.GetDicstring("idsr4_ClientSecret");
             await httpContext.SignOutAsync();
             await httpContext.SignOutAsync("oidc");
-            var client = new HttpClient();
 
-            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
+            var disco = await Client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest()
             { Address = identityserver4url, Policy = { RequireHttps = false } });
 
 
 
-            var response = await client.IntrospectTokenAsync(new TokenIntrospectionRequest
+            var response = await Client.IntrospectTokenAsync(new TokenIntrospectionRequest
             {
                 Address = "http://oauth.66wave.com/connect/introspect",
                 ClientId = ClientId,
@@ -143,7 +162,7 @@ namespace UniOrm.Common
                 Token = token
             });
             //client.vil
-            var RequesttokenResponse = await client.RevokeTokenAsync(new TokenRevocationRequest()
+            var RequesttokenResponse = await Client.RevokeTokenAsync(new TokenRevocationRequest()
             {
                 Address = disco.RevocationEndpoint,
                 ClientId = ClientId,

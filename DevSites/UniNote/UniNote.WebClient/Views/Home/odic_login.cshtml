@@ -71,11 +71,12 @@
             mgr.getUser().then(function (user) {
                 var headers = {};
                 headers.Authorization = 'Bearer ' + user.access_token;
-                var url = "http://uninote.66wave.com/api/values";
+                var url = "http://oauth2.66wave.com/api/users";
                 $.ajax({
                     type: "get",
                     url: url,
                     dataType: "json",
+
                     headers: headers,
                     async: true,
                     success: function (jsonResult) {

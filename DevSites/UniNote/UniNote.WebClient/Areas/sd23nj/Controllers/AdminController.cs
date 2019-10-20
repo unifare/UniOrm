@@ -59,6 +59,15 @@ namespace UniNote.WebClient.Controllers
             return View();
         }
 
+        public IActionResult VueGrid()
+        {
+            return View();
+        }
+        public IActionResult VueGrid2()
+        {
+            return View();
+        }
+
         [AllowAnonymous]
         public IActionResult Signin()
         {

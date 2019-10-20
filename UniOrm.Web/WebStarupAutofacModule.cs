@@ -10,7 +10,7 @@ namespace UniOrm.Startup.Web
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<AuthorizeHelper>().As<IAuthorizeHelper>();
+            builder.RegisterInstance<IAuthorizeHelper>(new AuthorizeHelper());
             base.Load(builder);
 
         }

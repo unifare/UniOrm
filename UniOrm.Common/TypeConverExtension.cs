@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using Newtonsoft.Json.Linq;
 namespace UniOrm
 {
     public static class TypeConverExtension
@@ -457,6 +457,20 @@ namespace UniOrm
             return new string(c);
         }
         #endregion
+
+        public static JToken ToJsonToken(this string jsonString)
+        {
+            return JToken.Parse(jsonString);
+        }
+        public static JToken ToJsonTokenFromFile(this object obj)
+        {
+            if( obj==null)
+            {
+                return null;
+            }
+            return new JObject();
+        }
+
         private static readonly string key = "lskdflsdfk23n2i3usndbfh2b3erh231n2shdkfjk2j3h412esdlwej";
         /// <summary>
         /// DES加密
@@ -478,20 +492,20 @@ namespace UniOrm
 
         public static string UrlDecode(this object text)
         {
-            if(text == null)
+            if (text == null)
             {
                 return "";
             }
-           
+
             return System.Net.WebUtility.UrlDecode(text.ToString());
         }
-        public static string UrlEncode(this object  text)
+        public static string UrlEncode(this object text)
         {
             if (text == null)
             {
                 return "";
             }
-             
+
             return System.Net.WebUtility.UrlEncode(text.ToString());
         }
         /// <summary>
@@ -520,7 +534,7 @@ namespace UniOrm
             }
             else
             {
-                if(decryptString.Length<=length)
+                if (decryptString.Length <= length)
                 {
                     return decryptString;
                 }
