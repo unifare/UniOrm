@@ -367,7 +367,7 @@ namespace UniOrm.DataMigrationiHistrory
 
 
             Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "default", HttpMethod = "GET", Rule = @"\/test", ComposityId = "1111" });
-            Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "default", HttpMethod = "GET", Rule = @"\/_fact", ComposityId = "_fact" });
+            Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "default", HttpMethod = "GET", Rule = @"^\/$", ComposityId = "_fact" });
             Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "pay", HttpMethod = "GET", Rule = @"\/pay", ComposityId = "1e1cb869-2512-8dfc-81ee-ed3150836182" });
             Insert.IntoTable(WholeTableName("TrigerRuleInfo")).Row(new { RuleName = "hellorazor", HttpMethod = "GET", Rule = @"\/r", ComposityId = "e984ff96-c112-7133-3c00-df09f7338338" });
             var s_fact = new

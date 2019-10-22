@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 namespace UniOrm
 {
@@ -458,13 +460,247 @@ namespace UniOrm
         }
         #endregion
 
+        public static bool IsNullOrEmpty(this object text)
+        {
+            if (text == null)
+            {
+                return true;
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(text.ToString()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static string CombineFilePath(this string dirPath, string filename)
+        {
+            if (filename == "/")
+            {
+                return dirPath;
+            }
+            if (filename.IsNullOrEmpty())
+            {
+                return dirPath;
+            }
+
+            return Path.Combine(dirPath, filename);
+        }
+
+        public static string GetFileExtension(this string filePath)
+        {
+            var file = new FileInfo(filePath);
+            return file.Extension;
+        }
+
+        public static bool IsExsitFile(this string filePath)
+        {
+            var file = new FileInfo(filePath);
+            return file.Exists;
+        }
+
+        public static bool IsExsitDirectroy(this string dirPath)
+        {
+            return Directory.Exists(dirPath);
+        }
+
+        public static void EnSureDirectroy(this string dirPath)
+        {
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+        }
+
+        public static bool FileToCreated(this string filePath)
+        {
+            var file = new FileInfo(filePath);
+            if (!file.Exists)
+            {
+                var fs = File.Create(filePath);
+                fs.Close();
+            }
+            return true;
+        }
+
+        public static FileStream EnSureFileReadyWrite(this string filePath)
+        {
+            var file = new FileInfo(filePath);
+            if (!file.Exists)
+            {
+                return File.Create(filePath);
+            }
+            else
+            {
+                return File.OpenWrite(filePath);
+            }
+        }
+        public static string  ReadAsTextFile(this string filePath)
+        {
+            return File.ReadAllText(filePath); 
+        }
+
+        public static StreamWriter OpenTextFileReadyWrite(this string filePath)
+        {
+            var file = new FileInfo(filePath);
+            if (!file.Exists)
+            {
+                return File.CreateText(filePath);
+            }
+            else
+            {
+                return new StreamWriter(filePath);
+            }
+        }
+        public static bool FileRename(this string filePath, string newname)
+        {
+            var file = new FileInfo(filePath);
+            var newfile = file.Directory.FullName.CombineFilePath(newname);
+            if (newfile.IsExsitFile())
+            {
+                //TODO
+                return true;
+            }
+            if (!file.Exists)
+            {
+
+                var fs = File.Create(newfile);
+                fs.Close();
+            }
+            else
+            {
+                file.MoveTo(newfile);
+            }
+            return true;
+        }
+
+        public static bool FileDelete(this string filePath)
+        {
+            var file = new FileInfo(filePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+            return true;
+        }
+
+        public static string ToServerFullPath(this string relatedfilePath)
+        {
+            return AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(relatedfilePath);
+        }
+        public static string[] GetSubDir(this string dirfullPath)
+        {
+            return Directory.GetDirectories(dirfullPath);
+        }
+        public static DirectoryInfo[] ToGetSubDirInfos(this string dirfullPath)
+        {
+            var di = new DirectoryInfo(dirfullPath);
+            return di.GetDirectories();
+        }
+        public static string[] GetSubFiles(this string dirfullPath)
+        {
+            return Directory.GetFiles(dirfullPath);
+        }
+        public static FileInfo[] GetSubFileInfos(this string dirfullPath)
+        {
+            var di = new DirectoryInfo(dirfullPath);
+            return di.GetFiles();
+        }
+        public static IEnumerable<string> GetSubFileItems(this string dirfullPath)
+        {
+            return Directory.GetDirectories(dirfullPath).Concat(Directory.GetFiles(dirfullPath));
+        }
+
+        public static DirectoryInfo GetDirInfo(this string path)
+        {
+
+            var di = new FileInfo(path);
+            return di.Directory;
+        }
+        public static string GetDirFullPath(this string path)
+        {
+            var di = new FileInfo(path);
+            return di.DirectoryName;
+        }
+        
+        public static bool IsTextFile(this string fileName)
+        {
+            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+            bool isTextFile = true;
+            try
+            {
+                int i = 0;
+                int length = (int)fs.Length;
+                byte data;
+                while (i < length && isTextFile)
+                {
+                    data = (byte)fs.ReadByte();
+                    isTextFile = (data != 0);
+                    i++;
+                }
+                return isTextFile;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (fs != null)
+                {
+                    fs.Close();
+                }
+            }
+        }
+
+        public static string GetDirName(this string path)
+        {
+            var di = new FileInfo(path);
+            return di.Directory.Name;
+        }
+        public static void ToServerFullPathEnEnsure(this string relatedfilePath)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(relatedfilePath);
+            path.EnSureDirectroy();
+        }
+        public static void UploadSaveSingleFile(this IFormFile file, string dir, string savefilename = null)
+        {
+            string filename = file.FileName;
+            //string fileExt = file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+            if (!savefilename.IsNullOrEmpty())
+            {
+                filename = savefilename;
+            }
+            string fileFullName = dir.CombineFilePath(filename);
+            using (FileStream fs = System.IO.File.Create(fileFullName))
+            {
+                file.CopyTo(fs);
+                fs.Flush();
+            }
+        }
+
+        public static string FindAndSubstring(this string source, string findstring, int maxlength)
+        {
+            var starindex = source.IndexOf(findstring) + findstring.Length;
+            return source.SafeSubString(starindex, maxlength);
+        }
+
+        public static string FindAndSubstring(this string source, string findstring)
+        {
+            var starindex = source.IndexOf(findstring) + findstring.Length;
+            return source.SafeSubString(starindex);
+        }
+
         public static JToken ToJsonToken(this string jsonString)
         {
             return JToken.Parse(jsonString);
         }
         public static JToken ToJsonTokenFromFile(this object obj)
         {
-            if( obj==null)
+            if (obj == null)
             {
                 return null;
             }

@@ -27,7 +27,9 @@ using Microsoft.AspNetCore;
 using System.Threading;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using UniOrm.Common.Middlewares;
 
+using UEditor.Core;
 namespace UniOrm.Startup.Web
 {
     public static class WebSetup
@@ -78,6 +80,7 @@ namespace UniOrm.Startup.Web
         public static IServiceProvider ConfigureServices(this IServiceCollection services)
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            APP.ConfigureSiteAllModulesServices(services);
             services.AddMediatR(typeof(WebSetup).Assembly);
             //register configer
             JsonConfig jsonConfig = new JsonConfig();
@@ -86,7 +89,7 @@ namespace UniOrm.Startup.Web
             var builder = new ContainerBuilder();
             builder.RegisterInstance<IConfig>(jsonConfig);
             var tempcontainer = builder.Build();
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<CookiePolicyOptions>(options =>
                 {
                     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -123,7 +126,7 @@ namespace UniOrm.Startup.Web
             var IsUsingCmsGlobalRouterFilter = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingCmsGlobalRouterFilter"));
 
 
-
+            services.AddTheme(); //添加Theme服务
             if (isEnableSwagger)
             {
                 //注册Swagger生成器，定义一个和多个Swagger 文档
@@ -300,7 +303,8 @@ namespace UniOrm.Startup.Web
             }
 
             APP.InitDbMigrate();
-            APP.ConfigureSiteAllModulesServices(services);
+           // APPCommon.Builder.RegisterType<IHttpContextAccessor, HttpContextAccessor>();
+          
             APP.ApplicationServices = services.BuildServiceProvider();
             APP.SetServiceProvider();
 
@@ -342,7 +346,7 @@ namespace UniOrm.Startup.Web
                 RequestPath = ""
             });
 
-
+          
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -402,7 +406,7 @@ namespace UniOrm.Startup.Web
             app.UseSession();
 
             APPCommon.ConfigureSite(app, env);
-
+            app.UseTheme();//启用theme中间件
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

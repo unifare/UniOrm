@@ -90,23 +90,15 @@ namespace UniNote.WebClient.Controllers
                 remsg = ("未检测到文件");
                 return new { isok = false, msg = remsg };
             }
-           string path = AppDomain.CurrentDomain.BaseDirectory ;
-            //if (!Directory.Exists(path))
-            //{
-            //    Directory.CreateDirectory(path);
-            //}
+            var dirName = AppDomain.CurrentDomain.BaseDirectory;
 
-            var file = Request.Form.Files[0];
-            string fileExt = file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-            string filename = file.FileName;
-            string fileFullName = path + "\\" + filename;
-            using (FileStream fs = System.IO.File.Create(fileFullName))
+            foreach (var file in Request.Form.Files)
             {
-                file.CopyTo(fs);
-                fs.Flush();
+                file.UploadSaveSingleFile(dirName);
             }
 
-            return new { isok = true, msg = remsg }; ;
+
+            return new { isok = true, msg = remsg };
         }
 
         [HttpPost]
@@ -141,7 +133,7 @@ namespace UniNote.WebClient.Controllers
         [HttpGet]
         public object GetAllPluginReflections()
         {
-            string dir = AppDomain.CurrentDomain.BaseDirectory ;
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
             //if (!Directory.Exists(dir))
             //{
             //    Directory.CreateDirectory(dir);
@@ -282,13 +274,13 @@ namespace UniNote.WebClient.Controllers
         public IEnumerable<dynamic> GetAllModuleNames(string id)
         {
             var list = new List<dynamic>();
-            foreach(var item in  APPCommon.ModuleManager.RegistedModules)
+            foreach (var item in APPCommon.ModuleManager.RegistedModules)
             {
-                list.Add( new { id = item.ModuleName, value = item.ModuleName });
+                list.Add(new { id = item.ModuleName, value = item.ModuleName });
             }
             return list;
         }
-        
+
 
         [HttpPost]
         public int AddTriger([FromBody]TrigerRuleInfo id)

@@ -20,6 +20,12 @@ namespace UniOrm.Model
         Text,
         RazorText,
         RazorFile,
+        TemplateText,
+        TemplateFile,
+        TemplateRazorText,
+        ServerTransfer,
+        Redirector,
+        UrlRewriter
     }
     public enum ExcuteType
     {
