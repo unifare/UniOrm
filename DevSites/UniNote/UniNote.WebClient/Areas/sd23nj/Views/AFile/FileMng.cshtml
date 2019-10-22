@@ -334,7 +334,7 @@
             created() {
                 this.getfiles("/");
             },
-            mounted() {
+            mounted() { //mounted 是vue生命周期里 渲染完组件后的事件
                 $("#txt_contentid").append('  <textarea id="txtActiveInfo" style="height:300px; width:100%; display:none;"></textarea>');
                    KindEditor.ready(function (K) {
                             editor1 = K.create('#txtActiveInfo', {
