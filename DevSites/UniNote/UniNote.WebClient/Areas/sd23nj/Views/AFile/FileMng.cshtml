@@ -201,8 +201,11 @@
     </div>
     @*<script id="container" name="content" type="text/plain" style="display:none;">
         </script>*@
-  
-    <dlgmodel :list='selectedlist' :isactive="isActive" v-cloak v-on:change="changeOverlay" @@modify="modify"></dlgmodel>
+    <!----//子组件调用父级方法  v-on:子组件自定义事件名（必须小写，我。。。。。）="父级的方法名（可以大小写）" 还要在子组件的scripts里的方法里写  cancelDlg() {
+         v-on:subDlgSave="parentSave"这个不会成功。因为  subDlgSave 有大写。坑啊。。。
+                    this.$emit('subchange');  //发送 子组件自定义事件到上面绑定的 父级的方法  ，，，，，太绕了
+                },  麻烦啊 -->
+    <dlgmodel :sublist='selectedlist' :subisactive="isActive" v-cloak v-on:subchange="changeOverlay" @@comsave="parentSave" v-on:subDlgSave="parentSave"></dlgmodel>
 </div>
 
 
@@ -210,14 +213,14 @@
 @section Scripts{
 
     <script type="text/x-template" id="modify_model">
-        <div class="overlay" v-show="isactive">
+        <div class="overlay" v-show="subisactive">
             <div class="con">
                 <h2 class="title">新增 | 修改</h2>
                 <div class="content">
                     <table class="tb_table">
                         <tr>
                             <td>文件(夹)名</td>
-                            <td><input type="text" v-model="modifylist.username"></td>
+                            <td><input type="text" v-model="modifylist.Name"></td>
                         </tr>
                         <tr>
                             <td>文件内容</td>
@@ -227,43 +230,38 @@
 
                     </table>
                     <p>
-                        <input type="button" class="btn btn-default" @@click="changeActive" value="取消">
+                        <input type="button" class="btn btn-default" @@click="cancelDlg" value="取消">
                         <input type="button" class="btn btn-primary" @@click="component_save" value="保存"> 
                     </p>
                 </div>
             </div>
         </div>
     </script>
-    <script type="text/x-template" id="modify_model">
-        <div class="overlay" v-show="isShowChangeName">
-            <div class="con">
-                <h2 class="title">修改文件夹名称</h2>
-            </div>
-        </div>
-    </script>
+   
 
     <script type="text/javascript">
         var ue;
         Vue.component('dlgmodel', {
-            props: ['list', 'isactive'],
+            props: ['sublist', 'subisactive'],
             template: '#modify_model',
             //template: `<div> sdlkfsdf'
             //    </div>`,
             computed: {
                 modifylist() {
-                    return this.list;
+                    return this.sublist;
                 }
             },
             methods: {
                 testadd() {
                     UE.getEditor('container').setContent("lsdf<sdklfjsld>slkdfjsldkfjsd)");
                 },
-                changeActive() {
-                    this.$emit('change');
+                cancelDlg() {
+                    //$emit意思是发送自己的事件到 父控件 ，这里就是 v-cloak v-on:subchange="changeOverlay"中的changeOverlay，changeOverlay是父级的方法名
+                    this.$emit('subchange');
                 },
-                component_save() {
+                component_save() { 
                     //alert(UE.getEditor('container').getContent());
-                    this.$emit('modify', this.modifylist);
+                    this.$emit('comsave',this.sublist);  ///comsave 必须小写 必须小写 必须小写  必须小写 必须小写 必须小写 必须小写 必须小写
                 }
             }
         });
@@ -280,7 +278,7 @@
                 pageAll: 20,
                 totalBoxcChecked: false, //是否全选
                 checkedList: [], //双向数据绑定的数组，我是用的id
-                list: [
+                data: [
                     //{
                     //    id: 0,
                     //    username: 'aaaaa',
@@ -384,7 +382,7 @@
                     if (this.totalBoxcChecked) {
                         this.checkedList = [];
                     } else {
-                        this.list.forEach((item) => {
+                        this.data.forEach((item) => {
                             if (this.checkedList.indexOf(item.id) == -1) {
                                 this.checkedList.push(item.id)
                             }
@@ -441,19 +439,17 @@
                 // 修改数据
                 showOverlay(index, el) {
                     this.selected = index;
-                    this.selectedlist = this.list[index];
+                    this.selectedlist = this.data[index];
 
                     this.changeOverlay();
                 },
                 // 点击保存按钮
-                modify(arr) {
-                    if (this.selected > -1) {
-                        Vue.set(this.list, this.selected, arr);
-                        this.selected = -1;
-                    } else {
-                        this.list.push(arr);
-                    }
-                    this.setSlist(this.list);
+                parentSave(arr) {
+
+                    var fname = this.selectedlist.Name;
+                    var istext=this.selectedlist.IsTextFile
+                    var newtext=  editor1.val(); //editor1.html(con);
+                   // this.setSlist(this.data);
                     this.changeOverlay();
                 },
                 add: function () {
@@ -468,8 +464,8 @@
                 },
                 // delete list in index location
                 del(index) {
-                    this.list.splice(index, 1);
-                    this.setSlist(this.list);
+                    this.data.splice(index, 1);
+                    this.setSlist(this.data);
                 },
                 changeOverlay() {
                     this.selected = -1;
@@ -482,8 +478,8 @@
                 getfiles(dir) {
 
                     $.get("GetAllFiles?dir=" + dir).done(function (jsonResult) {
-                        app.list = jsonResult.list;
-                        app.setSlist(app.list);
+                        app.data = jsonResult.list;
+                        app.setSlist(app.data);
                         app.pageAll = 1;
                     }).fail(function (e) {
                         console.log(e);
@@ -499,7 +495,7 @@
                     if (v) {
                         var ss = [];
                         // 过滤需要的数据
-                        this.list.forEach(function (item) {
+                        this.data.forEach(function (item) {
                             if (item.username.indexOf(v) > -1) {
                                 if (self.searchlist.indexOf(item.username) == -1) {
                                     self.searchlist.push(item.username);
@@ -515,7 +511,7 @@
                         this.setSlist(ss); // 将过滤后的数据给了slist
                     } else {
                         // 没有搜索内容，则展示全部数据
-                        this.setSlist(this.list);
+                        this.setSlist(this.data);
                     }
                 }
             },
@@ -524,7 +520,7 @@
                     console.log(arguments);
                 },
                 checkedList() {
-                    if (this.checkedList.length == this.list.length) {
+                    if (this.checkedList.length == this.data.length) {
                         this.totalBoxcChecked = true;
                     } else {
                         this.totalBoxcChecked = false;
