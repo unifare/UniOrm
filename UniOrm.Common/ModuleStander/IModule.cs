@@ -17,6 +17,11 @@ namespace UniOrm.Common
         IResover Container { get; }
         string DllPath { get; set; }
         string ModuleName { get; }
+        string ModuleStaticPath { get; } 
+        string ModuleStaticName { get; } 
+        Dictionary<string,string> OtherMapPath { get;   }
+
+        string Theme { get; } 
         bool Init();
         AppConfig ModuleAppConfig { get; set; }
         void EnsureDaContext();

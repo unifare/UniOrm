@@ -16,6 +16,8 @@ namespace UniOrm
         public string AppType { get; set; }
         public string ModuleConfigDir { get; set; } = "./";
         public string AppName{ get; set; }
+        public string AppTheme { get; set; } = "Aro";
+        public string AppTmpl { get; set; } = "default";
         public string DefaultDbPrefixName { get; set; }
         public DbConnectionConfig UsingDBConfig { get; set; }
         public List<DbConnectionConfig> Connectionstrings { get; set; }

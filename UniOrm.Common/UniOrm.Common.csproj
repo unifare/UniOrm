@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniOrm.FlunentMigrator\UniOrm.FlunentMigrator.csproj" />
+    <ProjectReference Include="..\UniOrm.Model\UniOrm.Model.csproj" />
   </ItemGroup>
 
 </Project>

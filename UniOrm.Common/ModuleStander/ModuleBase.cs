@@ -38,6 +38,11 @@ namespace UniOrm.Common
             }
 
         }
+
+        public virtual string ModuleStaticPath { get; } = "wwwroot";
+        public virtual string ModuleStaticName { get; } = "";
+        public virtual Dictionary<string, string> OtherMapPath { get; }
+        public virtual string Theme { get; }
         public static ServiceProvider ServiceProvider { get; set; }
         public static IConfiguration Configuration { get; set; }
         public virtual void Startup(IConfiguration configuration)
@@ -72,7 +77,8 @@ namespace UniOrm.Common
         }
         public ModuleBase()
         {
-            Types = new Dictionary<string, Type>();
+            OtherMapPath = new Dictionary<string, string>();
+               Types = new Dictionary<string, Type>();
             Init();
         }
         public AppConfig GetAppConfig()

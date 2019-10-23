@@ -14,6 +14,7 @@ using UniOrm.Application;
 using UniOrm.Startup.Web;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using System.IO.Compression;
 
 namespace UniNote.WebClient.Controllers
 {
@@ -29,6 +30,7 @@ namespace UniNote.WebClient.Controllers
         public bool IsReaderable { get; set; }
         public bool IsWritable { get; set; }
         public bool IsTextFile { get; set; }
+        public bool IsZipFile { get; set; }
         public string LinuxRights { get; set; }
 
     }
@@ -55,9 +57,10 @@ namespace UniNote.WebClient.Controllers
             {
                 var index = 0;
                 var list = new List<FileDTO>();
-                var padir = fullpath.GetDirFullPath();
+                var fullpadir = fullpath.GetDirFullPath();
                 if (dir != "/")
                 {
+                    var padir = fullpadir;
                     if (padir.Replace("\\", "").Replace("/", "") == basedir.Replace("\\", "").Replace("/", ""))
                     {
                         padir = "/";
@@ -66,7 +69,7 @@ namespace UniNote.WebClient.Controllers
                     {
                         padir = fullpath.GetDirName();
                     }
-                    list.Add(new FileDTO { Id = index, Name = "..上一级", RelatedPath = padir.FindAndSubstring(basedir).Replace("\\", "/"), ParentDirName = padir, IsDirectry = true });
+                    list.Add(new FileDTO { Id = index, Name = "..上一级", RelatedPath = fullpadir.FindAndSubstring(basedir).Replace("\\", "/"), ParentDirName = padir, IsDirectry = true });
                     index++;
                 }
 
@@ -102,6 +105,7 @@ namespace UniNote.WebClient.Controllers
                         IsTextFile = fileio.FullName.IsTextFile(),
                         FileExtense = fileio.Extension,
                         ParentDirName = dir,
+                        IsZipFile = fileio.Extension.ToLower().Contains("zip") || fileio.Extension.ToLower().Contains("raa") || fileio.Extension.ToLower().Contains("7z") || fileio.Extension.ToLower().Contains("tar"),
                         IsDirectry = false,
                         IsReaderable = fileio.IsReadOnly,
                         IsWritable = !fileio.IsReadOnly
@@ -131,34 +135,61 @@ namespace UniNote.WebClient.Controllers
             return new JsonResult(new { isok = isCreated });
         }
 
-        public IActionResult SaveFile(string path, string context)
+        public IActionResult SaveFile(string path, string newfilename, bool isdir, bool istext, string context)
         {
-            var sw = path.OpenTextFileReadyWrite();
-            sw.Write(context);
-            sw.Close();
+            path = path.ToServerFullPath();
+            var newpath = path.FileRename(newfilename);
+            if (istext)
+            {
+                var oldtext = newpath.ReadAsTextFile();
+                if (oldtext != context)
+                {
+                    var sw = newpath.OpenTextFileReadyWrite();
+                    sw.Write(context);
+                    sw.Close();
+                }
+
+            }
+
             return new JsonResult(new { isok = true });
         }
 
-        public IActionResult RenameFile(string path, string newfilename)
-        {
-            var isok = path.FileRename(newfilename);
-            return new JsonResult(new { isok });
-        }
 
+        public IActionResult RenameDir(string path, string newfilename)
+        {
+            path = path.ToServerFullPath();
+            var isok = path.DirRename(newfilename);
+            return new JsonResult(new { isok = true });
+        }
         public IActionResult DelFile(string path)
         {
+            path = path.ToServerFullPath();
             return new JsonResult(new { isok = path.FileDelete() });
         }
-
+        public IActionResult DelFileOrDir(string path, bool isdir)
+        {
+            path = path.ToServerFullPath();
+            var isok = false;
+            if (!isdir)
+            {
+                isok = path.FileDelete();
+            }
+            else
+            {
+                isok = path.DirDelete();
+            }
+            return new JsonResult(new { isok });
+        }
         public IActionResult UploadFile(string dirName)
         {
             var remsg = string.Empty;
+            dirName = dirName.UrlDecode();
             if (Request.Form.Files.Count == 0)
             {
                 remsg = ("未检测到文件");
                 return new JsonResult(new { isok = false, msg = remsg });
             }
-            dirName.ToServerFullPathEnEnsure();
+            dirName = dirName.ToServerFullPathEnEnsure();
 
             foreach (var file in Request.Form.Files)
             {
@@ -167,7 +198,15 @@ namespace UniNote.WebClient.Controllers
             return new JsonResult(new { isok = true, msg = remsg });
         }
 
+        public IActionResult UnzipFile(string refilepath, string distDir)
+        {
+            var fullpath = refilepath.ToServerFullPath();
+            var fullDistpath = distDir.ToServerFullPath();
 
+            //将指定 zip 存档中的所有文件都解压缩到文件系统的一个目录下
+            ZipFile.ExtractToDirectory(fullpath, fullDistpath, true);
+            return new JsonResult(new { isok = true });
+        }
         public IActionResult FileMng()
         {
             return View();

@@ -555,14 +555,14 @@ namespace UniOrm
                 return new StreamWriter(filePath);
             }
         }
-        public static bool FileRename(this string filePath, string newname)
+        public static string FileRename(this string filePath, string newname)
         {
             var file = new FileInfo(filePath);
             var newfile = file.Directory.FullName.CombineFilePath(newname);
             if (newfile.IsExsitFile())
             {
                 //TODO
-                return true;
+                return newfile;
             }
             if (!file.Exists)
             {
@@ -574,9 +574,28 @@ namespace UniOrm
             {
                 file.MoveTo(newfile);
             }
-            return true;
+            return newfile;
         }
-
+        public static string DirRename(this string filePath, string newname)
+        {
+            var dir = new DirectoryInfo(filePath);
+           
+            var newfdir = dir.Parent .FullName.CombineFilePath(newname);
+            if (newfdir.IsExsitFile())
+            {
+                //TODO
+                return newfdir;
+            }
+            if (!dir.Exists)
+            {
+                var fs = Directory.CreateDirectory(newfdir); 
+            }
+            else
+            {
+                dir.MoveTo(newfdir);
+            }
+            return newfdir;
+        }
         public static bool FileDelete(this string filePath)
         {
             var file = new FileInfo(filePath);
@@ -586,7 +605,30 @@ namespace UniOrm
             }
             return true;
         }
-
+        public static bool DirDelete(this string dirPath)
+        {
+            var allbubitem = dirPath.GetSubFileItems();
+            if( allbubitem.Count()>0)
+            {
+                var alldir = dirPath.GetSubDir();
+                foreach (var di in alldir)
+                {
+                    di.DirDelete();
+                }
+                var allfis = dirPath.GetSubFiles();
+                foreach (var fi in allfis)
+                {
+                    fi.FileDelete();
+                }
+                Directory.Delete(dirPath);
+                return true;
+            }
+            else
+            {
+                Directory.Delete(dirPath);
+            } 
+            return true;
+        }
         public static string ToServerFullPath(this string relatedfilePath)
         {
             return AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(relatedfilePath);
@@ -661,10 +703,11 @@ namespace UniOrm
             var di = new FileInfo(path);
             return di.Directory.Name;
         }
-        public static void ToServerFullPathEnEnsure(this string relatedfilePath)
+        public static string ToServerFullPathEnEnsure(this string relatedfilePath)
         {
             var path = AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(relatedfilePath);
             path.EnSureDirectroy();
+            return path;
         }
         public static void UploadSaveSingleFile(this IFormFile file, string dir, string savefilename = null)
         {

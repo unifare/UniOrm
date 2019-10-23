@@ -272,7 +272,7 @@ namespace UniOrm.Application
                                                 }
                                                 catch (Exception exp)
                                                 {
-                                                    Logger.LogError(logName, "Run -> FlowStepType.CallMethod error,composity:{0},step:{1},-------------exception:{2}", cons.Id, s.Guid, LoggerHelper.GetExceptionString(exp)) ;
+                                                    Logger.LogError(logName, "Run -> FlowStepType.CallMethod error,composity:{0},step:{1},-------------exception:{2}", cons.Id, s.Guid, LoggerHelper.GetExceptionString(exp));
                                                     break;
                                                 }
 
@@ -370,20 +370,30 @@ namespace UniOrm.Application
                                                     }
                                                     dynamic modelArg = null;
                                                     var module = APPCommon.ModuleManager.GetModule(null, s.ModuleName);
-                                                    if(module==null)
+                                                    if (module == null)
                                                     {
-                                                        throw new Exception($"No module {s.ModuleName} found");
+                                                        if (objParams != null && objParams.Count > 0)
+                                                        {
+                                                            modelArg = new { Step = s, Module = new { }, Item = objParams[0] };
+                                                        }
+                                                        else
+                                                        {
+                                                            modelArg = new { Step = s, Module = new { }, Item = new { } };
+                                                        } 
                                                     }
-                                                    if (objParams != null&& objParams.Count>0)
+                                                    else
                                                     {
-                                                        modelArg= new { Step = s, Module= module, Item = objParams[0] };
-                                                    }
-                                                   else
-                                                    {
-                                                        modelArg = new { Step = s, Module = module, Item = new { } };
+                                                        if (objParams != null && objParams.Count > 0)
+                                                        {
+                                                            modelArg = new { Step = s, Module = module, Item = objParams[0] };
+                                                        }
+                                                        else
+                                                        {
+                                                            modelArg = new { Step = s, Module = module, Item = new { } };
+                                                        }
                                                     }
                                                     var cachekey2 = template.DesEncrypt().SafeSubString(128);
-                                                    var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2); 
+                                                    var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2);
                                                     template = stringbuilder.AppendLine("\r\n").Append(template).ToString();
                                                     if (cacheResult.Success)
                                                     {

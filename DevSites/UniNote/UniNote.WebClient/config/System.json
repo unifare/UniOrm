@@ -3,6 +3,8 @@
   "App": {
     "AppType": "aspnetcore",
     "AppName": "Default",
+    "AppTheme": "Aro",
+    "AppTmpl": "Default",
     "DefaultDbPrefixName": "uniorm_",
     "ModuleConfigDir": "./",
     "TrigerType": "urlreg",
