@@ -203,7 +203,7 @@ namespace UniOrm
                 password = strResult.Replace("-", "");
 
             }
-            return Container.Resolve<ICodeService>().GetDefaultUser(username, password);
+            return Container.Resolve<ISysDatabaseService>().GetDefaultUser(username, password);
         }
       
 
@@ -216,7 +216,7 @@ namespace UniOrm
                 password = strResult.Replace("-", "");
 
             }
-            return Container.Resolve<ICodeService>().GetAdminUser(username, password);
+            return Container.Resolve<ISysDatabaseService>().GetAdminUser(username, password);
         }
         public static string GetDicstring(string key)
         {

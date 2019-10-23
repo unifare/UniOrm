@@ -189,5 +189,24 @@ namespace UniOrm.Adaption
             Logger.LogError(LoggerName, "QueryList<TSource> -> not implement for PatePoco ");
             return null;
         }
+
+        public QueryResult GetSqlQueryPageAction<T>(object dbOperator, string sql, int startpage, int pagesize, params object[] args) where T : class, new()
+        {
+            if (pagesize <= 0)
+            {
+                pagesize = 100;
+            }
+            var db = dbOperator as Database;
+            var query = db.SkipTake<T>(startpage * pagesize, pagesize, sql, args);
+            var alldatacount = db.ExecuteScalar<int>("seletct count(1) from (" + sql + ")", args);
+            var relist = new QueryResult()
+            {
+                DataList = query.ToList<dynamic>(),
+                currentIndex = startpage + 1,
+                PageSize = pagesize,
+                TotalPage = alldatacount
+            };
+            return relist;
+        }
     }
 }

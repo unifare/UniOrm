@@ -6,7 +6,7 @@ using System.Text;
 
 namespace UniOrm.Model.DataService
 {
-    public interface ICodeService:IDisposable
+    public interface ISysDatabaseService:IDisposable
     {
         bool IsOpenSessionEveryTime { get; set; }
         SystemACon GetSystemACon();
@@ -16,6 +16,7 @@ namespace UniOrm.Model.DataService
         bool DeleteSimpleCode(object simplequery);
         List<AConFlowStep> GetAConStateSteps(string id);
          List<T> GetSimpleCode<T>(object simplequery) where T : class, new();
+        QueryResult GetSimpleCodePage<T>(object simplequery,int pageindex,int pagesize) where T : class, new();
         IEnumerable<T> GetSimpleCodeLinq<T>(Expression<Func<T, bool>> predicate) where T : class, new();
    
         int UpdateSimpleCode (object obj);

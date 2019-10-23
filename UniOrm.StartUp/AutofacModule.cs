@@ -16,7 +16,7 @@ namespace UniOrm.Application
         {
             //var infrastructureAssembly = typeof(AggregateRoot).GetTypeInfo().Assembly;
             //var domainAssembly = typeof(CreateSite).GetTypeInfo().Assembly;
-            var ICodeServiceAssembly = typeof(ICodeService).Assembly;
+            var ICodeServiceAssembly = typeof(ISysDatabaseService).Assembly;
             var DatabaseFactoryAssembly = typeof( DataGrouderBridge).Assembly;
             var CommonAssembly = typeof(IConfig).Assembly;
             var ExAssembly = Assembly.GetExecutingAssembly();

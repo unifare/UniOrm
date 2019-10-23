@@ -39,10 +39,10 @@ namespace UniOrm.Application
         public static AppConfig appConfig = null;
 
         // public DefaultModuleManager ModuleManager { get; set; }
-        ICodeService CodeService;
+        ISysDatabaseService CodeService;
         IConfig Config;
         IDbFactory DbFactory;
-        public GodWorker(ICodeService codeService, IDbFactory dbFactory, IConfig config)
+        public GodWorker(ISysDatabaseService codeService, IDbFactory dbFactory, IConfig config)
         {
             WorkerName = Guid.NewGuid().ToString("N");
             DbFactory = dbFactory;
@@ -136,7 +136,7 @@ namespace UniOrm.Application
         //}
 
 
-        private async static Task RunComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ICodeService codeService, IConfig config)
+        private async static Task RunComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ISysDatabaseService codeService, IConfig config)
         {
             var cons = newrunmodel.ComposeEntity;
             if (cons.RunMode == RunMode.Coding)
@@ -296,6 +296,7 @@ namespace UniOrm.Application
                                             {
                                                 var engine = APP.Razorengine;
                                                 string template = s.ProxyCode;
+
                                                 if (string.IsNullOrEmpty(template))
                                                 {
                                                     stepResult = "";
@@ -499,7 +500,7 @@ namespace UniOrm.Application
             return DynaObject;
         }
 
-        private static async Task CheckAndRunNextRuntimeComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ICodeService codeService, IConfig config)
+        private static async Task CheckAndRunNextRuntimeComposity(int requsetHash, RuntimeModel newrunmodel, IDbFactory dbFactory, ISysDatabaseService codeService, IConfig config)
         {
             var resouce = newrunmodel.Resuce(newrunmodel.NextRunTimeKey);
             if (resouce != null)
@@ -588,7 +589,7 @@ namespace UniOrm.Application
                 return cons;
             }
         }
-        private static IEnumerable<AConFlowStep> FindSteps(string ComId, ICodeService codeService)
+        private static IEnumerable<AConFlowStep> FindSteps(string ComId, ISysDatabaseService codeService)
         {
 
             var cons = APP.AConFlowSteps.Where(p => p.AComposityId == ComId);

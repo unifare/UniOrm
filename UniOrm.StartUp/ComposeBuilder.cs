@@ -12,8 +12,8 @@ namespace UniOrm.Application
 {
     public class ComposeBuilder
     {
-        ICodeService codeService;
-        public ComposeBuilder(ICodeService _codeService)
+        ISysDatabaseService codeService;
+        public ComposeBuilder(ISysDatabaseService _codeService)
         {
             codeService = _codeService;
         }

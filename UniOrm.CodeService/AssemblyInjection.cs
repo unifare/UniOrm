@@ -9,8 +9,8 @@ namespace UniOrm.Model.DataService
 {
     public class AssemblyInjection : IAssemblyInjection
     {
-        ICodeService Dbclient;
-        public AssemblyInjection(ICodeService dbclient)
+        ISysDatabaseService Dbclient;
+        public AssemblyInjection(ISysDatabaseService dbclient)
         {
             Dbclient = dbclient;
         }

@@ -43,6 +43,7 @@ namespace UniOrm
         QueryResult GetQueryPageAction(object dbOperator, string sql, int startpage, int pagesize, params object[] args);
         List<dynamic> GetQuertyAction (object dbOperator, string sql, params object[] args);
         IEnumerable<T> GetSqlQueryAction<T>(object dbOperator, string sql, params object[] args) where T : class, new();
+        QueryResult GetSqlQueryPageAction<T>(object dbOperator, string sql, int startpage, int pagesize, params object[] args) where T : class, new();
         IEnumerable<TSource> QueryList<TSource>(object dbOperator, Expression<Func<TSource, bool>> predicate) where TSource : class, new();
 
         bool IsExcuteImmediately { get; set; }

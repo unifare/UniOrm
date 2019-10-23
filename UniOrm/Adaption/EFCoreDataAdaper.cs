@@ -371,5 +371,33 @@ namespace UniOrm.Adaption
             var db = dbOperator as EFDbContext;
             return db.Set<TSource>().Where(predicate);
         }
+
+        public QueryResult GetSqlQueryPageAction<T>(object dbOperator, string sql, int startpage, int pagesize, params object[] args) where T : class, new()
+        {
+            //dbFactory.Orms[OrmName.EFCore].OrmAdaptor.RegistedModelTypes.AddTypes(types);
+            if (pagesize <= 0)
+            {
+                pagesize = 100;
+            }
+            // var query = db.SkipTake<dynamic>(startpage * pagesize, pagesize, sql, args);
+            //var alldata = GetQuertyActionlocal(dbOperator, sql, args);
+            var db = dbOperator as EFDbContext;
+
+            if(  !db.TypesRegisted.Contains(typeof(T)))
+            {
+                RegistedModelTypes.AddTypes(typeof(T));
+            }
+            var alldata= db.Set<T>().FromSql(sql, args);
+            var tagelist = alldata.Skip(startpage * pagesize).Take(pagesize);
+
+            var relist = new QueryResult()
+            {
+                DataList = tagelist.ToList<dynamic>(),
+                currentIndex = startpage + 1,
+                PageSize = pagesize,
+                TotalPage = alldata.Count()
+            };
+            return relist;
+        }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq.Expressions; 
-using UniOrm; 
+using System.Linq.Expressions;
+using UniOrm;
 using UniOrm.Loggers;
 
 namespace UniOrm.Model.DataService
 {
-    public class CodeService : ICodeService
+    public class SysDatabaseService : ISysDatabaseService
     {
         public const string LoggerName = "CodeService";
         IDbFactory dbFactory;
@@ -15,7 +15,7 @@ namespace UniOrm.Model.DataService
         IConfig Config;
         public bool IsOpenSessionEveryTime { get; set; }
         public OrmName ormname;
-        public CodeService(IDbFactory dbfactory, IConfig config)
+        public SysDatabaseService(IDbFactory dbfactory, IConfig config)
         {
             Config = config;
             IsOpenSessionEveryTime = false;
@@ -38,7 +38,7 @@ namespace UniOrm.Model.DataService
             //using (var db = dbFactory.Orms[ormname].CreateDefaultInstance())
             //{
 
-           // var q = KataDB.From(nameof(SystemACon));
+            // var q = KataDB.From(nameof(SystemACon));
             // var sss = db.ToSql(q);
             return Db.ToTyped<SystemACon>().QueryFrom().FirstOrDefault();  //$"select top 1 * from  {nameof(SystemACon)}=@FirstNameParam"' <SystemACon>().First();
             //}
@@ -56,7 +56,7 @@ namespace UniOrm.Model.DataService
         {
             OpenSession();
             var q = Db.From(nameof(TypeDefinition)).Where("AliName", typeName);
-            var typeds = q.ToList< TypeDefinition>() ;
+            var typeds = q.ToList<TypeDefinition>();
             if (typeds.Count() == 0)
             {
                 throw new Exception("TypeDefinition ali name " + typeName + " is shown more than twice. ");
@@ -77,7 +77,7 @@ namespace UniOrm.Model.DataService
             var typeds = Db.QueryList<AdminUser>(p => p.UserName == username && p.Password == password);
             if (typeds.Count() == 0)
             {
-                Logger.LogError(LoggerName,"AdminUser   name " + username + " is not found " , new Exception("AdminUser   name " + username + " is shown more than twice. "));
+                Logger.LogError(LoggerName, "AdminUser   name " + username + " is not found ", new Exception("AdminUser   name " + username + " is shown more than twice. "));
                 return null;
             }
             else if (typeds.Count() > 1)
@@ -102,7 +102,7 @@ namespace UniOrm.Model.DataService
             else if (typeds.Count() > 1)
             {
                 Logger.LogError(LoggerName, "DefaultUser   name " + username + " is shown more than twice. ", new Exception("DefaultUser   name " + username + " is shown more than twice. "));
-                return null; 
+                return null;
             }
             else
             {
@@ -151,6 +151,24 @@ namespace UniOrm.Model.DataService
             }
             return oneobject;
         }
+
+        public QueryResult GetSimpleCodePage<T>(object simplequery, int pageindex, int pagesize) where T : class, new()
+        {
+            OpenSession();
+            //dbFactory.EFCore<pigcms_adma>().CreateDefaultInstance();
+            var basequery = Db.From<T>();
+            if (simplequery != null)
+            {
+                basequery = basequery.Where(simplequery);
+            }
+            var oneobject = basequery.ToPageList<T>(pageindex, pagesize);
+            if (oneobject == null)
+            {
+                oneobject = new QueryResult() { currentIndex = 1, DataList = new List<dynamic>() }; 
+            }
+            return oneobject;
+        }
+
         public List<T> GetSimpleCode<T>(object simplequery) where T : class, new()
         {
             OpenSession();

@@ -43,7 +43,12 @@ namespace UniOrm
             return Parent.OrmAdaptor.GetSqlQueryAction<T>(Parent.OrmObject, sql, args).ToList();
         }
 
-   
+       
+        public QueryResult QueryPage<T>(string sql, int pindex, int psize, params object[] args) where T : class, new()
+        {
+            return Parent.OrmAdaptor.GetSqlQueryPageAction<T>(Parent.OrmObject, sql, pindex, psize, args);
+
+        }
 
         public DataGrounder Parent { get; set; }
     }

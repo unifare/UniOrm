@@ -22,8 +22,8 @@ namespace UniNote.WebClient.Controllers
     public class FactController : ControllerBase
     {
         IHostingEnvironment _hostingEnvironment;
-        ICodeService m_codeService;
-        public FactController(ICodeService codeService, IHostingEnvironment hostingEnvironment)
+        ISysDatabaseService m_codeService;
+        public FactController(ISysDatabaseService codeService, IHostingEnvironment hostingEnvironment)
         {
 
             m_codeService = codeService;

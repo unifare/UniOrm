@@ -231,5 +231,25 @@ namespace UniOrm.Adaption
             }
             return null;
         }
+
+        public QueryResult GetSqlQueryPageAction<T>(object dbOperator, string sql, int startpage, int pagesize, params object[] args) where T : class, new()
+        {
+            if (pagesize <= 0)
+            {
+                pagesize = 100;
+            }
+            // var query = db.SkipTake<dynamic>(startpage * pagesize, pagesize, sql, args);
+            var alldata = GetQuertyAction(dbOperator, sql, args);
+            var tagelist = alldata.Skip(startpage * pagesize).Take(pagesize);
+
+            var relist = new QueryResult()
+            {
+                DataList = tagelist.ToList(),
+                currentIndex = startpage + 1,
+                PageSize = pagesize,
+                TotalPage = alldata.Count
+            };
+            return relist;   
+        }
     }
 }

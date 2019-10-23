@@ -19,7 +19,16 @@ namespace UniOrm
             {
                 throw new Exception("no DataGrounder ");
             }
-            return q.DataGrounder.ToTyped<T>().Query( q);
+            return q.DataGrounder.ToTyped<T>().Query(q);
+        }
+        public static QueryResult ToPageList<T>(this Query q, int pindex, int psize) where T : class, new()
+        {
+            if (q.DataGrounder == null)
+            {
+                throw new Exception("no DataGrounder ");
+            }
+            var sss = q.DataGrounder.ToSql(q); 
+            return q.DataGrounder.ToTyped<T>().QueryPage<T>(sss.Sql,  pindex, psize, sss.Bindings.ToArray());
         }
         public static T FirstOrDefault<T>(this Query q) where T : class, new()
         {
