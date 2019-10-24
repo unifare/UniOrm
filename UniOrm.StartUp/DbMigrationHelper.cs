@@ -11,8 +11,7 @@ using UniOrm.Adaption;
 using Microsoft.Extensions.Caching.Memory;
 using UniOrm.Core;
 using UniOrm;
-using UniOrm.Common;
-using UniOrm.Loggers;
+using UniOrm.Common; 
 using UniOrm.DataMigrationiHistrory;
 
 

@@ -114,6 +114,10 @@ namespace UniOrm
 
         public AConFlowStep Step { get; set; }
 
+        public string v(string key)
+        {
+            return APPCommon.AppConfig.GetDicstring(key);
+        }
 
         public List<dynamic> GetData(string sql, object args)
         {

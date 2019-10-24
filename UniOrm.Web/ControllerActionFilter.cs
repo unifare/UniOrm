@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using UniOrm.Loggers;
 
 namespace UniOrm.Startup.Web
 {

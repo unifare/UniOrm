@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using UniOrm;
-using UniOrm.Loggers;
+using UniOrm; 
 
 namespace UniOrm.Model.DataService
 {

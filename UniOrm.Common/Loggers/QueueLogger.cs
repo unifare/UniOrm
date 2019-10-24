@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UniOrm.Loggers
+namespace UniOrm
 {
     public class QueueLogger : ILogger
     {

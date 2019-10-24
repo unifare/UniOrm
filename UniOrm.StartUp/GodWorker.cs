@@ -14,7 +14,6 @@ using UniOrm.Core;
 using UniOrm.Common;
 using UniOrm;
 using UniOrm.Model;
-using UniOrm.Loggers;
 using RazorLight;
 
 namespace UniOrm.Application
@@ -36,18 +35,20 @@ namespace UniOrm.Application
         readonly static object lockobj = new object();
         static string logName = "AConState.Application.GodMaker";
         //public static Dictionary<string, RuntimeModel> RuntimeModels = new Dictionary<string, RuntimeModel>();
-        public static AppConfig appConfig = null;
+      
 
         // public DefaultModuleManager ModuleManager { get; set; }
         ISysDatabaseService CodeService;
         IConfig Config;
         IDbFactory DbFactory;
+        public AppConfig appConfig { get; }
         public GodWorker(ISysDatabaseService codeService, IDbFactory dbFactory, IConfig config)
         {
             WorkerName = Guid.NewGuid().ToString("N");
             DbFactory = dbFactory;
             CodeService = codeService;
             Config = config;
+            appConfig= config.GetValue<AppConfig>("App");
             //ModuleManager = new DefaultModuleManager();
         }
 
@@ -58,37 +59,7 @@ namespace UniOrm.Application
             var st = new System.Diagnostics.StackTrace();
             var lastMethod = st.GetFrame(1).GetMethod();
             //var appconfigstring = Config.GetValue<AppConfig>("App").AppConfigs;
-
-            if (appConfig == null)
-            {
-                //appConfig = SuperManager.Container.Resolve<IApp>
-                //{
-                //    AppType = "aspnetcore",
-                //    Connectionstrings = new List<DcConnectionConfig>()
-                //    {
-                //        new DcConnectionConfig ()
-                //        {
-                //            OrmName="PatePoco",
-                //            Name="sys_default" ,
-                //            Connectionstring = "Data Source = ./config/aconstate.db"
-                //        }, new DcConnectionConfig ()
-                //        {
-                //            OrmName="InMemory",
-                //            Name="InMemory_default" ,
-                //            Connectionstring = "AconState"
-                //        }
-                //        , new DcConnectionConfig ()
-                //        {
-                //            OrmName="EFCore",
-                //            Name="EFCore_default" ,
-                //            Connectionstring = "Data Source = ./config/aconstate.db"
-                //        }
-                //    },
-                //    OrmTypes = new List<string> { "PatePoco" },
-                //    TrigerType = "urlreg"
-                //};
-
-            }
+ 
             if (appConfig.AppType == "aspnetcore")
             {
 

@@ -388,11 +388,10 @@ namespace UniOrm.Adaption
                 RegistedModelTypes.AddTypes(typeof(T));
             }
             var alldata= db.Set<T>().FromSql(sql, args);
-            var tagelist = alldata.Skip(startpage * pagesize).Take(pagesize);
-
+            var tagelist = alldata.Skip(startpage * pagesize).Take(pagesize).Cast<dynamic>(); 
             var relist = new QueryResult()
             {
-                DataList = tagelist.ToList<dynamic>(),
+                DataList = tagelist ,
                 currentIndex = startpage + 1,
                 PageSize = pagesize,
                 TotalPage = alldata.Count()

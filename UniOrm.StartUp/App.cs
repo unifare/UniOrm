@@ -19,7 +19,6 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
-using UniOrm.Loggers;
 using RazorLight;
 
 namespace UniOrm

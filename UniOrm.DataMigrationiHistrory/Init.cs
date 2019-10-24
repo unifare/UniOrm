@@ -51,7 +51,7 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("IsPrivate").AsBoolean().WithDefaultValue(false)
                 .WithColumn("IsSpecialName").AsBoolean().WithDefaultValue(false)
                 .WithColumn("FieldType").AsString(400).Nullable()
-             .WithColumn("MemberType").AsInt16().Nullable()
+             .WithColumn("MemberType").AsInt32().Nullable()
              .WithColumn("VersionNum").AsString(100).Nullable()
              .WithColumn("AddTime").AsDateTime().Nullable();
             ;
@@ -66,7 +66,7 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("CanWrite").AsBoolean().WithDefaultValue(true)
                .WithColumn("CanRead").AsBoolean().WithDefaultValue(true)
                .WithColumn("ProperityType").AsString(400).Nullable()
-               .WithColumn("MemberType").AsInt16().Nullable()
+               .WithColumn("MemberType").AsInt32().Nullable()
                .WithColumn("VersionNum").AsString(100).Nullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
@@ -82,7 +82,7 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("IsPrivate").AsBoolean().WithDefaultValue(false).Nullable()
                .WithColumn("ReturnType").AsString(400).WithDefaultValue(string.Empty).Nullable()
                .WithColumn("ParameterInfo").AsString(400).Nullable()
-               .WithColumn("MemberType").AsInt16().Nullable()
+               .WithColumn("MemberType").AsInt32().Nullable()
                .WithColumn("VersionNum").AsString(100).Nullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
@@ -90,11 +90,11 @@ namespace UniOrm.DataMigrationiHistrory
                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                .WithColumn("AliName").AsString(400)
                .WithColumn("ClassName").AsString(400)
-               .WithColumn("GenericParameterAttributes").AsInt16().Nullable()
+               .WithColumn("GenericParameterAttributes").AsInt32().Nullable()
                .WithColumn("IsAbstract").AsBoolean().WithDefaultValue(true)
                .WithColumn("IsVisible").AsBoolean().WithDefaultValue(true)
                .WithColumn("IsNotPublic").AsBoolean().WithDefaultValue(true)
-               .WithColumn("Attributes").AsInt16().Nullable()
+               .WithColumn("Attributes").AsInt32().Nullable()
                .WithColumn("IsNestedFamORAssem").AsBoolean().WithDefaultValue(true)
                .WithColumn("IsAutoLayout").AsBoolean().WithDefaultValue(true)
                .WithColumn("GUID").AsString(80).WithDefaultValue(Guid.NewGuid().ToString("N"))
@@ -137,8 +137,7 @@ namespace UniOrm.DataMigrationiHistrory
                 .WithColumn("AddTime").AsDateTime().Nullable();
             ;
 
-
-            Create.Table(WholeTableName("AConFlowStep"))
+           Create.Table(WholeTableName("AConFlowStep"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                  .WithColumn("Guid").AsString(70).Nullable()
                   .WithColumn("AppName").AsString(200).WithDefaultValue("default")
@@ -148,15 +147,15 @@ namespace UniOrm.DataMigrationiHistrory
                   .WithColumn("IsUsingParentConnstring").AsBoolean().Nullable()
                   .WithColumn("IsBuildIn").AsBoolean().Nullable()
                  .WithColumn("IsUsingCache").AsBoolean().WithDefaultValue(true)
-                .WithColumn("DBType").AsInt16().Nullable()
+                .WithColumn("DBType").AsInt32().Nullable()
                 .WithColumn("Connectionstring").AsString(700).Nullable()
                  .WithColumn("StepOrder").AsInt32()
                 .WithColumn("Name").AsString(700).Nullable()
                 .WithColumn("Description").AsString(700).Nullable()
                 .WithColumn("VersionNum").AsString(100).Nullable()
                .WithColumn("FlowStepType").AsInt32().Nullable()
-                .WithColumn("ProxyCode").AsString(1000).Nullable()
-                 .WithColumn("OutPutText").AsString().Nullable()
+                .WithColumn("ProxyCode").AsCustom("ntext").Nullable()
+                 .WithColumn("OutPutText").AsCustom("ntext").Nullable()
                 .WithColumn("ReferenceDlls").AsString(300).Nullable()
                 .WithColumn("StoreValueProposal").AsInt32().Nullable()
             .WithColumn("ExcuteType").AsInt32()
@@ -182,9 +181,11 @@ namespace UniOrm.DataMigrationiHistrory
                  .WithColumn("NextRuntimeID").AsString(100).Nullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;
+            //IfDatabase("SqlServer").Alter.Table(WholeTableName("AConFlowStep"))
+            //     .AlterColumn("ProxyCode").AsCustom("nvarchar(max)").Nullable()
+            //     .AlterColumn("OutPutText").AsCustom("nvarchar(max)").Nullable(),
 
-
-            Create.Table(WholeTableName("ComposeTemplate"))
+           Create.Table(WholeTableName("ComposeTemplate"))
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Name").AsString(700).Nullable()
                 .WithColumn("StepIds").AsString(700).Nullable()
@@ -676,10 +677,10 @@ Hello, @Model.Item.Name .Welcome to RazorLight repository
             Insert.IntoTable(WholeTableName("DefaultUser")).Row(addDefaultUser);
 
             Create.Table(WholeTableName("SystemDictionary"))
-               .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+               .WithColumn("Id").AsInt32().PrimaryKey().Identity()
                 .WithColumn("KeyName").AsString(450).Nullable()
                  .WithColumn("Value").AsString(900).Nullable()
-                .WithColumn("SystemDictionarytype").AsInt16()
+                .WithColumn("SystemDictionarytype").AsInt32()
                 .WithColumn("IsSystem").AsBoolean().NotNullable()
                .WithColumn("AddTime").AsDateTime().Nullable();
             ;

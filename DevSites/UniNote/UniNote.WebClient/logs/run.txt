@@ -1,0 +1,6 @@
+[ INFO][  1]2019-10-24 12:41:31,135: [Program] Program is starting
+[ INFO][  1]2019-10-24 12:41:32,250: [Startup] Startup is starting
+[ INFO][  1]2019-10-24 12:41:33,234: [Startup] ConfigureServices is starting
+[ INFO][  1]2019-10-24 12:41:51,760: [Startup] ConfigureServices is end
+[ INFO][  1]2019-10-24 12:41:51,907: [Startup] Configure is starting
+[ INFO][  1]2019-10-24 12:41:52,289: [Startup] Configure is end

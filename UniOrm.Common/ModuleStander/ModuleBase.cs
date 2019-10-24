@@ -78,7 +78,7 @@ namespace UniOrm.Common
         public ModuleBase()
         {
             OtherMapPath = new Dictionary<string, string>();
-               Types = new Dictionary<string, Type>();
+            Types = new Dictionary<string, Type>();
             Init();
         }
         public AppConfig GetAppConfig()

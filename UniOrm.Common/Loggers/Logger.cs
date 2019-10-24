@@ -13,7 +13,7 @@ using System.IO;
 using log4net;
 using log4net.Repository;
 
-namespace UniOrm.Loggers
+namespace UniOrm
 {
     public static class Logger
     {
@@ -44,7 +44,7 @@ namespace UniOrm.Loggers
         private static void LoadLog4NetConfig()
         {
             // 配置log4net
-            log4net.Config.XmlConfigurator.Configure(loggerRepository, new System.IO.FileInfo(System.IO.Directory.GetCurrentDirectory() + "/Logger.xml"));
+            log4net.Config.XmlConfigurator.Configure(loggerRepository, new System.IO.FileInfo(AppDomain.CurrentDomain.BaseDirectory + "/Logger.conf"));
 
             //// 创建log实例
             //Log = LogManager.GetLogger(loggerRepository.Name, AppDomain.CurrentDomain.FriendlyName);

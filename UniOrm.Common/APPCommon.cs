@@ -23,7 +23,7 @@ namespace UniOrm
     public partial class APPCommon
     {
         public static HttpClient Client { get; set; } = new HttpClient();
-        public static IConfiguration Configuration { get; set; }
+        public static IConfiguration Configuration { get; set; } 
         public static ServiceProvider ApplicationServices;
         public static ContainerBuilder Builder = new ContainerBuilder();
         public static IResover Container;
@@ -47,6 +47,10 @@ namespace UniOrm
                     var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
                     var configroot = JToken.Parse(File.ReadAllText(configpath));
                     _AppConfig = JsonConvert.DeserializeObject<AppConfig>(configroot["App"].ToString());
+                    //if( _AppConfig!=null)
+                    //{
+                    //    _AppConfig.LoadDBDictionary();
+                    //}
                 }
                 return _AppConfig;
             }

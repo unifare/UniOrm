@@ -32,10 +32,10 @@ namespace OauthMngPlugin
         }
         public OauthClientModel OauthClient { get; set; }
         public override void EnsureDaContext()
-        {
+        { 
             UniOrm.Common.DbMigrationHelper.EnsureDaContext(
                MouduleDbConfig.Connectionstring,
-               (int)APPCommon.AppConfig.UsingDBConfig.DBType,
+               MouduleDbConfig.DBType,
                typeof(OauthMngModule).Assembly);
         }
 

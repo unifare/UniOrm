@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "../Shared/_VueLayout.cshtml";
-    ViewData["Title"] = "文件管理";
+    ViewData["Title"] = "网站配置管理";
 }
 
 @section css{
@@ -142,13 +142,13 @@
 }
 
 <div class="tb_container" id="app">
-    
+
     <div>
         <input type="text" placeholder="search" @@input="search" list="cars" class="search">
         <datalist id="cars">
             <option v-for="item in searchlist" :value="item"></option>
         </datalist>
-        <input type="button" class="add" @@click="add" value="新增">
+        <input type="button" class="add" @@click="add" value="新增"> <span style="color:red">在Rrazor模板里引用是（区分大小）：   @@Page.v("键名")   </span>
     </div>
     <div>
         <table class="tb_table">
@@ -203,183 +203,22 @@
          v-on:subDlgSave="parentSave"这个不会成功。因为  subDlgSave 有大写。坑啊。。。
                     this.$emit('subchange');  //发送 子组件自定义事件到上面绑定的 父级的方法  ，，，，，太绕了
                 },  麻烦啊 -->
-    
+
 </div>
 
 
 
 @section Scripts{
 
-    <script type="text/x-template" id="modify_model">
-        <div class="overlay" v-show="subisactive">
-            <div class="con">
-                <h2 class="title">新增 | 修改</h2>
-                <div class="content">
-                    <table class="tb_table">
-                        <tr>
-                            <td>当前目录</td>
-                            <td>{{s_curentdir_path}} </td>
-                        </tr>
-                        <tr>
-                            <td>文件(夹)名 </td>
-                            <td><input type="text" style="width:500px;" v-model="modifylist.Name"><span v-if="s_action=='add'"><input type="checkbox" @@click="changevalue(modifylist)" v-model="modifylist.IsDirectry" value="0">是否文件夹<input type="checkbox" @@click="changevalue(modifylist)" v-model="modifylist.IsTextFile" value="0">是否文本</span></td>
-                        </tr>
-                        <tr>
-                            <td>文件内容</td>
-                            <td id="txt_contentid">
-                            </td>
-                        </tr>
-                        <tr v-if="s_action=='add'">
-                            <td>上传</td>
-                            <td>
-                                <input type="file" id="dllfile" name="dllfile" /> <input type="button" value="uploader" v-on:click="uploaderdll()" />
-                            </td>
-                        </tr>
-                    </table>
-                    <p>
-                        <input type="button" class="btn btn-default" @@click="cancelDlg" value="取消">
-                        <input type="button" class="btn btn-primary" @@click="component_save" value="保存">
-                    </p>
-                </div>
-            </div>
-        </div>
-    </script>
-
-    <script type="text/x-template" id="unzip_model">
-        <div class="overlay" v-show="isshow_unzip_model">
-            <div class="con">
-                <h2 class="title">解压</h2>
-                <div class="content">
-                    <table class="tb_table">
-                        <tr>
-                            <td>文件路径</td>
-                            <td>{{filepath}}</td>
-                        </tr>
-                        <tr>
-                            <td>解压在目录 </td>
-                            <td>
-                                <input type="text" id="unzipDir" v-model="outputdir" style="width:600px;">
-                                <input type="button" class="btn btn-primary" @@click="excute_unzip" value="执行">
-                            </td>
-                        </tr>
-
-
-                    </table>
-                    <p>
-                        <input type="button" class="btn btn-default" @@click="cancelDlg" value="取消">
-
-                    </p>
-                </div>
-            </div>
-        </div>
-    </script>
+   
     <script type="text/javascript">
         var ue;
-        Vue.component('dlgmodel', {
-            props: ['sublist', 'subisactive',"s_curentdir_path" ,"s_action" ],
-            template: '#modify_model',
-            //template: `<div> sdlkfsdf'
-            //    </div>`,
-            computed: {
-                modifylist() {
-                    return this.sublist;
-                }
-            },
-            methods: {
-                  uploaderdll () {
-                    var formData = new FormData();
-                    var allifels = document.getElementById("dllfile").files;
-                    var dd = allifels.length;
-                    for (var i =0; i < dd; i++) {
-                        formData.append("dllfile" + i, allifels[i]);
-                    }
-                    //formData.append("dirName", this.curentdirPath);
-                    $.ajax({
-                        url: "UploadFile?dirName="+encodeURIComponent(this.s_curentdir_path),
-                        type: "POST",
-                        data: formData,
-                        /**
-                        *必须false才会自动加上正确的Content-Type
-                        */
-                        contentType: false,
-                        /**
-                        * 必须false才会避开jQuery对 formdata 的默认处理
-                        * XMLHttpRequest会对 formdata 进行正确的处理
-                        */
-                        processData: false,
-                        success: function (data) {
-                            if (data.isok == true) {
-                                alert("上传成功！");
-                            }
-
-                        },
-                        error: function () {
-                            alert("上传失败！");
-                        }
-                    });
-                },
-                testadd() {
-                    UE.getEditor('container').setContent("lsdf<sdklfjsld>slkdfjsldkfjsd)");
-                },
-                cancelDlg() {
-                    //$emit意思是发送自己的事件到 父控件 ，这里就是 v-cloak v-on:subchange="changeOverlay"中的changeOverlay，changeOverlay是父级的方法名
-                    this.$emit('subchange');
-                },
-                component_save() {
-                    //alert(UE.getEditor('container').getContent());
-                    this.$emit('comsave',this.sublist);  ///comsave 必须小写 必须小写 必须小写  必须小写 必须小写 必须小写 必须小写 必须小写
-                },
-                changevalue(el) {
-                    if (el.IsTextFile) {
-
-                    }
-                }
-            }
-        });
-          Vue.component('dlg_unzip_model', {
-            props: [  'isshow_unzip_model',"s_curentdir_path" ,"filepath",    ],
-            template: '#unzip_model',
-            //template: `<div> sdlkfsdf'
-            //    </div>`,
-            computed: {
-                outputdir() {
-                    var path = this.filepath;
-                    if (path !=undefined ) {
-                        return path.substr(0,path.lastIndexOf('.'));
-                    }
-                    return "";
-                }
-
-            },
-            methods: {
-                excute_unzip() {
-
-                    var unzipDir = $("#unzipDir").val();
-                    var data = { refilepath:this.filepath, distDir:unzipDir }
-                      $.post("UnzipFile", data).done(function (jsonResult) {
-                            if (jsonResult.isok == true) {
-                                alert("解压成功")
-                            }
-
-                        }).fail(function (e) {
-                            console.log(e);
-                        }).always(function (e) {
-                        });
-
-                },
-
-                cancelDlg() {
-                    //$emit意思是发送自己的事件到 父控件 ，这里就是 v-cloak v-on:subchange="changeOverlay"中的changeOverlay，changeOverlay是父级的方法名
-                    this.$emit('subchange');
-                }
-
-            }
-        });
+     
         var app = new Vue({
             el: '#app',
             data: {
                 isActive: false,
-                isShowUnzipdlg:false,
+                isShowUnzipdlg: false,
                 curentdirPath: "/",
                 selected: -1,
                 action: "file",
@@ -396,7 +235,7 @@
                 this.getfiles("/");
             },
             mounted() { //mounted 是vue生命周期里 渲染完组件后的事件
-              
+
             },
             computed: {
                 indexs() {
@@ -465,41 +304,55 @@
                 },
                 saveItem(index, el) {
                     this.selectedlist = el;
+                    for (var i = 0; i < this.data.length; i++) {
+                        if (this.data[i].KeyName == el.KeyName && i != index) {
+                            alert("已存在相同的key");
+                            return false;
+                        }
+                    }
                     this.action = "file"
-                    this.selected = index; 
+                    this.selected = index;
                     //$("#txtActiveInfo").show();
-                    var data = { key : el.KeyName, value:el.Value}
-                        $.post("SaveKeyvalue",data).done(function (jsonResult) {
-                            var con = jsonResult.result; 
-                            alert("ok")
-                        }).fail(function (e) {
-                            console.log(e);
-                        }).always(function (e) {
-                            // console.log(e);
-                        });
+                    var data = { id: el.Id, key: el.KeyName, value: el.Value }
+                    $.post("SaveKeyvalue", data).done(function (jsonResult) {
+                        var con = jsonResult.result;
+                        alert("ok")
+                        if (app.selected > -1) {
+                            el.Id = con.Id;
+                            Vue.set(app.data, app.selected, el);
+                            app.selected = -1;
+                            app.setSlist(app.data);
+                        }
+
+
+                    }).fail(function (e) {
+                        console.log(e);
+                    }).always(function (e) {
+                        // console.log(e);
+                    });
 
 
 
                 },
-            
-           
+
+
                 add: function () {
                     //    if (this.selected > -1) {
                     //    Vue.set(this.list, this.selected, arr);
                     //    this.selected = -1;
                     //} else {
                     var arr = {
-                        Id: app.data.length + 1,
+                        Id: null,
                         KeyName: '',
                         Value: '',
                         IsSystem: true,
                         SystemDictionarytype: 0,
-                        AddTime:new Date()
+                        AddTime: new Date()
                     };
-                        app.data.push(arr);
+                    app.data.push(arr);
                     //}
                     //app.data.splice(index, 1);
-                   app.setSlist(app.data);
+                    app.setSlist(app.data);
                     //this.isActive = true;
                 },
                 openZipDirDlg(el) {
@@ -507,10 +360,10 @@
                     this.isShowUnzipdlg = true;
                 },
                 // delete list in index location
-                del(index,el) {
-                
-                     var data = { key : el.KeyName }
-                    
+                del(index, el) {
+
+                    var data = { key: el.KeyName }
+
                     if (confirm("Is delete file or directory?")) {
                         $.post("DelKey", data).done(function (jsonResult) {
                             if (jsonResult.isok == true) {
@@ -592,7 +445,7 @@
                 }
             }
         })
-   
+
 
     </script>
 }

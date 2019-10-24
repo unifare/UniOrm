@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UniOrm.Common;
-using UniOrm.Loggers;
 using UniOrm.Model;
 
 namespace UniOrm.Core

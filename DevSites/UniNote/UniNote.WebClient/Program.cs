@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using UniOrm;
 using UniOrm.Startup.Web;
 
 namespace UniNote.WebClient
@@ -15,6 +16,7 @@ namespace UniNote.WebClient
     {
         public static void Main(string[] args)
         {
+            Logger.LogInfo("Program", "Program is starting");
             CreateWebHostBuilder(args).Build().Run();
             //WebSetup.StartApp(args);
         }

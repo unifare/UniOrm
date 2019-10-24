@@ -19,7 +19,6 @@ using UniOrm.Core;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using static IdentityModel.OidcConstants;
-using UniOrm.Loggers;
 using MediatR;
 using System.Threading.Tasks;
 using NetCoreCMS.Framework.Core.App;
@@ -35,8 +34,7 @@ namespace UniOrm.Startup.Web
     public static class WebSetup
     {
         private static IWebHost nccWebHost;
-        private static Thread starterThread = new Thread(StartApp);
-        private static AppConfig appConfig = GodWorker.appConfig;
+        private static Thread starterThread = new Thread(StartApp); 
         private const string LoggerName = "WebSetup";
 
 
@@ -103,29 +101,34 @@ namespace UniOrm.Startup.Web
 
             // 配置授权
             var config = tempcontainer.Resolve<IConfig>();
-            GodWorker.appConfig = appConfig = config.GetValue<AppConfig>("App");
-            var signingkey = GetDicstring(appConfig, "JWT.IssuerSigningKey");
-            var backendfoldername = GetDicstring(appConfig, "backend.foldername");
-            var AuthorizeCookiesName = GetDicstring(appConfig, "AuthorizeCookiesName");
-            var OdicCookiesName = GetDicstring(appConfig, "OdicCookiesName");
-            var identityserver4url = GetDicstring(appConfig, "Identityserver4.url");
-            var Identityserver4ApiResouceKey = GetDicstring(appConfig, "Identityserver4.ApiResouceKey");
-            var idsr4_ClientId = GetDicstring(appConfig, "idsr4_ClientId");
-            var idsr4_ClientSecret = GetDicstring(appConfig, "idsr4_ClientSecret");
-            var idsr4_ReponseType = GetDicstring(appConfig, "idsr4_ReponseType");
-            var OauthClientConfig_scopes = GetDicstring(appConfig, "OauthClientConfig_scopes");
-            var IsUsingIdentityserverClient = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserverClient"));
-            var IsUsingIdentityserver4 = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingIdentityserver4"));
-            var isAllowCros = Convert.ToBoolean(GetDicstring(appConfig, "isAllowCros"));
-            var AllowCrosUrl = GetDicstring(appConfig, "AllowCrosUrl");
-            var IsUserAutoUpdatedb = Convert.ToBoolean(GetDicstring(appConfig, "IsUserAutoUpdatedb"));
-            var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
+            var appConfig = APPCommon.AppConfig;
+            var signingkey = appConfig.GetDicstring( "JWT.IssuerSigningKey");
+            var backendfoldername = appConfig.GetDicstring("backend.foldername");
+            var AuthorizeCookiesName = appConfig.GetDicstring("AuthorizeCookiesName");
+            var OdicCookiesName = appConfig.GetDicstring("OdicCookiesName");
+            var identityserver4url = appConfig.GetDicstring("Identityserver4.url");
+            var Identityserver4ApiResouceKey = appConfig.GetDicstring("Identityserver4.ApiResouceKey");
+            var idsr4_ClientId = appConfig.GetDicstring("idsr4_ClientId");
+            var idsr4_ClientSecret = appConfig.GetDicstring("idsr4_ClientSecret");
+            var idsr4_ReponseType = appConfig.GetDicstring("idsr4_ReponseType");
+            var OauthClientConfig_scopes = appConfig.GetDicstring("OauthClientConfig_scopes");
+            var IsUsingIdentityserverClient = Convert.ToBoolean(appConfig.GetDicstring("IsUsingIdentityserverClient"));
+            var IsUsingIdentityserver4 = Convert.ToBoolean(appConfig.GetDicstring("IsUsingIdentityserver4"));
+            var isAllowCros = Convert.ToBoolean(appConfig.GetDicstring("isAllowCros"));
+            var AllowCrosUrl = appConfig.GetDicstring("AllowCrosUrl");
+            var IsUserAutoUpdatedb = Convert.ToBoolean(appConfig.GetDicstring("IsUserAutoUpdatedb"));
+            var isEnableSwagger = Convert.ToBoolean(appConfig.GetDicstring("isEnableSwagger")); ;
             //services.AddMvcCore().AddAuthorization().AddJsonFormatters(); 
-            var IsUsingLocalIndentity = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingLocalIndentity"));
-            // var IsUsingDB = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingDB"));
-            var IsUsingCmsGlobalRouterFilter = Convert.ToBoolean(GetDicstring(appConfig, "IsUsingCmsGlobalRouterFilter"));
+            var IsUsingLocalIndentity = Convert.ToBoolean(appConfig.GetDicstring("IsUsingLocalIndentity"));
+            // var IsUsingDB = Convert.ToBoolean(appConfig.GetDicstring("IsUsingDB"));
+            var IsUsingCmsGlobalRouterFilter = Convert.ToBoolean(appConfig.GetDicstring("IsUsingCmsGlobalRouterFilter"));
+            if (IsUserAutoUpdatedb)
+            {
+                InitDbMigrate();
+            }
 
-
+            APP.InitDbMigrate();
+            APPCommon.AppConfig.LoadDBDictionary();
             services.AddTheme(); //添加Theme服务
             if (isEnableSwagger)
             {
@@ -190,9 +193,9 @@ namespace UniOrm.Startup.Web
                                 ValidateIssuerSigningKey = true,
                                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(signingkey)),//秘钥
                                 ValidateIssuer = true,
-                                ValidIssuer = GetDicstring(appConfig, "JWT.Issuer"),
+                                ValidIssuer = appConfig.GetDicstring("JWT.Issuer"),
                                 ValidateAudience = true,
-                                ValidAudience = GetDicstring(appConfig, "JWT.Audience"),
+                                ValidAudience = appConfig.GetDicstring("JWT.Audience"),
                                 ValidateLifetime = true,
                                 ClockSkew = TimeSpan.FromMinutes(5)
                             };
@@ -297,12 +300,7 @@ namespace UniOrm.Startup.Web
             var asses = AppDomain.CurrentDomain.GetAssemblies();
             var we = services.InitAutofac(asses);
             APP.Container.Resolve<IConfig>().GetValue<AppConfig>().ResultDictionary = appConfig.ResultDictionary;
-            if (IsUserAutoUpdatedb)
-            {
-                InitDbMigrate();
-            }
-
-            APP.InitDbMigrate();
+          
            // APPCommon.Builder.RegisterType<IHttpContextAccessor, HttpContextAccessor>();
           
             APP.ApplicationServices = services.BuildServiceProvider();
@@ -310,15 +308,15 @@ namespace UniOrm.Startup.Web
 
             return we;
         }
-        public static string GetDicstring(AppConfig appConfig, string key)
-        {
-            var item = appConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
-            if (item != null)
-            {
-                return item.Value;
-            }
-            return string.Empty;
-        }
+        //public static string GetDicstring(AppConfig appConfig, string key)
+        //{
+        //    var item = appConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
+        //    if (item != null)
+        //    {
+        //        return item.Value;
+        //    }
+        //    return string.Empty;
+        //}
 
         public static void InitDbMigrate()
         {
@@ -334,7 +332,8 @@ namespace UniOrm.Startup.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            var UserDefaultStaticalDir = GetDicstring(appConfig, "UserDefaultStaticalDir");
+            var appConfig = APPCommon.AppConfig;
+            var UserDefaultStaticalDir = appConfig.GetDicstring("UserDefaultStaticalDir");
             var webroot = Path.Combine(Directory.GetCurrentDirectory(), UserDefaultStaticalDir);
             if (!Directory.Exists(webroot))
             {
@@ -358,7 +357,7 @@ namespace UniOrm.Startup.Web
 
             app.UseCookiePolicy(); //是否启用cookie隐私
 
-            var isEnableSwagger = Convert.ToBoolean(GetDicstring(appConfig, "isEnableSwagger")); ;
+            var isEnableSwagger = Convert.ToBoolean(appConfig.GetDicstring("isEnableSwagger")); ;
             if (isEnableSwagger)
             {
                 //启用中间件服务生成Swagger作为JSON终结点
@@ -390,12 +389,12 @@ namespace UniOrm.Startup.Web
             //    //    //return System.Threading.Tasks.Task.Delay(0);
             //    //}
             //});
-            var isAllowCros = Convert.ToBoolean(GetDicstring(appConfig, "isAllowCros"));
+            var isAllowCros = Convert.ToBoolean(appConfig.GetDicstring("isAllowCros"));
             if (isAllowCros)
             {
                 app.UseCors("allow_all");
             }
-            var AreaName = GetDicstring(appConfig, "AreaName");
+            var AreaName = appConfig.GetDicstring("AreaName");
 
             //url 重写。。。
             // var rewrite = new RewriteOptions()

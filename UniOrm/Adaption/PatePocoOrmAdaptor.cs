@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;  
 using PetaPoco;
 using System.Linq; 
-using System.Linq.Expressions;
-using UniOrm.Loggers;
+using System.Linq.Expressions; 
 
 namespace UniOrm.Adaption
 {

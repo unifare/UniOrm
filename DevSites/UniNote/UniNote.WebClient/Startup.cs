@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UniNote.DBMigration;
 using UniOrm.Application;
+using UniOrm;
 using UniOrm.Startup.Web;
 using static IdentityModel.OidcConstants;
 
@@ -17,6 +18,7 @@ namespace UniNote
     {
         public Startup(IConfiguration configuration)
         {
+            Logger.LogInfo("Startup", "Startup is starting");
             Configuration = configuration;
             Configuration.Startup();
         }
@@ -26,15 +28,18 @@ namespace UniNote
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            Logger.LogInfo("Startup", "ConfigureServices is starting");
             var serv = services.ConfigureServices();
-
-           // ApplicationStartUp.EnsureDaContext(typeof(MigrationVersion1).Assembly);
+            Logger.LogInfo("Startup", "ConfigureServices is end");
+            // ApplicationStartUp.EnsureDaContext(typeof(MigrationVersion1).Assembly);
             return serv;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            Logger.LogInfo("Startup", "Configure is starting");
             app.ConfigureSite(env);
+            Logger.LogInfo("Startup", "Configure is end");
         }
     }
 }

@@ -10,7 +10,7 @@
 using System;
 using System.Text;
 
-namespace UniOrm.Loggers
+namespace UniOrm
 {
     public static class LoggerHelper
     {

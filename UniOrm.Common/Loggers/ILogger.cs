@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UniOrm.Loggers
+namespace UniOrm
 {
     public interface ILogger
     {

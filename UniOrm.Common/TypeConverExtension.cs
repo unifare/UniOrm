@@ -633,6 +633,22 @@ namespace UniOrm
         {
             return AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(relatedfilePath);
         }
+
+        public static string DValue(this string key)
+        {
+            return APPCommon.AppConfig.GetDicstring(key);
+        }
+
+        //public static string GetDicstring(this AppConfig appConfig, string key)
+        //{
+        //    var item = appConfig.SystemDictionaries.FirstOrDefault(p => p.KeyName == key);
+        //    if (item != null)
+        //    {
+        //        return item.Value;
+        //    }
+        //    return string.Empty;
+        //}
+
         public static string[] GetSubDir(this string dirfullPath)
         {
             return Directory.GetDirectories(dirfullPath);

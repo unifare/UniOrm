@@ -46,21 +46,38 @@ namespace UniNote.WebClient.Controllers
             return View();
         }
 
-        public IActionResult SaveKeyvalue(string key, string value)
+        public IActionResult SaveKeyvalue(int? id, string key, string value)
         {
-            //var sd = new SystemDictionary();// { AddTime = DateTime.Now, IsSystem = false, KeyName = key, Value = value, SystemDictionarytype = SystemDictionarytype.String };
-            var recode = m_codeService.GetSimpleCode<SystemDictionary>(new { KeyName = key }).FirstOrDefault();
-            if (recode == null)
+            var recode = new  SystemDictionary();
+            if (id == null)
             {
-                recode = new SystemDictionary() { AddTime = DateTime.Now, IsSystem = false, KeyName = key, Value = value, SystemDictionarytype = SystemDictionarytype.String };
+                recode = new SystemDictionary() { AddTime = DateTime.Now, IsSystem = false, KeyName = key, Value = value, SystemDictionarytype =  SystemDictionarytype.String };
+                APPCommon.AppConfig.SystemDictionaries.Add(  recode);
+               var result = m_codeService.InsertCode< SystemDictionary>(recode);
 
-                var result = m_codeService.InsertCode<SystemDictionary>(recode);
             }
             else
             {
-                recode.Value = value;
-                m_codeService.UpdateSimpleCode(recode);
+                //var sd = new SystemDictionary();// { AddTime = DateTime.Now, IsSystem = false, KeyName = key, Value = value, SystemDictionarytype = SystemDictionarytype.String };
+                recode = m_codeService.GetSimpleCode< SystemDictionary>(new { Id = id }).FirstOrDefault();
+                if (recode == null)
+                {
+                    recode = new  SystemDictionary() { AddTime = DateTime.Now, IsSystem = false, KeyName = key, Value = value, SystemDictionarytype = SystemDictionarytype.String };
+                    APPCommon.AppConfig.SystemDictionaries.Add(recode);
+                    var result = m_codeService.InsertCode< SystemDictionary>(recode);
+                }
+                else
+                {
+                    recode.KeyName = key;
+                    recode.Value = value;
+                    m_codeService.UpdateSimpleCode(recode);
+                    var sindex = APPCommon.AppConfig.SystemDictionaries.FindIndex(p => p.Id == recode.Id);
+                    APPCommon.AppConfig.SystemDictionaries[sindex].KeyName = key;
+                    APPCommon.AppConfig.SystemDictionaries[sindex].Value = value;
+
+                }
             }
+           
 
             return new JsonResult(new { result = recode });
         }
@@ -72,7 +89,7 @@ namespace UniNote.WebClient.Controllers
             if (recode != null)
             {
                 result = m_codeService.DeleteSimpleCode(recode);
-            } 
+            }
             return new JsonResult(new { isok = result });
         }
 

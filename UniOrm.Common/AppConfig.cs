@@ -1,8 +1,10 @@
 ﻿using UniOrm.Common;
 using System;
 using System.Collections.Generic;
-using System.Text; 
+using System.Text;
 using System.Linq;
+using SqlSugar;
+using UniOrm.Model;
 
 namespace UniOrm
 {
@@ -11,11 +13,13 @@ namespace UniOrm
         private AppConfig()
         {
             SystemDictionaries = new List<SystemDictionary>();
-            ResultDictionary = new Dictionary<string, object>(); 
+
+            ResultDictionary = new Dictionary<string, object>();
         }
+
         public string AppType { get; set; }
         public string ModuleConfigDir { get; set; } = "./";
-        public string AppName{ get; set; }
+        public string AppName { get; set; }
         public string AppTheme { get; set; } = "Aro";
         public string AppTmpl { get; set; } = "default";
         public string DefaultDbPrefixName { get; set; }
@@ -27,7 +31,19 @@ namespace UniOrm
         public string StartUpCompoistyID { get; set; }
         public List<SystemDictionary> SystemDictionaries { get; set; }
         public Dictionary<string, object> ResultDictionary { get; set; }
-        // 
+        public SqlSugarClient Db
+        {
+            get
+            {
+                return DB.UniClient;
+            }
+
+        } 
+
+        public void LoadDBDictionary()
+        {
+            SystemDictionaries.AddRange(Db.Queryable<SystemDictionary>().ToList());
+        }
 
         public string GetDicstring(string key)
         {

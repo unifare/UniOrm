@@ -17,7 +17,7 @@ namespace UniOrm.Model
     }
     public class SystemDictionary
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string KeyName { get; set; }
         public string Value { get; set; }
 

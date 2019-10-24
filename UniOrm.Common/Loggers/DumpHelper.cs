@@ -12,7 +12,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices; 
 
-namespace UniOrm.Loggers
+namespace UniOrm
 {
     public static class DumpHelper
     {
