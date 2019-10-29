@@ -8,7 +8,7 @@ namespace UniOrm.Common
 {
     public class ThemeViewLocationExpander : IViewLocationExpander
     {
-        public const string ThemeKey = "";
+        public const string ThemeKey = "default";
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             string theme = context.ActionContext.HttpContext.Items[ThemeKey].ToString();

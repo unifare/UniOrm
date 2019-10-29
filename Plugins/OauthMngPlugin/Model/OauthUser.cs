@@ -19,7 +19,7 @@ namespace OauthMngPlugin.Model
 
         public string PhoneNumber { get; set; }
         public int Age { get; set; }
-
+        public string ReferorId { get; set; }
         public DateTime AddTime { get; set; }
     }
 }

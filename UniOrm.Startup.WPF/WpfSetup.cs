@@ -6,8 +6,7 @@ using UniOrm;
 using UniOrm.Application; 
 using Autofac; 
 using UniOrm.Core;
-using System.Linq; 
-using UniOrm.Loggers;
+using System.Linq;  
 
 namespace UniOrm.Startup.WPF
 {

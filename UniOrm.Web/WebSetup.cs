@@ -29,12 +29,17 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using UniOrm.Common.Middlewares;
 
 using UEditor.Core;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using System.Reflection;
+
 namespace UniOrm.Startup.Web
 {
     public static class WebSetup
     {
         private static IWebHost nccWebHost;
-        private static Thread starterThread = new Thread(StartApp); 
+        private static Thread starterThread = new Thread(StartApp);
         private const string LoggerName = "WebSetup";
 
 
@@ -77,6 +82,7 @@ namespace UniOrm.Startup.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public static IServiceProvider ConfigureServices(this IServiceCollection services)
         {
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             APP.ConfigureSiteAllModulesServices(services);
             services.AddMediatR(typeof(WebSetup).Assembly);
@@ -102,7 +108,7 @@ namespace UniOrm.Startup.Web
             // 配置授权
             var config = tempcontainer.Resolve<IConfig>();
             var appConfig = APPCommon.AppConfig;
-            var signingkey = appConfig.GetDicstring( "JWT.IssuerSigningKey");
+            var signingkey = appConfig.GetDicstring("JWT.IssuerSigningKey");
             var backendfoldername = appConfig.GetDicstring("backend.foldername");
             var AuthorizeCookiesName = appConfig.GetDicstring("AuthorizeCookiesName");
             var OdicCookiesName = appConfig.GetDicstring("OdicCookiesName");
@@ -287,22 +293,55 @@ namespace UniOrm.Startup.Web
                     });
                 });
             }
-
+            // _ = services.AddMvc(o =>    _是什么 IMvcBuiler
             services.AddMvc(o =>
+              {
+                  if (IsUsingCmsGlobalRouterFilter)
+                  {
+                      o.Filters.Add<GlobalActionFilter>();
+                  }
+              })
+            .AddJsonOptions(options =>
             {
-                if (IsUsingCmsGlobalRouterFilter)
-                {
-                    o.Filters.Add<GlobalActionFilter>();
-                }
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                CustomizedDateTimeConverer converer = new CustomizedDateTimeConverer();
+                //然后需要使用到的dto对象或者实体对象，打上这个特性即可，如下所示： [JsonConverter(typeof(CustomizedDateTimeConverer), “yyyy - MM - dd HH: mm:ss”)]
+                options.SerializerSettings.Converters.Add(converer);
+
             })
-            .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); })
+            .AddRazorPagesOptions(
+               options =>
+                {
+                    options.RootDirectory = "/Pages";
+
+
+                    //url重写
+                    //options.Conventions.AddPageRoute("/Post", "Post/{year}/{month}/{day}");
+                    //以下示例将 URL www.domain.com/product 映射到Razor 页面 “extras”文件夹“products.cshtml”文件：
+                    //options.Conventions.AddPageRoute("/extras/products", "product");
+                    //最后一个例子说明将所有请求映射到单个文件。如果站点内容存储在特定位置（数据库，Markdown文件），并且由单个文件（例如 “index.cshtml” ）
+                    //负责根据 URL 定位内容，然后将其处理为HTML，则可以执行此操作：
+                    //options.Conventions.AddPageRoute("/index", "{*url}");
+                    //默认关闭 防止跨站请求伪造（CSRF / XSRF）攻击
+                    options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+                })
+            .ConfigureApplicationPartManager(m => {
+                //多个项目中分离Asp.Net Core Mvc的Controller和Areas
+                //var homeType = typeof(Web.Controllers.Areas.HomeController);
+                //var controllerAssembly = homeType.GetTypeInfo().Assembly;
+                //var feature = new ControllerFeature();
+                //m.ApplicationParts.Add(new AssemblyPart(controllerAssembly));
+                //m.PopulateFeature(feature);
+                //services.AddSingleton(feature.Controllers.Select(t => t.AsType()).ToArray());
+            })
+            .InitializeTagHelper<FormTagHelper>((helper, context) => helper.Antiforgery = false)
            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var asses = AppDomain.CurrentDomain.GetAssemblies();
             var we = services.InitAutofac(asses);
             APP.Container.Resolve<IConfig>().GetValue<AppConfig>().ResultDictionary = appConfig.ResultDictionary;
-          
-           // APPCommon.Builder.RegisterType<IHttpContextAccessor, HttpContextAccessor>();
-          
+
+            // APPCommon.Builder.RegisterType<IHttpContextAccessor, HttpContextAccessor>();
+
             APP.ApplicationServices = services.BuildServiceProvider();
             APP.SetServiceProvider();
 
@@ -345,7 +384,7 @@ namespace UniOrm.Startup.Web
                 RequestPath = ""
             });
 
-          
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(

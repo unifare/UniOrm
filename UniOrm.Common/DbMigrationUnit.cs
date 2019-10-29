@@ -10,7 +10,7 @@ namespace UniOrm.Common
         public static void EnsureDaContext(string connString, int dbtype, params Assembly[] assemblies)
         {
            
-            if (dbtype <= 0 && dbtype <= 4)
+            if (dbtype >= 0 && dbtype <= 4)
             {
                 var fuType = FlunentDBType.Sqlite;
 

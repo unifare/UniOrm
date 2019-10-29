@@ -10,7 +10,7 @@ namespace UniOrm.Startup.Web.Test
         [TestMethod]
         public void TestMethod1()
         {
-
+            //WebSerivcesPlugin
         }
     }
 }

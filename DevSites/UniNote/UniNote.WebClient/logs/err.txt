@@ -1,0 +1,34 @@
+[ERROR][  7]2019-10-25 10:24:20,847: [CodeService] AdminUser   name ccc is not found  -> #Exception# 
+[Message]: 
+	AdminUser   name ccc is shown more than twice. 
+===================================
+[ExceptionType]: 
+	System.Exception
+
+[Source]:  
+	
+
+[TargetSite]: 
+	
+
+[StackTrace]: 
+
+
+
+[ERROR][  7]2019-10-25 10:24:22,942: [CodeService] AdminUser   name ccc is not found  -> #Exception# 
+[Message]: 
+	AdminUser   name ccc is shown more than twice. 
+===================================
+[ExceptionType]: 
+	System.Exception
+
+[Source]:  
+	
+
+[TargetSite]: 
+	
+
+[StackTrace]: 
+
+
+
