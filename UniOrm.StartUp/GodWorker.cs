@@ -15,6 +15,7 @@ using UniOrm.Common;
 using UniOrm;
 using UniOrm.Model;
 using RazorLight;
+using CSScriptLib;
 
 namespace UniOrm.Application
 {
@@ -79,7 +80,9 @@ namespace UniOrm.Application
                 };
                 RuntimeModel.StaticResouceInfos["__actioncontext"] = parameters[0];
                 RuntimeModel.StaticResouceInfos["__httpcontext"] = parameters[0].GetProp("HttpContext");
-
+                RuntimeModel.StaticResouceInfos["__session"] = parameters[0].GetProp("HttpContext").GetProp("Session");
+                RuntimeModel.StaticResouceInfos["__db"] = DB.Kata;
+                RuntimeModel.StaticResouceInfos["__page"] = new RazorTool() ;
                 RuntimeModel.StaticResouceInfos["__config"] = appConfig;
 
                 if (!string.IsNullOrEmpty(cons.Templateid))
@@ -191,11 +194,13 @@ namespace UniOrm.Application
                                                         {
                                                             so_default = so_default.WithReferences(dlls.ToArray());
                                                         }
+                                                        so_default = so_default.WithReferences(Assembly.GetExecutingAssembly());
+
                                                         var state = CSharpScript.Create<object>(s.ProxyCode, so_default, typeof(Dictionary<string, object>));
-                                                        //foreach (var submission in runcode.CodeLines)
-                                                        //{
-                                                        //    state = state.ContinueWithAsync(submission).Result;
-                                                        //}
+                                                        foreach(var ri in RuntimeModel.StaticResouceInfos)
+                                                        {
+                                                            newrunmodel.ResouceInfos.Add(ri.Key, ri.Value);
+                                                        }
                                                         runcode.Script = state;
                                                         APP.RuntimeCodes.Add(s.Guid, runcode);
                                                     }
@@ -256,10 +261,76 @@ namespace UniOrm.Application
                                             break;
                                         case FlowStepType.Function:
                                             {
-                                                //var code = spec.ProxyCode;
-                                                //var proxyMethode = CSharpScript.Create(code);
-                                                //proxyMethode.RunAsync()
-                                                //proxyMethode(objParams.ToArray());
+                                                var defaultNamespace=@"using UniOrm;
+using UniOrm.Application;
+using UniOrm.Common;
+using UniOrm.Model;
+using UniOrm.Startup.Web ;
+using System;
+using System.Web;
+using System.IO;
+using System.Text;
+using System.Text.Encodings;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Reflection;
+using System.Dynamic ;
+using System.Diagnostics ;
+using System.Linq.Expressions;
+using System.Xml;
+using System.Xml.Linq;
+using System.Configuration ;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.Common;
+using System.Data.OleDb;
+using System.Globalization;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Net.Sockets;
+using System.Net.WebSockets;
+using System.Drawing;
+using System.Drawing.Printing;
+using Microsoft.Data.Sqlite;
+using MySql.Data.MySqlClient;
+using Npgsql;
+//using PetaPoco.SqlKata;
+using SqlKata.Compilers;
+using SqlKata.Execution;
+using SqlSugar;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Numerics ;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc;";
+                                                var functionName = "FunctionName";
+                                                var selfnamespace = s.OutPutText;
+
+                                                var allcode =
+                                                    defaultNamespace + "\r\n"
+                                                   + selfnamespace + "\r\n"
+                                                   + "public object " + functionName + "(object __model){ \r\n"
+                                                   + s.ProxyCode
+                                                   + "\r\n}";   
+
+                                                   
+                                               var runobj=  CSScript.Evaluator.ReferenceAssembly(Assembly.GetExecutingAssembly())
+                                                    .CreateDelegate(allcode);
+                                                foreach (var ri in RuntimeModel.StaticResouceInfos)
+                                                {
+                                                    newrunmodel.ResouceInfos.Add(ri.Key, ri.Value);
+                                                }
+                                                rebject = runobj(newrunmodel.ResouceInfos);
                                             }
                                             break;
                                         case FlowStepType.RazorText:

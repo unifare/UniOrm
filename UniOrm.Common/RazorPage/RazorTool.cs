@@ -10,105 +10,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using UniOrm.Model;
 using UniOrm.Common;
+using PetaPoco.SqlKata;
 
 namespace UniOrm
 {
-    //public class DB
-    //{
-
-    //    public static SqlSugarClient Inst
-    //    {
-    //        get
-    //        {
-    //            var configapp = APPCommon.AppConfig.UsingDBConfig;
-    //            var config = new ConnectionConfig()
-    //            {
-    //                ConnectionString = APPCommon.AppConfig.UsingDBConfig.Connectionstring,
-
-    //                IsAutoCloseConnection = true,
-    //                ConfigureExternalServices = new ConfigureExternalServices()
-    //                {
-    //                    EntityService = (property, column) =>
-    //                    {
-
-    //                        var attributes = property.GetCustomAttributes(true);//get all attributes     
-    //                        if (attributes.Any(it => it is KeyAttribute))//根据自定义属性    
-    //                        {
-    //                            column.IsPrimarykey = true;
-    //                        }
-    //                    },
-    //                    EntityNameService = (type, entity) =>
-    //                    {
-    //                        var attributes = type.GetCustomAttributes(true);
-    //                        if (attributes.Any(it => it is TableAttribute))
-    //                        {
-    //                            entity.DbTableName = (attributes.First(it => it is TableAttribute) as TableAttribute).Name;
-    //                        }
-    //                        else
-    //                        {
-    //                            entity.DbTableName = APPCommon.AppConfig.UsingDBConfig.DefaultDbPrefixName + entity.DbTableName;
-    //                        }
-
-    //                    }
-    //                }
-    //            };
-
-    //            switch (configapp.DBType)
-    //            {
-    //                case 1:
-    //                    config.DbType = DbType.SqlServer;
-    //                    break;
-    //                case 0:
-    //                    config.DbType = DbType.Sqlite;
-    //                    break;
-    //                case 2:
-    //                    config.DbType = DbType.MySql;
-    //                    break;
-    //                case 3:
-    //                    config.DbType = DbType.PostgreSQL;
-    //                    break;
-    //            }
-
-
-    //            return new SqlSugarClient(config);
-    //        }
-    //    }
-
-    //    public static SqlSugarClient New(string connectionstring, int dbtype)
-    //    {
-
-    //        var config = new ConnectionConfig()
-    //        {
-    //            ConnectionString = connectionstring,
-    //            //DbType= DbType.
-    //        };
-
-    //        switch (dbtype)
-    //        {
-    //            case 1:
-    //                config.DbType = DbType.SqlServer;
-    //                break;
-    //            case 0:
-    //                config.DbType = DbType.Sqlite;
-    //                break;
-    //            case 2:
-    //                config.DbType = DbType.MySql;
-    //                break;
-    //            case 3:
-    //                config.DbType = DbType.PostgreSQL;
-    //                break;
-    //        }
-
-    //        return new SqlSugarClient(config);
-
-    //    }
-    //}
-
+    
     public class RazorTool
     {
         public HttpContext HttpContext { get; set; }
         public RazorTool()
         {
+           
             IHttpContextAccessor factory = APPCommon.ApplicationServices.GetService<IHttpContextAccessor>();
             HttpContext = factory.HttpContext;
         }
