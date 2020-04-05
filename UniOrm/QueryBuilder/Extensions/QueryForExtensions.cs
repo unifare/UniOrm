@@ -1,7 +1,7 @@
 ﻿using System;
-using SqlKata.Compilers;
+using SQLBuiler.Compilers;
 
-namespace SqlKata.Extensions
+namespace SQLBuiler.Extensions
 {
     public static class QueryForExtensions
     {

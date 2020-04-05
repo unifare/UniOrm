@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Linq;
-using SqlKata;
+using SQLBuiler;
 
 namespace UniOrm
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public partial class Query
     {

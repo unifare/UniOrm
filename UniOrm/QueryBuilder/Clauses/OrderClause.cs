@@ -1,4 +1,4 @@
-namespace SqlKata
+namespace SQLBuiler
 {
     public abstract class AbstractOrderBy : AbstractClause
     {

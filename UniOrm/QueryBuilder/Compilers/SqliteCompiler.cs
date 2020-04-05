@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using SqlKata;
-using SqlKata.Compilers;
+using SQLBuiler;
+using SQLBuiler.Compilers;
 
-namespace SqlKata.Compilers
+namespace SQLBuiler.Compilers
 {
     public class SqliteCompiler : Compiler
     {

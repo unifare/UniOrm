@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 
-namespace SqlKata.Compilers
+namespace SQLBuiler.Compilers
 {
     public class OracleCompiler : Compiler
     {

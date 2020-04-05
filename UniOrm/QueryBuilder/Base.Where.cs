@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public abstract partial class BaseQuery<Q>
     {

@@ -164,7 +164,10 @@
                 <td><input type="checkbox" v-model="checkedList" :value="item.id"></td>
                 <td><span>{{item.Id}}</span></td>
                 <td> <input v-model="item.KeyName" /></td>
-                <td><input v-model="item.Value" /></td>
+                <td>
+                <textarea  v-model="item.Value" style="width:200px; height:100px;"  >
+                </textarea>
+                </td>
                 <td>{{item.AddTime}}</td>
                 <td>
                     <a href="javascript:;" @@click="saveItem(index,item)">保存|</a>

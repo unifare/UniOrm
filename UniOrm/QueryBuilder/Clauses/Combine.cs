@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public abstract class AbstractCombine : AbstractClause
     {

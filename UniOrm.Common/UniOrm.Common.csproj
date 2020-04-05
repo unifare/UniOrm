@@ -40,7 +40,9 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="5.6.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="sqlSugarCore" Version="5.0.0.10" />
+    <PackageReference Include="PetaPoco.SqlKata" Version="1.6.5" />
+    <PackageReference Include="SqlKata" Version="1.1.7" />
+    <PackageReference Include="SqlKata.Execution" Version="1.1.7" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
     <PackageReference Include="UEditor.Core" Version="1.0.6" />
   </ItemGroup>
@@ -54,6 +56,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UniOrm.FlunentMigrator\UniOrm.FlunentMigrator.csproj" />
     <ProjectReference Include="..\UniOrm.Model\UniOrm.Model.csproj" />
+    <ProjectReference Include="D:\tues\download\Compressed\SqlSugar-SqlSugar5\Src\Asp.NetCore2\SqlSeverTest\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>

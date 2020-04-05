@@ -1,5 +1,5 @@
-﻿using SqlKata;
-using SqlKata.Compilers;
+﻿using SQLBuiler;
+using SQLBuiler.Compilers;
 using System;
 using System.Collections.Generic;
 using System.Text;

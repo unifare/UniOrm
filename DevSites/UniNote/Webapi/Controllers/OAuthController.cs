@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using UniNote.Web.Model;
-using UniOrm;
-using UniOrm.Loggers;
+using UniOrm; 
 using UniOrm.Startup.Web; 
 
 namespace TestWeb.Controllers

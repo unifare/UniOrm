@@ -1,6 +1,6 @@
 {
 
-  "AlipayPlugin": {
+  "AlipayModule": {
 
     "AppType": "aspnetcore",
     "AppName": "alipay",

@@ -325,7 +325,8 @@ namespace UniOrm.Startup.Web
                     //默认关闭 防止跨站请求伪造（CSRF / XSRF）攻击
                     options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
                 })
-            .ConfigureApplicationPartManager(m => {
+            .ConfigureApplicationPartManager(m =>
+            {
                 //多个项目中分离Asp.Net Core Mvc的Controller和Areas
                 //var homeType = typeof(Web.Controllers.Areas.HomeController);
                 //var controllerAssembly = homeType.GetTypeInfo().Assembly;
@@ -378,20 +379,26 @@ namespace UniOrm.Startup.Web
             {
                 Directory.CreateDirectory(webroot);
             }
+            app.UseStaticFiles( );
+
+
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(APPCommon.AppBaseDir, "wwwroot")),
+            //    RequestPath = ""
+            //});
+            var filedir = Path.Combine(APPCommon.UserUploadBaseDir, "wwwroot");
+            if (!Directory.Exists(filedir))
+            {
+                Directory.CreateDirectory(filedir);
+            }
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(webroot),
-                RequestPath = ""
+
+                FileProvider = new PhysicalFileProvider(filedir),
+                RequestPath = "/w"
             });
-
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-                RequestPath = ""
-            });
-
             APP.ConfigureSiteAllModules(app);
 
             app.UseCookiePolicy(); //是否启用cookie隐私

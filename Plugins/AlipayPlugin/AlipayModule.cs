@@ -27,7 +27,7 @@ namespace AlipayPlugin
     public class AlipayModule : ModuleBase
     {
 
-        public override string ModuleName { get;  }= "AlipayPlugin";
+        public override string ModuleName { get; } = nameof(AlipayModule);
         public override string DllPath { get; set; }
         public override AppConfig ModuleAppConfig { get; set; }
         public override DbConnectionConfig MouduleDbConfig { get  ; set ; }

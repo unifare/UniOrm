@@ -1,6 +1,6 @@
 {
 
-  "WebEditorPlugins": {
+  "WebEditorModule": {
 
     "AppType": "aspnetcore",
     "AppName": "alipay",

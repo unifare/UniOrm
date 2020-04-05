@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public partial class Query : BaseQuery<Query>
     {

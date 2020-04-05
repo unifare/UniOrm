@@ -23,7 +23,7 @@ namespace UniOrm
     public partial class APPCommon
     {
         public static HttpClient Client { get; set; } = new HttpClient();
-        public static IConfiguration Configuration { get; set; } 
+        public static IConfiguration Configuration { get; set; }
         public static ServiceProvider ApplicationServices;
         public static ContainerBuilder Builder = new ContainerBuilder();
         public static IResover Container;
@@ -38,6 +38,39 @@ namespace UniOrm
         public static DefaultModuleManager ModuleManager { get; set; } = new DefaultModuleManager();
 
         private static AppConfig _AppConfig;
+
+        private static string _appBaseDir = string.Empty;
+        public static string AppBaseDir
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_appBaseDir))
+                {
+                    _appBaseDir = AppDomain.CurrentDomain.BaseDirectory;
+                }
+                return _appBaseDir;
+            }
+
+        }
+
+        private static string _userUploadBaseDir = string.Empty;
+        public static string UserUploadBaseDir
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_userUploadBaseDir))
+                {
+                    _userUploadBaseDir = Path.Combine(APPCommon.AppBaseDir, ("Pages/UploadPage"));
+                    if (!Directory.Exists(_userUploadBaseDir))
+                    {
+                        Directory.CreateDirectory(_userUploadBaseDir);
+                    }
+                }
+                return _userUploadBaseDir;
+            }
+
+        }
+
         public static AppConfig AppConfig
         {
             get

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public static class Helper
     {

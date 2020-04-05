@@ -15,6 +15,11 @@ using UniOrm.Startup.Web;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using System.IO.Compression;
+using System.Net;
+using HtmlAgilityPack;
+using System.Collections;
+using System.Text;
+using System.Net.Http;
 
 namespace UniNote.WebClient.Controllers
 {
@@ -41,6 +46,8 @@ namespace UniNote.WebClient.Controllers
     public class AFileController : Controller
     {
         IDbFactory dbFactory;
+        private readonly string LoggerName = "AFileController";
+
         public AFileController(IDbFactory _dbFactory)
         {
             dbFactory = _dbFactory;
@@ -125,16 +132,27 @@ namespace UniNote.WebClient.Controllers
             return new JsonResult(new { isok = true, content });
         }
 
-        public IActionResult CreateFile(string dirname, string name)
+        public IActionResult CreateFile(string redir,string filepathname, string context)
         {
-            var basedir = AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(dirname);
+            var basedir = AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(redir);
 
             basedir.EnSureDirectroy();
-            var file = basedir.CombineFilePath(name);
+            var file = basedir.CombineFilePath(filepathname);
             var isCreated = file.FileToCreated();
+            if( isCreated)
+            {
+                System.IO.File.WriteAllText(file, context);
+            }
             return new JsonResult(new { isok = isCreated });
         }
+        public IActionResult CreateDir(string redir)
+        {
+            var basedir = AppDomain.CurrentDomain.BaseDirectory.CombineFilePath(redir);
 
+            basedir.EnSureDirectroy();
+           
+            return new JsonResult(new { isok = true });
+        }
         public IActionResult SaveFile(string path, string newfilename, bool isdir, bool istext, string context)
         {
             path = path.ToServerFullPath();
@@ -197,6 +215,270 @@ namespace UniNote.WebClient.Controllers
             }
             return new JsonResult(new { isok = true, msg = remsg });
         }
+
+
+        public IActionResult GetUrl(string url)
+        {
+            //var remsg = string.Empty;
+
+            //return new JsonResult(new { isok = true, msg = remsg });
+            return View();
+        }
+        public IActionResult GetUrlToLocal(string url, string static_dirname, string indexname)
+        {
+            var remsg = string.Empty;
+            if (string.IsNullOrEmpty(url))
+            {
+                return new JsonResult(new { isok = false, msg = remsg });
+            }
+            try
+            {
+                var urlTest = new Uri(url);
+                HttpClient client = new System.Net.Http.HttpClient();
+                var response = client.GetAsync(urlTest).Result;
+                var allresult = response.Content.ReadAsStringAsync().Result;
+                var savedPageName = "";
+                if (string.IsNullOrEmpty(indexname))
+                {
+                    var indexfileName = url.Substring(url.LastIndexOf('/') + 1);
+                    if (string.IsNullOrEmpty(indexfileName))
+                    {
+                        savedPageName = Guid.NewGuid().ToString("N").Replace("-", "");
+                    }
+                    else
+                    {
+                        savedPageName = indexfileName;
+                    }
+                }
+                else
+                {
+                    savedPageName = indexname;
+                }
+
+                //System.IO.File.WriteAllText(Path.Combine(APPCommon.UserUploadBaseDir, savedPageName), allresult);
+
+                Encoding encoder = Encoding.GetEncoding("utf-8");
+                HtmlWeb webClient = new HtmlWeb();
+                HtmlDocument htmlDoc = webClient.Load(url);
+                HtmlNodeCollection hrefList = htmlDoc.DocumentNode.SelectNodes(".//a[@href]");
+                HtmlNodeCollection scriptList = htmlDoc.DocumentNode.SelectNodes(".//script[@src]");
+                HtmlNodeCollection cssList = htmlDoc.DocumentNode.SelectNodes(".//link[@href]");
+                HtmlNodeCollection imgList = htmlDoc.DocumentNode.SelectNodes(".//img[@src]");
+
+                foreach (var hr in scriptList)
+                {
+                    var href = hr.GetAttributeValue("src", "");
+
+                    DownAndSaveFile(static_dirname, urlTest, href);
+
+                    ReplaceUrl("src", static_dirname, urlTest, hr, href);
+
+                }
+                foreach (var hr in cssList)
+                {
+                    var href = hr.GetAttributeValue("href", "");
+                    DownAndSaveFile(static_dirname, urlTest, href);
+                    ReplaceUrl("href", static_dirname, urlTest, hr, href);
+                }
+
+                foreach (var hr in imgList)
+                {
+                    var href = hr.GetAttributeValue("src", "");
+                    DownAndSaveImgFile(static_dirname, urlTest, href);
+                    ReplaceUrl("src", static_dirname, urlTest, hr, href);
+                }
+                htmlDoc.Save(Path.Combine(APPCommon.UserUploadBaseDir, savedPageName));
+                //System.IO.File.WriteAllText(Path.Combine(APPCommon.UserUploadBaseDir, savedPageName), allresult);
+
+            }
+            catch (Exception exception)
+            {
+                Logger.LogDebug(LoggerName, LoggerHelper.GetExceptionString(exception));
+            }
+            return new JsonResult(new
+            {
+                isok = true,
+                msg = remsg
+            });
+            //return View();
+        }
+
+        private static void ReplaceUrl(string attr,string static_dirname, Uri urlTest, HtmlNode hr, string href)
+        {
+            var newehref = "";
+            if (!href.StartsWith("http://") && !href.StartsWith("https://"))
+            {
+                newehref = "/w/" + static_dirname + (href.StartsWith('/') ? "" : "/") + href;
+                hr.SetAttributeValue(attr, newehref);
+            }
+            else
+            {
+                var urisection = new Uri(href);
+                if (urisection.Authority == urlTest.Authority)
+                {
+                    newehref = href.Replace(urlTest.Scheme + "://" + urlTest.Authority, "/w/" + static_dirname);
+                    hr.SetAttributeValue(attr, newehref);
+                }
+            }
+
+        }
+
+        private static void DownAndSaveImgFile(string static_dirname, Uri urlTest, string href)
+        {
+           
+            if (!href.StartsWith("http://") && !href.StartsWith("https://"))
+            {
+                href = urlTest.Scheme + "://" + urlTest.Authority + (href.StartsWith('/') ? "" : "/") + href;
+            }
+            
+            var urisection = new Uri(href);
+            if (urisection.Authority != urlTest.Authority)
+            {
+                return;
+            }
+            if (!string.IsNullOrEmpty(href))
+            {
+                var wholeurl = href;
+                //if (!urisection.IsAbsoluteUri)
+                //{
+                //    wholeurl = urlTest.Scheme + "://" + urlTest.Authority + urisection.PathAndQuery;
+                //}
+                HttpClient client = new System.Net.Http.HttpClient();
+
+                var response = client.GetAsync(wholeurl).Result;
+                var allresult = response.Content.ReadAsStreamAsync().Result;
+
+                var allselements = urisection.LocalPath.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                var filename = "";
+                if (allselements.Length > 1)
+                {
+                    filename = allselements[allselements.Length - 1];
+                }
+                if (string.IsNullOrEmpty(filename))
+                {
+                    filename = Guid.NewGuid().ToString("N").Replace("-", "");
+                }
+                var userwwwroot = Path.Combine(APPCommon.UserUploadBaseDir, "wwwroot");
+                var newdirName = Path.Combine(userwwwroot, static_dirname);
+                if (!Directory.Exists(newdirName))
+                {
+                    Directory.CreateDirectory(newdirName);
+                }
+                var subdir = newdirName;
+                for (var i = 0; i < allselements.Length - 1; i++)
+                {
+                    var seg = allselements[i];
+
+                    subdir = Path.Combine(subdir, seg);
+                    if (!Directory.Exists(subdir))
+                    {
+                        Directory.CreateDirectory(subdir);
+                    }
+                }
+
+                var physicfilePath = Path.Combine(subdir, filename);
+                System.IO.File.WriteAllBytes(physicfilePath, StreamToBytes(allresult));
+            }
+        }
+
+
+        /// <summary> 
+        /// 将 Stream 转成 byte[] 
+        /// </summary> 
+        public static byte[] StreamToBytes(Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+
+            // 设置当前流的位置为流的开始 
+            stream.Seek(0, SeekOrigin.Begin);
+            return bytes;
+        }
+        private static void DownAndSaveFile(string static_dirname, Uri urlTest, string href)
+        {
+            if (!href.StartsWith("http://") && !href.StartsWith("https://"))
+            {
+                href = urlTest.Scheme + "://" + urlTest.Authority + (href.StartsWith('/') ? "" : "/") + href;
+            }
+            var urisection = new Uri(href);
+            if (!string.IsNullOrEmpty(href))
+            {
+                var wholeurl = href;
+                if (!urisection.IsAbsoluteUri)
+                {
+                    wholeurl = urlTest.Scheme + "://" + urlTest.Authority + urisection.PathAndQuery;
+                }
+                HttpClient client = new System.Net.Http.HttpClient();
+
+                var response = client.GetAsync(wholeurl).Result;
+                var allresult = response.Content.ReadAsStringAsync().Result;
+
+                var allselements = urisection.LocalPath.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                var filename = "";
+                if (allselements.Length > 1)
+                {
+                    filename = allselements[allselements.Length - 1];
+                }
+                if (string.IsNullOrEmpty(filename))
+                {
+                    filename = Guid.NewGuid().ToString("N").Replace("-", "");
+                }
+                var userwwwroot = Path.Combine(APPCommon.UserUploadBaseDir, "wwwroot");
+                var newdirName = Path.Combine(userwwwroot, static_dirname);
+                if (!Directory.Exists(newdirName))
+                {
+                    Directory.CreateDirectory(newdirName);
+                }
+                var subdir = newdirName;
+                for (var i = 0; i < allselements.Length - 1; i++)
+                {
+                    var seg = allselements[i];
+
+                    subdir = Path.Combine(subdir, seg);
+                    if (!Directory.Exists(subdir))
+                    {
+                        Directory.CreateDirectory(subdir);
+                    }
+                }
+
+                var physicfilePath = Path.Combine(subdir, filename);
+                System.IO.File.WriteAllText(physicfilePath, allresult);
+            }
+        }
+
+        // 提取HTML代码中的网址
+        public static ArrayList GetHyperLinks(string htmlCode)
+        {
+            ArrayList al = new ArrayList();
+
+            string strRegex = @"[http://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?";
+
+            Regex r = new Regex(strRegex, RegexOptions.IgnoreCase);
+            MatchCollection m = r.Matches(htmlCode);
+
+            for (int i = 0; i <= m.Count - 1; i++)
+            {
+                bool rep = false;
+                string strNew = m[i].ToString();
+
+                // 过滤重复的URL
+                foreach (string str in al)
+                {
+                    if (strNew == str)
+                    {
+                        rep = true;
+                        break;
+                    }
+                }
+
+                if (!rep) al.Add(strNew);
+            }
+
+            al.Sort();
+
+            return al;
+        }
+
 
         public IActionResult UnzipFile(string refilepath, string distDir)
         {

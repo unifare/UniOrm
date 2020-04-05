@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using SqlKata.Execution;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -78,7 +79,16 @@ namespace UniOrm.Common
                 return new SqlSugarClient(config);
             }
         }
+        public static QueryFactory Kata
+        {
+            get
+            {
+                var configapp = APPCommon.AppConfig.UsingDBConfig;
+                //var config = GetConfig(configapp);
 
+                return SQLKataHelper.CreateSqlKata((int)configapp.DBType, configapp.Connectionstring);
+            }
+        }
         private static ConnectionConfig GetConfig(DbConnectionConfig configapp)
         {
              var config= new ConnectionConfig()

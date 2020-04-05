@@ -1,7 +1,7 @@
-﻿using SqlKata;
+﻿using SQLBuiler;
 using UniOrm;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public partial class Query  
     {

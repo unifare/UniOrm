@@ -20,6 +20,7 @@ namespace UniOrm.Common
 {
     public abstract class ModuleBase : IModule
     {
+        private readonly string LoggerName = "ModuleBase";
         public virtual ContainerBuilder Builder
         {
 
@@ -94,10 +95,27 @@ namespace UniOrm.Common
         }
 
         //public string configPath = System.Reflection.Assembly.GetCallingAssembly().Location.ToString() + ".config";
-        public Configuration MyConfiguration = ConfigurationManager.OpenMappedExeConfiguration(new ExeConfigurationFileMap()
+        public Configuration MyConfiguration
         {
-            ExeConfigFilename = System.Reflection.Assembly.GetCallingAssembly().Location.ToString() + ".config"
-        }, ConfigurationUserLevel.None);
+            get
+            {
+                var exname  =  this.GetType().Assembly.Location.ToString() + ".config";
+
+               // var exname = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ModuleName + ".dll.config");
+                Logger.LogDebug(LoggerName, "load configFilePath is {0}", exname);
+                if (!File.Exists(exname))
+                {
+                    return null;
+                }
+                else
+                {
+                    return ConfigurationManager.OpenMappedExeConfiguration(new ExeConfigurationFileMap()
+                    {
+                        ExeConfigFilename = exname
+                    }, ConfigurationUserLevel.None);
+                }
+            }
+        }
 
         public string GetModuleConfig(string key)
         {
@@ -117,7 +135,7 @@ namespace UniOrm.Common
         {
             var configFileDir = GetModuleConfig("configFileDir");
             var configFilePath = GetModuleConfig("configFile");
-
+            Logger.LogDebug(LoggerName, "configFilePath is {0}", configFilePath);
             if (!string.IsNullOrEmpty(configFileDir))
             {
                 var phyDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFileDir);
@@ -128,17 +146,21 @@ namespace UniOrm.Common
 
             }
             configFilePath = configFileDir + configFilePath;
+
             var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFilePath);
+            Logger.LogDebug(LoggerName, "configpath is {0}", configpath);
+
+
             var configroot = JToken.Parse(File.ReadAllText(configpath));
             ModuleAppConfig = JsonConvert.DeserializeObject<AppConfig>(configroot[ModuleName].ToString());
         }
 
         public abstract AppConfig ModuleAppConfig { get; set; }
         public virtual void ConfigureSite(IApplicationBuilder app, IHostingEnvironment env)
-        { 
+        {
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,  ModuleName )),
+                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ModuleName)),
                 RequestPath = ModuleName
             });
             //app.UseStaticFiles(new StaticFileOptions
@@ -147,7 +169,7 @@ namespace UniOrm.Common
             //    RequestPath = ""
             //});
         }
-        
+
         public abstract List<Type> ModelType();
 
         public abstract List<string> ModelTypeStrings();
@@ -164,6 +186,6 @@ namespace UniOrm.Common
         public abstract void ConfigureRouter(IRouteBuilder routeBuilder);
 
         public abstract void ConfigureSiteServices(IServiceCollection services);
-         
+
     }
 }

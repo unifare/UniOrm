@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public abstract class AbstractCondition : AbstractClause
     {

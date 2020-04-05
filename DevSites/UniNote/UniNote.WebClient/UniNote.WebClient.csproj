@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
+    
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,20 +28,14 @@
 
   <ItemGroup>
     <Content Remove="Themes\Areas\sd23nj\Views\Admin\console.cshtml" />
-    <Content Remove="Themes\Areas\sd23nj\Views\Admin\index.cshtml" />
-    <Content Remove="Themes\Areas\sd23nj\Views\Admin\index2222.cshtml" />
     <Content Remove="Pages\User\welcome.cshtml" />
-    <Content Remove="wwwroot\js\oidc-client.js" />
     <Content Remove="wwwroot\js\oidc-client.min.js" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Themes\Areas\sd23nj\Views\Admin\console.cshtml" />
-    <None Include="Themes\Areas\sd23nj\Views\Admin\index.cshtml" />
-    <None Include="Themes\Areas\sd23nj\Views\Admin\index2222.cshtml" />
     <None Include="Pages\User\welcome.cshtml" />
     <None Include="wwwroot\content\img\technology.png" />
-    <None Include="wwwroot\js\oidc-client.js" />
     <None Include="wwwroot\js\oidc-client.min.js" />
     <None Include="wwwroot\layuiadmin\layui\font\iconfont.svg縱=240.svg" />
     <None Include="wwwroot\layuiadmin\layui\layui.js" />
@@ -399,6 +394,14 @@
     <None Include="wwwroot\lib\layui\src\lay\modules\tree.js" />
     <None Include="wwwroot\lib\layui\src\lay\modules\upload.js" />
     <None Include="wwwroot\lib\layui\src\lay\modules\util.js" />
+    <None Include="wwwroot\lib\My97DatePicker\calendar.js" />
+    <None Include="wwwroot\lib\My97DatePicker\lang\en.js" />
+    <None Include="wwwroot\lib\My97DatePicker\lang\zh-cn.js" />
+    <None Include="wwwroot\lib\My97DatePicker\lang\zh-tw.js" />
+    <None Include="wwwroot\lib\My97DatePicker\WdatePicker.js" />
+    <None Include="wwwroot\lib\My97DatePicker\开发包\lang\en.js" />
+    <None Include="wwwroot\lib\My97DatePicker\开发包\lang\zh-cn.js" />
+    <None Include="wwwroot\lib\My97DatePicker\开发包\lang\zh-tw.js" />
     <None Include="wwwroot\static\font\f4vc5oy4z8flayvi3.svg" />
     <None Include="wwwroot\static\font\font_24081_qs69ykjbea-15353871012.svg" />
     <None Include="wwwroot\static\font\iconfont-2401.svg" />
@@ -546,6 +549,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
     <PackageReference Include="IdentityModel" Version="3.10.10" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -648,6 +652,15 @@
     <Content Update="Themes\Views\_ViewStart.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Userweb\index.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\xadmin\lib\layui\layui.all.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\xadmin\lib\layui\layui.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

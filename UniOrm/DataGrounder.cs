@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic; 
 using System.Reflection; 
-using SqlKata.Compilers;
-using SqlKata;  
+using SQLBuiler.Compilers;
+using SQLBuiler;  
 using System.Linq.Expressions;
 
 namespace UniOrm

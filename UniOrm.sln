@@ -67,9 +67,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.ShopExPlugin", "Plug
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.DistributeSystemPlugin", "Plugins\UniOrm.DistributeSystemPlugin\UniOrm.DistributeSystemPlugin.csproj", "{24EF5DBC-6459-4F0E-B219-16E9EFD523B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSerivcesPlugin", "Plugins\WebSerivcesPlugin\WebSerivcesPlugin.csproj", "{F273F0E3-967F-4C9B-B5BE-B8F4757E284D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSerivcesPlugin", "Plugins\WebSerivcesPlugin\WebSerivcesPlugin.csproj", "{F273F0E3-967F-4C9B-B5BE-B8F4757E284D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniOrm.WebServiceTest", "DevSites\Test\UniOrm.WebServiceTest\UniOrm.WebServiceTest.csproj", "{6860644D-B782-4C18-A01F-EFB7CCA004E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.WebServiceTest", "DevSites\Test\UniOrm.WebServiceTest\UniOrm.WebServiceTest.csproj", "{6860644D-B782-4C18-A01F-EFB7CCA004E1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "D:\tues\download\Compressed\SqlSugar-SqlSugar5\Src\Asp.NetCore2\SqlSeverTest\SqlSugar\SqlSugar.csproj", "{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +191,10 @@ Global
 		{6860644D-B782-4C18-A01F-EFB7CCA004E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6860644D-B782-4C18-A01F-EFB7CCA004E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6860644D-B782-4C18-A01F-EFB7CCA004E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,6 +229,7 @@ Global
 		{24EF5DBC-6459-4F0E-B219-16E9EFD523B7} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
 		{F273F0E3-967F-4C9B-B5BE-B8F4757E284D} = {C6B1D8FF-1CB5-4F1C-AA26-D5E76C9D7FE4}
 		{6860644D-B782-4C18-A01F-EFB7CCA004E1} = {02FBA953-BB29-47D8-8861-E2A5E7EB90E8}
+		{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4} = {E97299E1-08AD-4DFE-8557-CAEE16A04004}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9498881A-9669-45A9-A3D3-8912DDB2872D}

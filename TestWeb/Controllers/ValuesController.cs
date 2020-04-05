@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TestWeb.Models;
-using UniOrm;
-using UniOrm.Loggers;
+using UniOrm; 
 using UniOrm.Startup.Web;
 using Web.Model;
 

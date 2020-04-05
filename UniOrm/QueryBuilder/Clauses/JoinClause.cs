@@ -1,6 +1,6 @@
 using System;
 
-namespace SqlKata
+namespace SQLBuiler
 {
     public abstract class AbstractJoin : AbstractClause
     {

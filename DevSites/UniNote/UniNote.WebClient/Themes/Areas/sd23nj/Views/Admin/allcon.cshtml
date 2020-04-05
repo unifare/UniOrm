@@ -114,7 +114,7 @@
                     <div class="panel-heading">Flow List</div>
                     <div class="panel-body" style="max-height:100px; ">
                         <div>
-                            <input type="button" value="新增" class="btn btn-primary" v-on:click="ToAddFlow( )" />
+                            <input  type="button" value="新增"      class="btn btn-primary " v-on:click="ToAddFlow( )" />
                         </div>
                         <div style=" width:100%; overflow :auto;">
                             <table>
@@ -577,6 +577,7 @@
             data: {
                 allmodules:allmodules,
                 actointype: "add",
+                isAddStepBtnDisabled:true,
                 editingStep: {},
                 editingTriger: {},
                 editingCompose: {},
@@ -658,6 +659,31 @@
                             break;
                         case 12:
                             rev = "Text";
+                            break;
+
+                         case 13:
+                            rev = "RazorText";
+                            break;
+                         case 14:
+                            rev = "RazorFile";
+                            break;
+                         case 15:
+                            rev = "TemplateText";
+                            break;
+                         case 16:
+                            rev = "TemplateFile";
+                            break;
+                         case 17:
+                            rev = "TemplateRazorText";
+                            break;
+                         case 18:
+                            rev = "ServerTransfer";
+                            break;
+                          case 12:
+                            rev = "Redirector";
+                            break;
+                         case 19:
+                            rev = "UrlRewriter";
                             break;
                         //case 12:
                         //    rev = "GetData";
@@ -896,16 +922,16 @@
                         data: JSON.stringify(sdfe),
 
                         async: true,
-                        success: function (jsonResult) {
-
-                            if (jsonResult > 0) {
+                        success: function (jsonResult) { 
                                 alert("  success");
-                                $('#StepDetail').modal("close")
+                              
                                 getAconSlowStepByComposid(app.selectedCompose.AComposityId)
-                            }
+                                $('#StepDetail').modal("hide") 
                         },
                         error: function (e) {
                             console.log(e);
+                            getAconSlowStepByComposid(app.selectedCompose.AComposityId)
+                            $('#StepDetail').modal("hide")
                         }
                     });
                 },
@@ -942,6 +968,7 @@
                 ToSetupCompose: function (el) {
                     app.selectedCompose = el;
                     getAconSlowStepByComposid(el.Guid)
+                    app.isAddStepBtnDisabled = false;
                 },
                 ToSaveCompose: function () {
                     var el = app.editingCompose;

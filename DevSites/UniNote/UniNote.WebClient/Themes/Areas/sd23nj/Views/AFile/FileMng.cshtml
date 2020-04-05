@@ -148,7 +148,7 @@
         <datalist id="cars">
             <option v-for="item in searchlist" :value="item"></option>
         </datalist>
-        <input type="button" class="add" @@click="add" value="新增">
+        <input type="button" class="add" @@click="addfile" value="新增文件" />    <input type="button" class="add" @@click="addDir" value="新增文件夹">
     </div>
     <div>
         <table class="tb_table">
@@ -215,6 +215,9 @@
                      :filepath="selectedlist.RelatedPath"
                      :unzipdirpath="selectedlist.RelatedPath"
                      v-cloak></dlg_unzip_model>
+
+
+
 </div>
 
 
@@ -525,10 +528,44 @@
                     if (this.action == "add") {
                         if (arr.IsTextFile == true) {
                             arr.IsDirectry = false;
+                             
+                            var fdirname = app.curentdirPath;
 
+                            var newtext = editor1.html(); //editor1.html(con);
+                            var data = {
+                                redir: fdirname,
+                                filepathname: this.selectedlist.Name, 
+                                context: newtext
+                            };
+
+                            $.post("CreateFile", data).done(function (jsonResult) {
+                                if (jsonResult.isok == true) {
+                                    Vue.set(app.data, app.selected, arr);
+                                    app.selected = -1;
+                                }
+
+                            }).fail(function (e) {
+                                console.log(e);
+                            }).always(function (e) {
+                                console.log(e);
+                            });
                         }
                         if (arr.IsDirectry == true) {
+                            var fdirname = app.curentdirPath;
+                            var data = {
+                                redir: fdirname
+                            };
+                            $.post("CreateDir", data).done(function (jsonResult) {
+                                if (jsonResult.isok == true) {
+                                    Vue.set(app.data, app.selected, arr);
+                                    app.selected = -1;
+                                }
 
+                            }).fail(function (e) {
+                                console.log(e);
+                            }).always(function (e) {
+                                console.log(e);
+                            });
                         }
 
 
@@ -541,8 +578,8 @@
                         var data = {
                             path: fname,
                             newfilename: this.selectedlist.Name,
-                            isdir: selectedlist.IsDirectry,
-                            istext: selectedlist.IsTextFile,
+                            isdir: this.selectedlist.IsDirectry,
+                            istext:this. selectedlist.IsTextFile,
                             context: newtext
                         };
                          
@@ -596,6 +633,25 @@
                     this.action="add"
                     this.isActive = true;
                 },
+                addfile: function () {
+                    this.selectedlist = {
+                        IsTextFile: true,
+                        IsDirectry:false  
+                    };
+                    editor1.readonly(false);
+                    editor1.html(''); 
+                    this.isActive = true;
+                },
+                addDir: function () {
+                    this.selectedlist = {
+                        IsTextFile: false,
+                        IsDirectry: true
+                    };
+                    //$("#txtActiveInfo").hide();
+                    
+                    this.action = "add"
+                    this.isActive = true;
+                },
                 openZipDirDlg(el) {
                     this.selectedlist = el;
                     this.isShowUnzipdlg = true;
@@ -628,6 +684,7 @@
                     }
 
                     this.isActive = !this.isActive;
+                    this.getfiles(app.curentdirPath);
                 },
                 // 获取需要渲染到页面中的数据
                 setSlist(arr) {

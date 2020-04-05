@@ -265,17 +265,68 @@ namespace UniOrm.Application
                                         case FlowStepType.RazorText:
                                             try
                                             {
+                                                rebject= stepResult = await HandleRazorText(newrunmodel, s, s.ProxyCode);
+                                            }
+                                            catch (Exception exp)
+                                            {
+                                                Logger.LogError(logName, "parser RazorText wrong: " + exp.Message + "-------" + LoggerHelper.GetExceptionString(exp));
+                                            }
+                                            break;
+                                        case FlowStepType.RazorFile:
+                                            try
+                                            {
                                                 var engine = APP.Razorengine;
-                                                string template = s.ProxyCode;
+                                                var filePath = s.ProxyCode;
+                                                string template = File.ReadAllText(Path.Combine(APPCommon.UserUploadBaseDir, filePath));
+                                                rebject= stepResult = await HandleRazorText(newrunmodel, s, template);
+                                            }
+                                            catch (Exception exp)
+                                            {
+                                                Logger.LogError(logName, "parser RazorFile wrong: " + exp.Message + "-------" + LoggerHelper.GetExceptionString(exp));
+                                            }
+                                            break;
 
-                                                if (string.IsNullOrEmpty(template))
-                                                {
-                                                    stepResult = "";
-                                                }
-                                                else
-                                                {
-                                                    var stringbuilder = new StringBuilder();
-                                                    stringbuilder.Append(@"@using UniOrm 
+                                    }
+                                    break;
+                            }
+                            if (rebject == null)
+                            {
+                                rebject = MagicExtension.BackToInst(DynaObject);
+
+                            }
+                            APP.RuntimeCache.Set(cacheKey, rebject);
+                        }
+                        else
+                        {
+                            rebject = stepResult;
+                        }
+                        if (!string.IsNullOrEmpty(s.StorePoolKey) && rebject != null)
+                        {
+                            newrunmodel.SetComposityResourceValue(s.StorePoolKey, rebject);
+                        }
+
+                    }
+                    await CheckAndRunNextRuntimeComposity(requsetHash, newrunmodel, dbFactory, codeService, config);
+                }
+
+                //Manager.RuntimeModels.Remove(newrunmodel);
+            }
+        }
+
+
+        private static async Task<string> HandleRazorText(RuntimeModel newrunmodel, AConFlowStep s, string template)
+        {
+            var engine = APP.Razorengine;
+            //string template = s.ProxyCode;
+            string stepResult = "";
+            if (string.IsNullOrEmpty(template))
+            {
+
+            }
+            else
+            {
+                var stringbuilder = new StringBuilder();
+                stringbuilder.Append(@"@using UniOrm 
 @using UniOrm.Application
 @using UniOrm.Common
 @using UniOrm.Model
@@ -313,6 +364,13 @@ namespace UniOrm.Application
 @using System.Net.WebSockets
 @using System.Drawing
 @using System.Drawing.Printing
+@using Microsoft.Data.Sqlite
+@using MySql.Data.MySqlClient
+@using Npgsql
+@using PetaPoco.SqlKata
+@using SqlKata.Compilers
+@using SqlKata.Execution
+@using SqlSugar
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 @using System.Numerics 
@@ -322,95 +380,63 @@ namespace UniOrm.Application
 @using Microsoft.AspNetCore.Mvc");
 
 
-                                                    if (!string.IsNullOrEmpty(s.ReferenceDlls))
-                                                    {
-                                                        string[] dllnams = s.ReferenceDlls.Split(',');
-                                                        foreach (var n in dllnams)
-                                                        {
-                                                            var rootname = n.TrimEnd(".dll".ToCharArray());
-                                                            engine.Options.Namespaces.Add(n.TrimEnd(".dll".ToCharArray()));
-                                                            stringbuilder.AppendLine(rootname);
-                                                        }
-                                                    }
-                                                    stringbuilder.AppendLine("\r\n@{ DisableEncoding = true;  ");
-                                                    stringbuilder.AppendLine("\r\n var Page = new RazorTool(); }");
-                                                    //stringbuilder.AppendLine("\r\n var page.Step=");
-                                                    var objParams = new List<object>();
-                                                    if (!string.IsNullOrEmpty(s.ArgNames))
-                                                    {
-                                                        objParams = newrunmodel.GetPoolResuce(s.ArgNames.Split(','));
-                                                    }
-                                                    dynamic modelArg = null;
-                                                    var module = APPCommon.ModuleManager.GetModule(null, s.ModuleName);
-                                                    if (module == null)
-                                                    {
-                                                        if (objParams != null && objParams.Count > 0)
-                                                        {
-                                                            modelArg = new { Step = s, Module = new { }, Item = objParams[0] };
-                                                        }
-                                                        else
-                                                        {
-                                                            modelArg = new { Step = s, Module = new { }, Item = new { } };
-                                                        } 
-                                                    }
-                                                    else
-                                                    {
-                                                        if (objParams != null && objParams.Count > 0)
-                                                        {
-                                                            modelArg = new { Step = s, Module = module, Item = objParams[0] };
-                                                        }
-                                                        else
-                                                        {
-                                                            modelArg = new { Step = s, Module = module, Item = new { } };
-                                                        }
-                                                    }
-                                                    var cachekey2 = template.DesEncrypt().SafeSubString(128);
-                                                    var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2);
-                                                    template = stringbuilder.AppendLine("\r\n").Append(template).ToString();
-                                                    if (cacheResult.Success)
-                                                    {
-                                                        stepResult = await engine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), modelArg);
-                                                    }
-                                                    else
-                                                    {
-                                                        stepResult = await engine.CompileRenderAsync(cachekey2, template, modelArg);
-                                                    }
-
-                                                }
-
-                                                rebject = stepResult;
-
-                                            }
-                                            catch (Exception exp)
-                                            {
-                                                Logger.LogError(logName, "parser RazorText wrong: " + exp.Message + "-------" + LoggerHelper.GetExceptionString(exp));
-                                            }
-                                            break;
-                                    }
-                                    break;
-                            }
-                            if (rebject == null)
-                            {
-                                rebject = MagicExtension.BackToInst(DynaObject);
-
-                            }
-                            APP.RuntimeCache.Set(cacheKey, rebject);
-                        }
-                        else
-                        {
-                            rebject = stepResult;
-                        }
-                        if (!string.IsNullOrEmpty(s.StorePoolKey) && rebject != null)
-                        {
-                            newrunmodel.SetComposityResourceValue(s.StorePoolKey, rebject);
-                        }
-
+                if (!string.IsNullOrEmpty(s.ReferenceDlls))
+                {
+                    string[] dllnams = s.ReferenceDlls.Split(',');
+                    foreach (var n in dllnams)
+                    {
+                        var rootname = n.TrimEnd(".dll".ToCharArray());
+                        engine.Options.Namespaces.Add(n.TrimEnd(".dll".ToCharArray()));
+                        stringbuilder.AppendLine(rootname);
                     }
-                    await CheckAndRunNextRuntimeComposity(requsetHash, newrunmodel, dbFactory, codeService, config);
+                }
+                stringbuilder.AppendLine("\r\n@{ DisableEncoding = true;  ");
+                stringbuilder.AppendLine("\r\n var Page = new RazorTool(); }");
+                //stringbuilder.AppendLine("\r\n var page.Step=");
+                var objParams = new List<object>();
+                if (!string.IsNullOrEmpty(s.ArgNames))
+                {
+                    objParams = newrunmodel.GetPoolResuce(s.ArgNames.Split(','));
+                }
+                dynamic modelArg = null;
+                var module = APPCommon.ModuleManager.GetModule(null, s.ModuleName);
+                if (module == null)
+                {
+                    if (objParams != null && objParams.Count > 0)
+                    {
+                        modelArg = new { Step = s, Module = new { }, Item = objParams[0] };
+                    }
+                    else
+                    {
+                        modelArg = new { Step = s, Module = new { }, Item = new { } };
+                    }
+                }
+                else
+                {
+                    if (objParams != null && objParams.Count > 0)
+                    {
+                        modelArg = new { Step = s, Module = module, Item = objParams[0] };
+                    }
+                    else
+                    {
+                        modelArg = new { Step = s, Module = module, Item = new { } };
+                    }
+                }
+                var cachekey2 = template.DesEncrypt().SafeSubString(128);
+                var cacheResult = engine.TemplateCache.RetrieveTemplate(cachekey2);
+                template = stringbuilder.AppendLine("\r\n").Append(template).ToString();
+                if (cacheResult.Success)
+                {
+                    stepResult = await engine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), modelArg);
+                }
+                else
+                {
+                    stepResult = await engine.CompileRenderAsync(cachekey2, template, modelArg);
                 }
 
-                //Manager.RuntimeModels.Remove(newrunmodel);
             }
+
+            return stepResult;
         }
 
         private static object HandleGetData(RuntimeModel newrunmodel, IDbFactory dbFactory, string ormname, AConFlowStep s)
