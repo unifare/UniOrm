@@ -53,6 +53,7 @@ namespace UniOrm.Startup.Web
         {
 
             nccWebHost = WebHost.CreateDefaultBuilder(args)
+                 .UseContentRoot(Directory.GetCurrentDirectory())
                .UseStartup<Startup>()
                  .Build();
             //nccWebHost = WebHost.CreateDefaultBuilder(args)
@@ -88,7 +89,7 @@ namespace UniOrm.Startup.Web
             services.AddMediatR(typeof(WebSetup).Assembly);
             //register configer
             JsonConfig jsonConfig = new JsonConfig();
-            var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
+            var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config"+ Path.DirectorySeparatorChar +"System.json");
             jsonConfig.Source = File.ReadAllText(pa);
             var builder = new ContainerBuilder();
             builder.RegisterInstance<IConfig>(jsonConfig);

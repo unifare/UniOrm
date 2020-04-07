@@ -487,7 +487,7 @@ namespace UniOrm
                 return dirPath;
             }
 
-            return Path.Combine(dirPath, filename.Replace("/","\\"));
+            return Path.Combine(dirPath, filename.Replace('/',  Path.DirectorySeparatorChar ));
         }
 
         public static string GetFileExtension(this string filePath)

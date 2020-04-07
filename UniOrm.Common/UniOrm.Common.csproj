@@ -44,6 +44,7 @@
     <PackageReference Include="SqlKata" Version="1.1.7" />
     <PackageReference Include="SqlKata.Execution" Version="1.1.7" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="UEditor.Core" Version="1.0.6" />
   </ItemGroup>
 

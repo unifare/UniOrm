@@ -46,7 +46,13 @@ namespace UniNote.WebClient.Controllers
             var allpos = m_codeService.GetSimpleCode<TrigerRuleInfo>(null);
             return allpos;
         }
-
+        
+        [HttpGet]
+        public IEnumerable<AconFunction> GetAllFunctions()
+        {
+            var allpos = m_codeService.GetSimpleCode<AconFunction>(null);
+            return allpos;
+        }
         // GET api/values
         [HttpDelete]
         public bool DeleteSetp([FromBody] string id)

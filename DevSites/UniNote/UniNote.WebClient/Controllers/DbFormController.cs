@@ -32,6 +32,7 @@ namespace UniNote.WebClient.Controllers
     [AdminAuthorize]
     public class DbFormController : Controller
     {
+        readonly string LoggerName = nameof(DbFormController);
         IHostingEnvironment _hostingEnvironment;
         ISysDatabaseService m_codeService;
         public DbFormController(ISysDatabaseService codeService, IHostingEnvironment hostingEnvironment)
@@ -56,44 +57,52 @@ namespace UniNote.WebClient.Controllers
             return View();
         }
 
-        
-        public IActionResult GetColumnList(string cmd, string sqlconnestring,string tname)
-        {
-            var isquery = false;
+        public IActionResult DelTable(string sqlconnestring, string tname)
+        { 
             var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
             var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
             var istest = false;
 
             var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
-            var dbtablist = db.DbMaintenance.GetColumnInfosByTableName(tname);
+            var dbtablist = db.DbMaintenance.DropTable(tname);
+            return new JsonResult(new { isok = true, data = dbtablist });
+
+        }
+        public IActionResult GetColumnList(  string sqlconnestring,string tname)
+        { 
+            var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
+            var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
+            var istest = false;
+
+            var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
+            var dbtablist = db.DbMaintenance.GetColumnInfosByTableName(tname, false);
             return new JsonResult(new { isok = true, data = dbtablist });
 
         }
 
         public IActionResult GetDbTableList(string cmd, string sqlconnestring)
-        {
-            var isquery = false;
+        { 
             var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
             var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
             var istest = false;
 
             var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
-            var dbtablist=  db.DbMaintenance.GetTableInfoList();
+            var dbtablist=  db.DbMaintenance.GetTableInfoList(false) ;
             return new JsonResult(new { isok = true,   data = dbtablist });
            
         }
-        public IActionResult CreateNewTable(string cmd, string sqlconnestring)
-        {
-            var isquery = false;
-            var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
-            var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
-            var istest = false;
+        //public IActionResult CreateNewTable(string cmd, string sqlconnestring)
+        //{
+        //    var isquery = false;
+        //    var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
+        //    var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
+        //    var istest = false;
 
-            var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
-            var dbtablist = db.DbMaintenance.GetTableInfoList();
-            return new JsonResult(new { isok = true, data = dbtablist });
+        //    var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
+        //    var dbtablist = db.DbMaintenance.GetTableInfoList();
+        //    return new JsonResult(new { isok = true, data = dbtablist });
 
-        }
+        //}
 
         private SqlSugarClient GetSqlSugarClient(string sqlcontypestr, string sqlconstring,out bool istest)
         {
@@ -148,10 +157,7 @@ namespace UniNote.WebClient.Controllers
             return result;
         } 
         public    IActionResult  AddDBRow(string tablename, string keyvalue, IDictionary<string,object> keyValues, string sqlconnestring)
-        { 
-           
-          
-            
+        {  
             try
             {
                 object dbobject = StrngToObject(tablename, keyvalue, sqlconnestring);
@@ -172,7 +178,7 @@ namespace UniNote.WebClient.Controllers
         {
             var db = sqlconnestring.GetSqlSugarContext();
             var jobj = JObject.Parse(keyvalue);
-            var colsinfo = db.DbMaintenance.GetColumnInfosByTableName(tablename);
+            var colsinfo = db.DbMaintenance.GetColumnInfosByTableName(tablename, false);
             var newtype = TypeCreator.NewClassBulder(tablename);
             foreach (var col in colsinfo)
             {
@@ -213,6 +219,122 @@ namespace UniNote.WebClient.Controllers
 
             return map;
 
+        }
+
+        public IActionResult EditTableRowDef(string tablename, List<DbColumnInfo> keyvalue, string sqlconnestring)
+        { 
+            var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
+            var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
+            var istest = false;
+
+            var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
+            if (istest)
+            {
+                return new JsonResult(new { isok = true, istest = true, leng = 0, data = new List<int>() });
+            }
+            var colsinfo = db.DbMaintenance.GetColumnInfosByTableName(tablename,false);
+            var lisupdate = new List<  DbColumnInfo>();
+            var lisadd= new List<DbColumnInfo>();
+            foreach (var col in keyvalue)
+            {
+                bool isadd = true;
+                foreach (var colold in colsinfo) 
+                {
+                    if(string.Compare( col.DbColumnName,colold.DbColumnName ,true)==0)
+                    {
+                        isadd = false;
+                        var isupdate = false;
+                        if ( col.DataType!= colold.DataType)
+                        {
+                            isupdate = true;
+                        }
+                        if (col.IsNullable != colold.IsNullable)
+                        {
+                            isupdate = true;
+                        }
+                        if (col.Length != colold.Length)
+                        {
+                            isupdate = true;
+                        }
+                        if (col.DecimalDigits != colold.DecimalDigits)
+                        {
+                            isupdate = true;
+                        }
+                        if (col.DefaultValue != colold.DefaultValue)
+                        {
+                            isupdate = true;
+                        }
+                        if (isupdate==true)
+                        {
+                            if(  db.Ado.SqlQuery<dynamic>("select * from "+tablename).Any() )
+                            {
+                                isupdate = false;
+                                Logger.LogDebug(LoggerName, " update table {tablename} failed because of data exsit");
+                            }
+                        }
+                        if (isupdate == true)
+                        {
+                            lisupdate.Add(col);
+                        }
+                        
+                        break;
+                    }
+                }
+                if( isadd)
+                {
+                    lisadd.Add(col);
+                } 
+            }
+            var reint = true;
+            foreach (var col in lisupdate)
+            {
+                reint = db.DbMaintenance.UpdateColumn(tablename, col);
+            }
+            foreach (var col in lisadd)
+            {
+                reint  = db.DbMaintenance.AddColumn(tablename, col);
+            }
+            var listdel = new List<DbColumnInfo>();
+            foreach (var colold in colsinfo)
+            {
+                bool isfound = false;
+                foreach (var col in keyvalue)
+                {
+                    if (col.DbColumnName == colold.DbColumnName)
+                    {
+                        isfound = true; 
+
+                        break;
+                    }
+
+                }
+                if (!isfound)
+                {
+                    listdel.Add(colold);
+                }
+            }
+            foreach (var colold in listdel)
+            {
+                reint = db.DbMaintenance.DropColumn(tablename, colold.DbColumnName);
+            } 
+
+            return new JsonResult(new { isok = reint, istest = false, leng = 0, data = new List<int>() });
+        }
+
+        //craete table with columns
+        public IActionResult AddTableRowDef(string tablename, List<DbColumnInfo> keyvalue, string sqlconnestring)
+        { 
+            var sqlcontypestr = sqlconnestring.Substring(0, sqlconnestring.IndexOf('-'));
+            var sqlconstring = sqlconnestring.Substring(sqlconnestring.IndexOf('-') + 1);
+            var istest = false;
+
+            var db = GetSqlSugarClient(sqlcontypestr, sqlconstring, out istest);
+            if (istest)
+            {
+                return new JsonResult(new { isok = true, istest = true, leng = 0, data = new List<int>() });
+            }
+            var reint = db.DbMaintenance.CreateTable(tablename, keyvalue);
+            return new JsonResult(new { isok = true, istest = false, leng = reint, data = new List<int>() });
         }
 
         public async Task<IActionResult> DelDBRow(string tablename, string id, string sqlconnestring)

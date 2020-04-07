@@ -77,7 +77,7 @@ namespace UniOrm
             {
                 if (_AppConfig == null)
                 {
-                    var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
+                    var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config"+Path.DirectorySeparatorChar+"System.json");
                     var configroot = JToken.Parse(File.ReadAllText(configpath));
                     _AppConfig = JsonConvert.DeserializeObject<AppConfig>(configroot["App"].ToString());
                     //if( _AppConfig!=null)

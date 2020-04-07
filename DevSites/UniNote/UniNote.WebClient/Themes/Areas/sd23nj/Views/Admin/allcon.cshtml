@@ -26,6 +26,22 @@
         .modal-content {
             width: 100%;
         }
+        .selectrow {
+            background-color: #f4ecec;
+        }
+        input[type=button]
+        {
+
+        }
+        
+         table tr td {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            -moz-text-overflow: ellipsis;
+            -webkit-text-overflow: ellipsis;
+        }
     </style>
 }
 
@@ -39,71 +55,86 @@
         <div><button v-on:click="UpdateCache()">更新缓存</button></div>
         <div class="row">
 
-            <div class="col-sm-4">
-                <div class="panel-heading">Composity List</div>
+            <div class="col-sm-3">
+                <div class="panel-heading">url List</div>
                 <div class="panel-body" style="max-height:100px; ">
                     <div>
-                        <input type="button" value="新增" class="btn btn-primary" v-on:click="ToAddTrigle()" />
+                        <input type="text" v-model="urlkey" @@change="searchurl" />  <input type="button" value="新增" class="btn btn-sm btn-primary" v-on:click="ToAddTrigle()" />
                     </div>
-                    <table class="table-bordered">
-                        <thead>
-                            <tr>
-                                <th>name</th>
-                                <th>Rule</th>
-                                <th>ComposityId</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr v-for="el in trigers"  v-on:click="selectComposityRow(el,this)" >
-                                <td>{{el.RuleName}}</td>
-                                <td>{{el.Rule}}</td>
-                                <td>{{el.ComposityId}}</td>
-                                <td>
-                                    <button type="button" v-on:click="ToDeleteAddTriger(el)" class="btn ">删除</button>
-                                    <button type="button" v-on:click="ToEditTrigers(el)" class="btn ">修改</button>
-                                    @*<button type="button" v-on:click="ToSelect(el)" class="btn ">选择</button>*@
-                                </td>
-                            </tr>
-
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col-sm-4">
-
-                <div class="panel  panel-primary">
-                    <div class="panel-heading">Composity List</div>
-                    <div class="panel-body" style="max-height:100px; ">
-                        <div>
-                            <input type="button" value="新增" class="btn btn-primary" v-on:click="ToAddCompose()" />
-                        </div>
-                        <table class="table-bordered">
+                    <div style=" height:550px; overflow:auto;">
+                        <table class="table-bordered"  style="white-space: nowrap; ">
                             <thead>
                                 <tr>
-                                    <th>guid</th>
-                                    <th>name</th>
-                                    <th>description</th>
                                     <th></th>
+
+                                    <th>Rule</th>
+                                    <th>ComposityId</th> 
                                 </tr>
                             </thead>
                             <tbody>
 
-                                <tr v-for="el in coms">
-                                    <td>{{el.Guid}}</td>
-                                    <td>{{el.Name}}</td>
-                                    <td>{{el.Description}}</td>
+                                <tr v-for="el in trigers" v-on:click="selectComposityRow(el,this)">
                                     <td>
-                                        <button type="button" v-on:click="ToEditCompose(el)" class="btn ">修改</button>
-                                        <button type="button" v-on:click="ToSetupCompose(el)" class="btn ">设置</button>
+                                        <a type="button" v-on:click="ToDeleteAddTriger(el)">删除</a>
+                                        <a type="button" v-on:click="ToEditTrigers(el)">修改</a>
+                                        @*<button type="button" v-on:click="ToSelect(el)" class="btn ">选择</button>*@
                                     </td>
+
+
+                                    <td>{{el.Rule}}</td>
+                                    <td >
+                                        <div style="padding:3px; background-color:#e1f2fc">
+                                            <Div style="border-bottom:1px solid #f4ecec">
+                                                {{el.RuleName}}
+                                            </Div>
+                                            {{el.ComposityId}}
+                                        </div >
+                                       
+                                    </td>
+                                    
                                 </tr>
 
 
                             </tbody>
                         </table>
+                        </div>
+                    </div>
+                </div>
+            <div class="col-sm-5">
+
+                <div class="panel  panel-primary">
+                    <div class="panel-heading">Composity List</div>
+                    <div class="panel-body" style="max-height:100px; ">
+                        <div>
+                          <input type ="text" v-model="compositkey" @@change="searchComposite" />  <input type="button" value="新增" class="btn  btn-sm btn-primary" v-on:click="ToAddCompose()" />
+                        </div>
+                        <div style=" height:550px; overflow:auto;">
+                            <table id="comtab" class="table-bordered table"  style="white-space: nowrap; ">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>guid</th>
+                                        <th>name</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr v-for="el in coms" v-bind:class="{ selectrow: el.Name==selectedCompose.Name }">
+                                        <td style="width:100px">
+                                            <a   v-on:click="ToEditCompose(el)"  >修改</a>
+                                            <a  v-on:click="ToSetupCompose(el)"  >设置</a>
+                                        </td>
+                                        <td style="width:70px">{{el.Guid}}</td>
+                                        <td>{{el.Name}}</td>
+
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -112,7 +143,7 @@
 
                 <div class="panel  panel-primary">
                     <div class="panel-heading">Flow List</div>
-                    <div class="panel-body" style="max-height:100px; ">
+                    <div class="panel-body" style="        max-height: 100px;">
                         <div>
                             <input  type="button" value="新增"      class="btn btn-primary " v-on:click="ToAddFlow( )" />
                         </div>
@@ -256,7 +287,7 @@
                                     <div class=" temp-payment-column-wrap-image">
                                         <div class="temp-form-inner-wrapper">
                                             <h2>Composity</h2>
-                                            <p>如果你有任何问题，请随时给我写信。只需填写给出的条目并按下按钮即可。</p>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -331,143 +362,145 @@
                                         <h2>基本信息</h2>
 
                                         <form>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                            <div class="row" >
+                                                <div  style="height:490px; overflow:auto;">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">名称</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.Name" type="text">
-                                                        </span>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">名称</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.Name" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">Guid</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.Guid" type="text">
-                                                        </span>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">Guid</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.Guid" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">StepOrder</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.StepOrder" type="number">
-                                                        </span>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">StepOrder</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.StepOrder" type="number">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">InParamNames</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.ArgNames" type="text">
-                                                        </span>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">InParamNames</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.ArgNames" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">dllfileName</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.TypeLib" type="text">
-                                                        </span>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">dllfileName</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.TypeLib" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">typename</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.TypeFullName" type="text">
-                                                        </span>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">typename</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.TypeFullName" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">IsCache</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.IsUsingCache" type="checkbox">
-                                                        </span>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">IsCache</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.IsUsingCache" type="checkbox">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">MethodName</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.MethodName" type="text">
-                                                        </span>
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">MethodName</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.MethodName" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">ModuleName</span>
-                                                            </label>
-                                                            <select v-model="editingStep.ModuleName"   >
-                                                                <option :value="item.id" v-for="item in allmodules"  >{{item.value }}</option>
-                                                                
-                                                            </select>
-                                                        </span>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">ModuleName</span>
+                                                                </label>
+                                                                <select v-model="editingStep.ModuleName">
+                                                                    <option :value="item.id" v-for="item in allmodules">{{item.value }}</option>
+
+                                                                </select>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">FlowStepType</span>
-                                                            </label>
-                                                            <select v-model="editingStep.FlowStepType">
-                                                                <option value="0">GetData</option>
-                                                                <option value="1">Set</option>
-                                                                <option value="2">Declare</option>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">FlowStepType</span>
+                                                                </label>
+                                                                <select v-model="editingStep.FlowStepType">
+                                                                    <option value="0">GetData</option>
+                                                                    <option value="1">Set</option>
+                                                                    <option value="2">Declare</option>
 
-                                                                <option value="3">CallMethodAndStore</option>
-                                                                <option value="4">CallMethod</option>
-                                                                <option value="5">Action</option>
+                                                                    <option value="3">CallMethodAndStore</option>
+                                                                    <option value="4">CallMethod</option>
+                                                                    <option value="5">Action</option>
 
-                                                                <option value="6">Function</option>
-                                                                <option value="7">Return</option>
-                                                                <option value="8">IF</option>
-                                                                <option value="9">Else</option>
-                                                                <option value="10">ElseIF</option>
-                                                                <option value="11">StaiticFile</option>
-                                                                <option value="12">Text</option>
-                                                                <option value="13">RazorText</option>
-                                                                <option value="14">RazorFile</option>
-                                                            </select>
-                                                        </span>
+                                                                    <option value="6">Function</option>
+                                                                    <option value="7">Return</option>
+                                                                    <option value="8">IF</option>
+                                                                    <option value="9">Else</option>
+                                                                    <option value="10">ElseIF</option>
+                                                                    <option value="11">StaiticFile</option>
+                                                                    <option value="12">Text</option>
+                                                                    <option value="13">RazorText</option>
+                                                                    <option value="14">RazorFile</option>
+                                                                </select>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="form-group">
-                                                        <span class="  ">
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="form-group">
+                                                            <span class="  ">
 
-                                                            <label class="temp_input_label">
-                                                                <span class="temp_input_label-content">returnkeyName</span>
-                                                            </label>
-                                                            <input class="temp_input_field" v-model="editingStep.StorePoolKey" type="text">
-                                                        </span>
+                                                                <label class="temp_input_label">
+                                                                    <span class="temp_input_label-content">returnkeyName</span>
+                                                                </label>
+                                                                <input class="temp_input_field" v-model="editingStep.StorePoolKey" type="text">
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -480,73 +513,98 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-                                    <nav>
-                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">CallMethod</a>
-                                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Decrare</a>
-                                            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#Text" role="tab" aria-controls="nav-contact" aria-selected="false">Text</a>
-                                            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#File" role="tab" aria-controls="nav-contact" aria-selected="false">File</a>
-                                            <a class="nav-item nav-link" id="nav-GetData-tab" data-toggle="tab" href="#nav-GetData" role="tab" aria-controls="nav-GetData" aria-selected="true">GetData</a>
-                                        </div>
-                                    </nav>
-                                    <div class="tab-content" id="nav-tabContent">
-                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                            <div class="row">
-                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                                    <div>dlls</div>
-                                                    <div>系统</div>
-                                                    <div v-for="el in dlls" @@click="getTypes(el,'')">
-                                                        {{el}}
-                                                    </div>
-                                                    <div>自定义</div>
-                                                    <div v-for="el in plugindlls" @@click="getTypes(el,'p')">{{el}}</div>
-                                                    <div>
-                                                        选择文件:  <input type="file" id="dllfile" name="dllfile" /> <input type="button" value="uploader" v-on:click="uploaderdll()" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style=" overflow:auto;">
-                                                    <div>Types</div>
-                                                    <template v-for="el in types">
-                                                        <div style="margin-bottom:4px; background-color:aliceblue" @@click="getmethod(el)">
-                                                            {{el.Name}}
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                                    <div>Methods</div>
-                                                    <div style="margin-bottom:4px; background-color:antiquewhite;" v-on:click="SelectMothod(el)" v-for="el in methods">{{el.methodname}}</div>
-                                                </div>
+                                    <div class="row" style=" border-bottom:1px solid #808080; margin-bottom:0px;" >
+                                        <div class="col-sm-6">
+                                            Functionlist <input type="text" /><input type="button" value="搜索" />
+                                            <div>
+                                                <ul style="height:130px; overflow:auto; margin-bottom:0px !important;">
+                                                    <li style="border-bottom:1px solid #808080;"
+                                                        v-for="(item, index) in functionlist" data-toggle="popover"   :title="item.FunctionName"
+                                                        @@click="getFunction(item)">
+                                                        {{item.FunctionMemo}}
+                                                    </li>
+                                                </ul >
                                             </div>
                                         </div>
-                                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                            <div>ProxyCode</div>
-                                            <textarea v-model="editingStep.ProxyCode" style=" width:100%;" rows="30"></textarea>
-                                        </div>
-                                        <div class="tab-pane fade" id="Text" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                            <div>Text</div>
-                                            <textarea v-model="editingStep.OutPutText" style=" width:100%;" rows="30"></textarea>
-                                        </div>
-                                        <div class="tab-pane fade" id="File" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                            <div>File</div>
+                                        <div class="col-sm-6">
 
-                                        </div>
-
-                                        <div class="tab-pane fade" id="nav-GetData" role="tabpanel" aria-labelledby="nav-GetData-tab">
-                                            <div>IsUsingParentConnstring  <input type="checkbox" v-model="editingStep.IsUsingParentConnstring"> </div>
-                                            <div>
-                                                Connstring
-                                                <textarea v-model="editingStep.Connectionstring" style=" width:100%;" rows="4"></textarea>
-                                            </div>
-                                            <div>
-                                                Sql
-                                                <textarea v-model="editingStep.InParamter1" style=" width:100%;" rows="9"></textarea>
+                                            <div style="border-bottom:1px solid #808080;height:145px; overflow-y:auto;">
+                                                <textarea style="width:100%; height:140px;">
+                                                        
+{{selectcode.FunctionCode}}
+                                                </textarea>
                                             </div>
                                         </div>
                                     </div>
+                                    <div   >
+                                        <nav>
 
+                                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">CallMethod</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Decrare</a>
+                                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#Text" role="tab" aria-controls="nav-contact" aria-selected="false">Text</a>
+                                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#File" role="tab" aria-controls="nav-contact" aria-selected="false">File</a>
+                                                <a class="nav-item nav-link" id="nav-GetData-tab" data-toggle="tab" href="#nav-GetData" role="tab" aria-controls="nav-GetData" aria-selected="true">GetData</a>
+                                            </div>
+                                        </nav>
+                                        <div class="tab-content" id="nav-tabContent"  style=" height:380px; overflow:auto">
+                                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                                        <div>dlls</div>
+                                                        <div>系统</div>
+                                                        <div v-for="el in dlls" @@click="getTypes(el,'')">
+                                                            {{el}}
+                                                        </div>
+                                                        <div>自定义</div>
+                                                        <div v-for="el in plugindlls" @@click="getTypes(el,'p')">{{el}}</div>
+                                                        <div>
+                                                            选择文件:  <input type="file" id="dllfile" name="dllfile" /> <input type="button" value="uploader" v-on:click="uploaderdll()" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style=" overflow:auto;">
+                                                        <div>Types</div>
+                                                        <template v-for="el in types">
+                                                            <div style="margin-bottom:4px; background-color:aliceblue" @@click="getmethod(el)">
+                                                                {{el.Name}}
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                                        <div>Methods</div>
+                                                        <div style="margin-bottom:4px; background-color:antiquewhite;" v-on:click="SelectMothod(el)" v-for="el in methods">{{el.methodname}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                                <div>ProxyCode</div>
+                                                <textarea v-model="editingStep.ProxyCode" style=" width:100%; height:290px;"  ></textarea>
+                                            </div>
+                                            <div class="tab-pane fade" id="Text" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                                <div>Text</div>
+                                                <textarea v-model="editingStep.OutPutText" style=" width:100%; height:290px;" ></textarea>
+                                            </div>
+                                            <div class="tab-pane fade" id="File" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                                <div>File</div>
 
+                                            </div>
+
+                                            <div class="tab-pane fade" id="nav-GetData" role="tabpanel" aria-labelledby="nav-GetData-tab">
+                                                <div>IsUsingParentConnstring  <input type="checkbox" v-model="editingStep.IsUsingParentConnstring"> </div>
+                                                <div>
+                                                    Connstring
+                                                    <textarea v-model="editingStep.Connectionstring" style=" width:100%;" rows="4"></textarea>
+                                                </div>
+                                                <div>
+                                                    Sql
+                                                    <textarea v-model="editingStep.InParamter1" style=" width:100%;" rows="9"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      </div>
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -575,7 +633,9 @@
         var app = new Vue({
             el: '#app',
             data: {
-                allmodules:allmodules,
+                allmodules: allmodules,
+                compositkey: '',
+                urlkey:'',
                 actointype: "add",
                 isAddStepBtnDisabled:true,
                 editingStep: {},
@@ -583,11 +643,15 @@
                 editingCompose: {},
                 selectedCompose: {},
                 trigers: trigers,
+                trigersCopy:[],
                 coms: registers,
+                comsCopy: [],
                 steps: step,
                 dlls: dlls,
                 plugindlls: plugindlls,
+                selectcode: {},
                 types: types,
+                functionlist:[],
                 methods: Methods
             },
             created: function(){
@@ -695,6 +759,9 @@
 
             },
             methods: {
+                getFunction: function (item) {
+                   this. selectcode = item;
+                },
                 getTypes: function (el, ty) {
                     var data = { dll: el, ty: ty };
                     $.ajax({
@@ -817,9 +884,9 @@
                             async: true,
                             success: function (jsonResult) {
 
-                                if (jsonResult > 0) {
+                                if (jsonResult >= 0) {
                                     alert("  success");
-                                    $('#TrigerDiv').modal("close")
+                                    $('#TrigerDiv').modal("hide")
                                     GetAllTrigers();
                                 }
                             },
@@ -839,9 +906,9 @@
                             async: true,
                             success: function (jsonResult) {
 
-                                if (jsonResult > 0) {
+                                if (jsonResult >= 0) {
                                     alert("  success");
-                                    $('#TrigerDiv').modal("close")
+                                    $('#TrigerDiv').modal("hide")
                                     GetAllTrigers();
                                 }
                             },
@@ -970,6 +1037,54 @@
                     getAconSlowStepByComposid(el.Guid)
                     app.isAddStepBtnDisabled = false;
                 },
+                searchurl: function () {
+                    if (this.urlkey == '') {
+                        this.trigers = this.trigersCopy;
+                    }
+                    else {
+                        this.trigers = [];
+                        for (var i = 0; i < this.trigersCopy.length; i++) {
+                            var co = this.trigersCopy[i];
+                            if (co.RuleName != null) {
+                                if (co.RuleName.indexOf(this.urlkey) >= 0) {
+                                    this.trigers.push(this.trigersCopy[i]);
+                                }
+                            }
+                            else if (co.Rule != null) {
+                                if (co.Rule.indexOf(this.urlkey) >= 0) {
+                                    this.trigers.push(this.trigersCopy[i]);
+                                }
+                            }
+                            else if (co.ComposityId != null) {
+                                if (co.ComposityId.indexOf(this.urlkey) >= 0) {
+                                    this.trigers.push(this.trigersCopy[i]);
+                                }
+                            }
+                        }
+                    }
+                },
+                searchComposite: function () {
+                    if (this.compositkey == '') {
+                        this.coms = this.comsCopy;
+                    }
+                    else {
+                        this.coms = [];
+                        for (var i = 0; i < this.comsCopy.length; i++) {
+                            var co = this.comsCopy[i];
+                            if (co.Name != null) {
+                                if (co.Name.indexOf(this.compositkey) >= 0) {
+                                    this.coms.push(this.comsCopy[i]);
+                                }
+                            }
+                            else if (co.Description != null) {
+                                if (co.Description.indexOf(this.compositkey) >= 0) {
+                                    this.coms.push(this.comsCopy[i]);
+                                }
+                            }
+
+                        }
+                    }
+                },
                 ToSaveCompose: function () {
                     var el = app.editingCompose;
                     var addressurl = "AddCompose";
@@ -1039,6 +1154,7 @@
                 async: true,
                 success: function (jsonResult) {
                     app.trigers = jsonResult;
+                    app.trigersCopy = app.trigers;
                 },
                 error: function (e) {
                     console.log(e);
@@ -1075,7 +1191,7 @@
                 success: function (jsonResult) {
 
                     app.coms = jsonResult;
-
+                    app.comsCopy = app.coms ;
 
                 },
                 error: function (e) {
@@ -1083,7 +1199,21 @@
                 }
             });
         }
-
+        function GetAllFunctions() {
+            $.ajax({
+                type: "get",
+                url: "/api/Fact/GetAllFunctions",
+                dataType: "json",
+                //data: urlData,
+                async: true,
+                success: function (jsonResult) { 
+                    app.functionlist = jsonResult; 
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+        }
         function GetTypesByDll(dll) {
             $.ajax({
                 type: "get",
@@ -1158,6 +1288,7 @@
         $(function () {
             GetAllCompose();
             GetAllTrigers();
+            GetAllFunctions();
         })
         function newGuid()
 {

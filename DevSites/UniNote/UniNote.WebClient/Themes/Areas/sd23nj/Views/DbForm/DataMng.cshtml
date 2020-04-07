@@ -47,13 +47,13 @@
             <div class="col-12">
                 命令操作
                 <div class="row" style="border-top:1px solid #808080">
-                    <div class="col-2" style="max-height:500px; overflow-y:auto; border-right:1px solid #808080">
+                    <div class="col-4" style="max-height:500px; overflow-y:auto; border-right:1px solid #808080">
                         <div>tables <a @@click="addtable">添加表</a></div>
                         <ul>
                             <li v-bind:class="{ selectrow: item.Name==selecttablename }" v-for="(item, index) in returntablelist"
                                 @@click="selecttable(item)"
-                                v-on:dblclick="gettabledata(item.Name)">
-                          {{item.Name}}
+                                v-on:dblclick="gettabledata(item.Name)" >
+                         <a @@click="ediOldTable(item)">E</a><a @@click="delOldtable(item)">D</a>--{{item.Name}}
                             </li>
                         </ul>
 
@@ -67,7 +67,7 @@
                         </ul>
 
                     </div>
-                    <div class="col-8">
+                    <div class="col-6">
 
                         <textarea style="width:100%; height:150px" rows="150" v-model="excutecmdtext"></textarea>
                         <div>
@@ -197,43 +197,51 @@
             <div class="con">
                 <div>
                     <h2 class="title">新增 | 修改</h2>
-                    
+                    <div>
+                        当前表 :  <input type="text"  v-model="editbname" />  
+                    </div>
                     <div class="content" style="max-height:500px; overflow:auto;">
                         <table class="tb_table table table-bordered">
                             <tr>
+                                <td></td>
                                 <td>列名</td>
                                 <td>类型</td>
                                 <td>长度</td>
-                                <td>设置null</td>
-                                <td>值</td> 
+                                <td>null</td>
+                                <td>值</td>
                             </tr>
-                            <tr v-for="(columndef, index) in tbcolmnDefinits">
-                                <td>  {{columndef.DbColumnName}}  </td>
+                            <tr v-for="(columndef, index) in edittbcolmnDefinits">
+                                <td><a @@click="deltbrow(index)"  v-if="!(columndef.DbColumnName=='id'||columndef.DbColumnName=='Id'||columndef.DbColumnName=='ID')" >删除</a></td>
+                                <td> <input type="text"   v-model="columndef.DbColumnName" />   </td>
                                 <td>
-                                    {{columndef.DataType}}
+                                    <input type="text" v-model="columndef.DataType" />  
                                 </td>
                                 <td>
-                                    {{columndef.Length}}
+                                    <input type="text" style="width:60px;" v-model="columndef.Length" />
+                                    金位<input type="text" style="width:60px;" v-model="columndef.DecimalDigits" />
                                 </td>
                                 <td>
                                     空<input type="radio" v-bind:name="'runoob2-' + index" value="true" v-model="columndef.IsNullable">
                                     不为空<input type="radio" v-bind:name="'runoob2-' + index" value="false" v-model="columndef.IsNullable">
                                 </td>
                                 <td>
-                                     <textarea v-model="columndef.DefaultValue" style="width:600px; height:60px;"></textarea>        
-
-                                </td>
-
-
+                                    <textarea v-model="columndef.DefaultValue" style="width:300px; height:60px;"></textarea>
+                                </td> 
                             </tr>
 
                         </table>
 
                     </div>
                 </div>
-                <p>
-                    <input type="button" class="btn btn-default" @@click="cancltbdlg" value="取消">
-                    <input type="button" class="btn btn-primary" @@click="savetbdlg" value="保存">
+                <p >
+                    <div style="display:inline;float:left;">
+                        <input type="button" value="添加字段" @@click="addtbcolumn" />
+                    </div>
+                    <div style="display:inline;float:right;">
+                        <input type="button" class="btn btn-default" @@click="cancltbdlg" value="取消">
+                        <input type="button" class="btn btn-primary" @@click="savetbdlg" value="保存">
+                    </div>
+                 
                 </p>
             </div>
 
@@ -338,7 +346,7 @@
             el: '#app',
             data: {
                 selecteddb: '@dbused',
-
+                editbname:'',
                 sqloperateresult: '',
                 excutecmdtext: "",
                 selecttablename: '',
@@ -347,7 +355,8 @@
                 returntablelist: [],
                 returncolumnlist: [],
                 returndata: [],
-                tbcolmnDefinits :[],
+               
+                edittbcolmnDefinits: [],
                 displayeditobjs: [],
 
                 currentaction: "add",
@@ -400,11 +409,159 @@
                 }
              },
             methods: {
-                cancltbdlg() {
+                ediOldTable(item) {
 
+                    var data = {  sqlconnestring: app.selecteddb, tname: item.Name }
+                    $.get("GetColumnList", data).done(function (jsonResult) {
+                        if (jsonResult.isok == true) {
+                            if (jsonResult.data.length > 0) {
+                                app.returncolumnlist = jsonResult.data;
+                                app.editbname = item.Name;
+                                app.edittbcolmnDefinits = app.returncolumnlist;
+                                app.isshowtbDlg = true;
+                                app.currentaction = "editoldtb";
+                            }
+                            //app.isdbcmdok = true;
+                            app.sqloperateresult = "执行成功"
+                        }
+
+                    }).fail(function (e) {
+                        console.log(e);
+                    }).always(function (e) {
+                    });
+                    
+                },
+                delOldtable(item) {
+                    if (!confirm("是否确定删除表")) {
+                        return false;
+                    }
+                    var data = { sqlconnestring: app.selecteddb, tname: item.Name }
+                    $.post("DelTable", data).done(function (jsonResult) {
+                        if (jsonResult.isok == true) {
+
+                            //app.isdbcmdok = true;
+                            app.sqloperateresult = "执行成功"
+
+                        }
+                        else {
+                            app.dbcmdokstring = "text-danger";
+                        }
+
+                    }).fail(function (e) {
+                        console.log(e);
+                    }).always(function (e) {
+                        getdatatablelist();
+                    });
+                },
+                addtbcolumn()
+                {
+                    var reobj = { TableName: '', IsPrimarykey: false, DbColumnName: '', DataType: '', Length: 0, DefaultValue: null, IsNullable: true, DecimalDigits: null };
+                   
+                    this.edittbcolmnDefinits.push(reobj)
+                },
+                cancltbdlg() {
+                    this.isshowtbDlg = false;
                 },
                 savetbdlg() {
+                    if (this.editbname == "") {
+                        alert("请输入表名");
+                        return false;
+                    }
+                    for (var i = 0; i < this.edittbcolmnDefinits.length; i++) {
+                        if (this.edittbcolmnDefinits[i].DbColumnName == "" || this.edittbcolmnDefinits[i].DataType == "") {
+                            alert(this.editbname + ": 请输入列名或数据类型 ");
 
+                            return false;
+                        }
+                        if ((this.edittbcolmnDefinits[i].DataType == "varchar"
+                            || this.edittbcolmnDefinits[i].DataType == "nvarchar") && (this.edittbcolmnDefinits[i].length == ""
+                                || this.edittbcolmnDefinits[i].length == 0)
+                        ) {
+                            this.Length = 100;
+                        }
+                        if (this.edittbcolmnDefinits[i].DataType == "int" && (this.edittbcolmnDefinits[i].length == ""
+                            || this.edittbcolmnDefinits[i].length == 0)) {
+                            this.Length = 4;
+                        }
+                        if ((this.edittbcolmnDefinits[i].DataType == "tinyint" || this.edittbcolmnDefinits[i].DataType == "bit"
+                            || this.edittbcolmnDefinits[i].DataType == "bool")
+
+                            && (this.edittbcolmnDefinits[i].length == ""
+                                || this.edittbcolmnDefinits[i].length == 0)
+                        ) {
+                            this.Length = 1;
+                        }
+                        this.edittbcolmnDefinits[i].TableName = this.editbname;
+                    }
+                    if (this.currentaction == "addtb") {
+
+                  
+                        var data = {
+                            tablename: this.editbname,
+                            keyvalue: this.edittbcolmnDefinits,
+                            sqlconnestring: this.selecteddb
+                        }
+                        $.post("AddTableRowDef", data).done(function (jsonResult) {
+                            if (jsonResult.isok == true) {
+                                app.sqloperateresult = "执行成功"
+
+                            }
+                            else {
+                                app.dbcmdokstring = "text-danger";
+                            }
+
+                        }).fail(function (e) {
+                            console.log(e);
+                        }).always(function (e) {
+                            app.isshowtbDlg = false;
+                            getdatatablelist();
+                        });
+                    }
+                    else if (this.currentaction == "editoldtb"){
+                        var data = {
+                            tablename: this.selecttablename,
+                            keyvalue: this.edittbcolmnDefinits,
+                            sqlconnestring: this.selecteddb
+                        }
+                        $.post("EditTableRowDef", data).done(function (jsonResult) {
+                            if (jsonResult.isok == true) { 
+
+                                var data = { sqlconnestring: app.selecteddb, tname: app.selecttablename }
+                                $.get("GetColumnList", data).done(function (jsonResult) {
+                                    if (jsonResult.isok == true) {
+                                        if (jsonResult.data.length > 0) {
+                                            app.returncolumnlist = jsonResult.data;
+                                        }
+                                        //app.isdbcmdok = true;
+                                        app.sqloperateresult = "执行成功"
+                                    }
+
+                                }).fail(function (e) {
+                                    console.log(e);
+                                }).always(function (e) {
+                                });
+                                app.sqloperateresult = "执行成功" 
+                            }
+                            else {
+                                app.dbcmdokstring = "text-danger";
+                            }
+
+                        }).fail(function (e) {
+                            console.log(e);
+                        }).always(function (e) {
+                            app.isshowtbDlg = false;
+                            getdatatablelist();
+                        });
+                    }
+                },
+                addtable() {
+                    var reobj = { TableName: '', IsPrimarykey: true, DbColumnName: 'Id', DataType: 'int', Length: 4, DefaultValue: null, IsNullable: false, DecimalDigits: null };
+                    this.edittbcolmnDefinits.push(reobj)
+                    this.isshowtbDlg = true;
+                    this.currentaction = "addtb";
+                },
+                deltbrow(index) {
+                    this.edittbcolmnDefinits.splice(index, 1);
                 },
                 savedlg() {
                     var id = 0;
@@ -619,9 +776,7 @@
                     this.selectDataRow = row;
                     this.isshowDlg = true;
                 },
-                addtable() {
-
-                },
+             
                 gettabledata(tbname) {
                     app.returndata = [];
                     var data = { cmd: "select  * from " + tbname, sqlconnestring: this.selecteddb }
@@ -649,7 +804,7 @@
                 },
                 selecttable(tableinfo) {
                     this.selecttablename = tableinfo.Name;
-                    var data = { cmd: tableinfo.excutecmdtext, sqlconnestring: app.selecteddb, tname: tableinfo.Name  }
+                    var data = {   sqlconnestring: app.selecteddb, tname: tableinfo.Name  }
                     $.get("GetColumnList", data).done(function (jsonResult) {
                         if (jsonResult.isok == true) {
                             if (jsonResult.data.length > 0) {

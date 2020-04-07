@@ -30,7 +30,7 @@ namespace UniOrm.Common
             {
                 if (_Prefixname == null)
                 {
-                    var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
+                    var configpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config" + Path.DirectorySeparatorChar + "System.json");
                     var configroot = JToken.Parse(File.ReadAllText(configpath));
                     _Prefixname = configroot["App"]["UsingDBConfig"]["DefaultDbPrefixName"].ToString();
 

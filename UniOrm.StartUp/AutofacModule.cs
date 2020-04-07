@@ -25,7 +25,7 @@ namespace UniOrm.Application
 
             //register configer
             JsonConfig jsonConfig = new JsonConfig();
-            var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config\\system.json");
+            var pa = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config" + Path.DirectorySeparatorChar + "System.json");
             jsonConfig.Source = File.ReadAllText(pa);
             builder.RegisterInstance<IConfig>(jsonConfig);
             

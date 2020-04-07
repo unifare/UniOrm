@@ -75,7 +75,8 @@
           "UniOrm.Model.StepParamter",
           "UniOrm.Model.TrigerRuleInfo",
           "UniOrm.Model.TypeDefinition",
-          "UniOrm.Model.SystemRegistionInfo"
+          "UniOrm.Model.SystemRegistionInfo",
+          "UniOrm.Model.AconFunction"
         ]
       }
 
