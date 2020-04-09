@@ -260,6 +260,10 @@ namespace UniNote.WebClient.Controllers
                         {
                             isupdate = true;
                         }
+                        if (col.ColumnDescription != colold.ColumnDescription)
+                        {
+                            isupdate = true;
+                        }
                         if (col.DefaultValue != colold.DefaultValue)
                         {
                             isupdate = true;

@@ -664,7 +664,6 @@
 
   <ItemGroup>
     <Folder Include="config\moduleConfig\" />
-    <Folder Include="Pages\新文件夹\" />
     <Folder Include="Themes\Default\" />
     <Folder Include="Themes\Views\User\" />
     <Folder Include="wwwroot\layuiadmin\lib\extend\" />

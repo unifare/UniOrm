@@ -148,7 +148,8 @@
         <datalist id="cars">
             <option v-for="item in searchlist" :value="item"></option>
         </datalist>
-        <input type="button" class="add" @@click="addfile" value="新增文件" />    <input type="button" class="add" @@click="addDir" value="新增文件夹">
+        <input type="button" class="add" @@click="addfile" value="新增文件" />  
+        <input type="button" class="add" @@click="addDir" value="新增文件夹"> <a class="btn" @@click="gotoTemplate">模板目录</a>
     </div>
     <div>
         <table class="tb_table">
@@ -451,7 +452,10 @@
                 }
             },
             methods: {
-
+                gotoTemplate() {
+                    this.curentdirPath = "Pages/UploadPage";
+                    this.getfiles(this.curentdirPath);
+                },
                 enterDir(el) {
                     this.curentdirPath = el.RelatedPath;
                     this.getfiles(el.RelatedPath);
@@ -551,7 +555,7 @@
                             });
                         }
                         if (arr.IsDirectry == true) {
-                            var fdirname = app.curentdirPath;
+                            var fdirname = app.curentdirPath +'/'+ this.selectedlist.Name;
                             var data = {
                                 redir: fdirname
                             };
@@ -562,9 +566,9 @@
                                 }
 
                             }).fail(function (e) {
-                                console.log(e);
-                            }).always(function (e) {
-                                console.log(e);
+                              
+                            }).always(function (e) { 
+                                app.getfiles(app.curentdirPath);
                             });
                         }
 
@@ -572,7 +576,7 @@
 
                     }
                     else if (this.action == "file"){
-                        var fname = this.selectedlist.RelatedPath;
+                        var fname = this.curentdirPath;// this.selectedlist.RelatedPath;
 
                         var newtext = editor1.html( ); //editor1.html(con);
                         var data = {
@@ -592,7 +596,7 @@
                         }).fail(function (e) {
                             console.log(e);
                         }).always(function (e) {
-                            console.log(e);
+                            app.getfiles(app.curentdirPath);
                         });
 
                     }

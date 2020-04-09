@@ -558,7 +558,7 @@ namespace UniOrm
         public static string FileRename(this string filePath, string newname)
         {
             var file = new FileInfo(filePath);
-            var newfile = file.Directory.FullName.CombineFilePath(newname);
+            var newfile = file.FullName.CombineFilePath(newname);
             if (newfile.IsExsitFile())
             {
                 //TODO

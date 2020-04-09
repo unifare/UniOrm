@@ -105,7 +105,7 @@
 
             </div>
         </div>
-        <div class="overlay" v-bind:class="{show:isshowDlg}">
+        <div class="overlay" v-bind:class="{show:isshowDlg}">   
             <div class="con">
                 <div>
                     <h2 class="title">新增 | 修改</h2>
@@ -198,7 +198,7 @@
                 <div>
                     <h2 class="title">新增 | 修改</h2>
                     <div>
-                        当前表 :  <input type="text"  v-model="editbname" />  
+                        当前表 :  <input type="text"  v-model="editbname" />   说明<input type="text"  v-model ="tableDescription" />
                     </div>
                     <div class="content" style="max-height:500px; overflow:auto;">
                         <table class="tb_table table table-bordered">
@@ -208,13 +208,15 @@
                                 <td>类型</td>
                                 <td>长度</td>
                                 <td>null</td>
+                                
+                                @*<td>说明</td>*@
                                 <td>值</td>
                             </tr>
                             <tr v-for="(columndef, index) in edittbcolmnDefinits">
-                                <td><a @@click="deltbrow(index)"  v-if="!(columndef.DbColumnName=='id'||columndef.DbColumnName=='Id'||columndef.DbColumnName=='ID')" >删除</a></td>
-                                <td> <input type="text"   v-model="columndef.DbColumnName" />   </td>
+                                <td><a @@click="deltbrow(index)" v-if="!(columndef.DbColumnName=='id'||columndef.DbColumnName=='Id'||columndef.DbColumnName=='ID')">删除</a></td>
+                                <td> <input type="text" v-model="columndef.DbColumnName" />   </td>
                                 <td>
-                                    <input type="text" v-model="columndef.DataType" />  
+                                    <input type="text" v-model="columndef.DataType" />
                                 </td>
                                 <td>
                                     <input type="text" style="width:60px;" v-model="columndef.Length" />
@@ -224,9 +226,14 @@
                                     空<input type="radio" v-bind:name="'runoob2-' + index" value="true" v-model="columndef.IsNullable">
                                     不为空<input type="radio" v-bind:name="'runoob2-' + index" value="false" v-model="columndef.IsNullable">
                                 </td>
+                                @*<td>
+                                    <textarea v-model="columndef.ColumnDescription" style="width:300px; height:60px;"></textarea>
+                                </td>*@
+
                                 <td>
                                     <textarea v-model="columndef.DefaultValue" style="width:300px; height:60px;"></textarea>
-                                </td> 
+                                </td>
+
                             </tr>
 
                         </table>
@@ -355,7 +362,7 @@
                 returntablelist: [],
                 returncolumnlist: [],
                 returndata: [],
-               
+                tableDescription:'',
                 edittbcolmnDefinits: [],
                 displayeditobjs: [],
 
@@ -455,7 +462,7 @@
                 },
                 addtbcolumn()
                 {
-                    var reobj = { TableName: '', IsPrimarykey: false, DbColumnName: '', DataType: '', Length: 0, DefaultValue: null, IsNullable: true, DecimalDigits: null };
+                    var reobj = { TableName: '', IsPrimarykey: false, DbColumnName: '', ColumnDescription:'',DataType: '', Length: 0, DefaultValue: null, IsNullable: true, DecimalDigits: null };
                    
                     this.edittbcolmnDefinits.push(reobj)
                 },
@@ -490,6 +497,9 @@
                                 || this.edittbcolmnDefinits[i].length == 0)
                         ) {
                             this.Length = 1;
+                        }
+                        if (this.edittbcolmnDefinits.ColumnDescription == '') {
+                            this.edittbcolmnDefinits.ColumnDescription = null;
                         }
                         this.edittbcolmnDefinits[i].TableName = this.editbname;
                     }
@@ -555,7 +565,7 @@
                     }
                 },
                 addtable() {
-                    var reobj = { TableName: '', IsPrimarykey: true, DbColumnName: 'Id', DataType: 'int', Length: 4, DefaultValue: null, IsNullable: false, DecimalDigits: null };
+                    var reobj = { TableName: '', IsPrimarykey: true, ColumnDescription: '', DbColumnName: 'Id', DataType: 'int', Length: 4, DefaultValue: null, IsNullable: false, DecimalDigits: null };
                     this.edittbcolmnDefinits.push(reobj)
                     this.isshowtbDlg = true;
                     this.currentaction = "addtb";

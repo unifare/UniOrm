@@ -32,6 +32,14 @@ namespace UniOrm
             return APPCommon.AppConfig.GetDicstring(key);
         }
 
+        public string Include(string RelativefilePath)
+        {
+            RelativefilePath = ( "Pages/UploadPage/")+ RelativefilePath.UrlDecode();
+            var fullpath = RelativefilePath.ToServerFullPath();
+            var content = fullpath.ReadAsTextFile();
+            return content;
+        }
+
         public List<dynamic> GetData(string sql, object args)
         {
             return DB.UniClient.Ado.SqlQuery<dynamic>(sql, args);
