@@ -54,16 +54,8 @@ namespace UniOrm.Startup.Web
 
             nccWebHost = WebHost.CreateDefaultBuilder(args)
                  .UseContentRoot(Directory.GetCurrentDirectory())
-               .UseStartup<Startup>()
-                 .Build();
-            //nccWebHost = WebHost.CreateDefaultBuilder(args)
-            //    .UseKestrel(c => c.AddServerHeader = false)
-            //    .UseContentRoot(Directory.GetCurrentDirectory())
-            //    .UseIISIntegration()
-            //    .UseStartup<Startup>()
-            //    .UseDefaultServiceProvider(options => options.ValidateScopes = false)
-            //    //.UseApplicationInsights()
-            //    .Build();
+                 .UseStartup<Startup>()
+                 .Build(); 
             return nccWebHost;
         }
 
@@ -83,8 +75,7 @@ namespace UniOrm.Startup.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public static IServiceProvider ConfigureServices(this IServiceCollection services)
         {
-
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+             
             APP.ConfigureSiteAllModulesServices(services);
             services.AddMediatR(typeof(WebSetup).Assembly);
             //register configer

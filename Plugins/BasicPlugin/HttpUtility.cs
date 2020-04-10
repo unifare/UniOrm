@@ -87,15 +87,7 @@ namespace BasicPlugin
 
 
         public static void ResponseText(ActionExecutingContext action,  string returnObject)
-        {
-            ////var 
-            //var resp = context.Response;
-            //resp.ContentType = "text/html";
-
-            //using (StreamWriter sw = new StreamWriter(resp.Body))
-            //{
-            //    sw.Write(returnObject);
-            //}
+        { 
             action.Result = new ContentResult()
             {
                 Content = returnObject,
@@ -104,7 +96,16 @@ namespace BasicPlugin
             };
 
         }
-       
+        public static void ResponseUnAuth(ActionExecutingContext action, string returnObject)
+        {
+            action.Result = new ContentResult()
+            {
+                Content = returnObject,
+                ContentType = "text/html",
+                StatusCode = 401
+            };
+
+        }
         public static void ResponseAjaxt(ActionExecutingContext action, object returnObject )
         { 
             action.Result = new JsonResult(returnObject)
