@@ -71,7 +71,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSerivcesPlugin", "Plugin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniOrm.WebServiceTest", "DevSites\Test\UniOrm.WebServiceTest\UniOrm.WebServiceTest.csproj", "{6860644D-B782-4C18-A01F-EFB7CCA004E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "D:\tues\download\Compressed\SqlSugar-SqlSugar5\Src\Asp.NetCore2\SqlSeverTest\SqlSugar\SqlSugar.csproj", "{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlSugar", "C:\Users\TF\Documents\GitHub\UniOrm\tools\sqlsugar\SqlSugar\SqlSugar.csproj", "{48E2E688-CC86-4DBB-8FB8-0C7B6C9FA4B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

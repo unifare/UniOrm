@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniOrm.Common\UniOrm.Common.csproj" />
-    <ProjectReference Include="D:\tues\download\Compressed\SqlSugar-SqlSugar5\Src\Asp.NetCore2\SqlSeverTest\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>

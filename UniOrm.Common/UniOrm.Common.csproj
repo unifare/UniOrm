@@ -55,9 +55,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\tools\sqlsugar\SqlSugar\SqlSugar.csproj" />
     <ProjectReference Include="..\UniOrm.FlunentMigrator\UniOrm.FlunentMigrator.csproj" />
     <ProjectReference Include="..\UniOrm.Model\UniOrm.Model.csproj" />
-    <ProjectReference Include="D:\tues\download\Compressed\SqlSugar-SqlSugar5\Src\Asp.NetCore2\SqlSeverTest\SqlSugar\SqlSugar.csproj" />
   </ItemGroup>
 
 </Project>

@@ -361,3 +361,141 @@
 [ INFO][  1]2020-03-15 19:45:02,312: [Startup] ConfigureServices is end
 [ INFO][  1]2020-03-15 19:45:02,468: [Startup] Configure is starting
 [ INFO][  1]2020-03-15 19:45:02,758: [Startup] Configure is end
+[ INFO][  1]2020-09-01 09:08:17,871: [Program] Program is starting
+[ INFO][  1]2020-09-01 09:08:23,275: [Startup] Startup is starting
+[DEBUG][  1]2020-09-01 09:08:24,961: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:25,350: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:25,373: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:25,405: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:25,430: [ModuleBase] configFilePath is OauthMngPlugin.json
+[DEBUG][  1]2020-09-01 09:08:25,442: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.json
+[DEBUG][  1]2020-09-01 09:08:26,612: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,628: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,701: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,738: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,756: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,772: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,792: [ModuleBase] configFilePath is AlipayPlugin.json
+[DEBUG][  1]2020-09-01 09:08:26,810: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\AlipayPlugin.json
+[DEBUG][  1]2020-09-01 09:08:26,827: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,842: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,941: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,973: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:26,988: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,004: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,019: [ModuleBase] configFilePath is UniOrm.DistributeSystemPlugin.json
+[DEBUG][  1]2020-09-01 09:08:27,030: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.json
+[DEBUG][  1]2020-09-01 09:08:27,044: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,066: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,164: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,191: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,204: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,216: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,228: [ModuleBase] configFilePath is ShopExPlugin.json
+[DEBUG][  1]2020-09-01 09:08:27,239: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\ShopExPlugin.json
+[DEBUG][  1]2020-09-01 09:08:27,258: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,273: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,359: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,411: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,425: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,438: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,453: [ModuleBase] configFilePath is UserWebPlugin.json
+[DEBUG][  1]2020-09-01 09:08:27,465: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UserWebPlugin.json
+[DEBUG][  1]2020-09-01 09:08:27,478: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:08:27,491: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[ INFO][  1]2020-09-01 09:08:27,632: [Startup] ConfigureServices is starting
+[ INFO][  1]2020-09-01 09:08:38,896: [Startup] ConfigureServices is end
+[ INFO][  1]2020-09-01 09:08:39,699: [Startup] Configure is starting
+[ INFO][  1]2020-09-01 09:08:41,028: [Startup] Configure is end
+[ INFO][  1]2020-09-01 09:09:33,821: [Program] Program is starting
+[ INFO][  1]2020-09-01 09:09:37,383: [Startup] Startup is starting
+[DEBUG][  1]2020-09-01 09:09:37,741: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,035: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,037: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,039: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,041: [ModuleBase] configFilePath is OauthMngPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,042: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,438: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,440: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,465: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,468: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,471: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,474: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,477: [ModuleBase] configFilePath is AlipayPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,478: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\AlipayPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,481: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,483: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,507: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,510: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,513: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,515: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,517: [ModuleBase] configFilePath is UniOrm.DistributeSystemPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,518: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,521: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,524: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,549: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,551: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,553: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,556: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,558: [ModuleBase] configFilePath is ShopExPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,559: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\ShopExPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,562: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,564: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,591: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,593: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,596: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,598: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,600: [ModuleBase] configFilePath is UserWebPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,601: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UserWebPlugin.json
+[DEBUG][  1]2020-09-01 09:09:38,604: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:09:38,607: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[ INFO][  1]2020-09-01 09:09:38,823: [Startup] ConfigureServices is starting
+[ INFO][  1]2020-09-01 09:09:44,251: [Startup] ConfigureServices is end
+[ INFO][  1]2020-09-01 09:09:44,834: [Startup] Configure is starting
+[ INFO][  1]2020-09-01 09:09:45,496: [Startup] Configure is end
+[ INFO][  1]2020-09-01 09:13:39,958: [Program] Program is starting
+[ INFO][  1]2020-09-01 09:13:43,890: [Startup] Startup is starting
+[DEBUG][  1]2020-09-01 09:13:44,266: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:44,557: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:44,560: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:44,562: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:44,565: [ModuleBase] configFilePath is OauthMngPlugin.json
+[DEBUG][  1]2020-09-01 09:13:44,566: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,059: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,064: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\OauthMngPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,289: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,293: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,300: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,302: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,305: [ModuleBase] configFilePath is AlipayPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,306: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\AlipayPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,310: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,324: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.AlipayPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,374: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,377: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,380: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,383: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,386: [ModuleBase] configFilePath is UniOrm.DistributeSystemPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,387: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,391: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,394: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.DistributeSystemPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,418: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,420: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,422: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,424: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,426: [ModuleBase] configFilePath is ShopExPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,427: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\ShopExPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,432: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,435: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.ShopExPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,458: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,460: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,462: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,464: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,467: [ModuleBase] configFilePath is UserWebPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,468: [ModuleBase] configpath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UserWebPlugin.json
+[DEBUG][  1]2020-09-01 09:13:45,471: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[DEBUG][  1]2020-09-01 09:13:45,473: [ModuleBase] load configFilePath is C:\Users\TF\Documents\GitHub\UniOrm\DevSites\UniNote\UniNote.WebClient\bin\Debug\netcoreapp2.2\UniOrm.UserWebPlugin.dll.config
+[ INFO][  1]2020-09-01 09:13:45,541: [Startup] ConfigureServices is starting
+[ INFO][  1]2020-09-01 09:13:50,831: [Startup] ConfigureServices is end
+[ INFO][  1]2020-09-01 09:13:51,421: [Startup] Configure is starting
+[ INFO][  1]2020-09-01 09:13:52,073: [Startup] Configure is end
