@@ -39,7 +39,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="5.6.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="PetaPoco.SqlKata" Version="1.6.5" />
     <PackageReference Include="SqlKata" Version="1.1.7" />
     <PackageReference Include="SqlKata.Execution" Version="1.1.7" />
